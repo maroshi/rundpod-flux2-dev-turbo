@@ -72,7 +72,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 	-r Comfyui-SecNodes/requirements.txt \
 	-r ComfyUI-EasyColorCorrector/requirements.txt \
 	-r ComfyUI-Image-Saver/requirements.txt \
-    -r ComfyUI-Detail-Daemon/requirements.txt \
+    -r ComfyUI-Detail-Daemon/requirements.txt
 
 WORKDIR /ComfyUI/custom_nodes/ComfyUI-SAM3
 RUN python install.py
