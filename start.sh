@@ -97,7 +97,7 @@ HAS_COMFYUI=0
 if [[ "$HAS_CUDA" -eq 1 ]]; then  	
     echo "✅ ComfyUI service starting (CUDA available)"
 	    
-    python3 /workspace/ComfyUI/main.py ${COMFYUI_EXTRA_ARGUMENTS:---listen --preview-method latent2rgb} &
+    python3 /workspace/ComfyUI/main.py ${COMFYUI_EXTRA_ARGUMENTS:---listen --preview-method auto} &
 
     # Wait until ComfyUI is ready
     MAX_TRIES=40
