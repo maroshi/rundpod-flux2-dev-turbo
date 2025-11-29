@@ -2,7 +2,11 @@
 
 [![Docker Image Version](https://img.shields.io/docker/v/ls250824/run-comfyui-image)](https://hub.docker.com/r/ls250824/run-comfyui-image)
 
+![runpod](images/runpod_ZIT.jpg)
+
 A streamlined and automated environment for running **ComfyUI** with **image models**, optimized for use on [RunPod.io](https://runpod.io?ref=se4tkc5o).
+
+For example running Z-Image Turbo on RTX A5000
 
 ## 🔧 Features
 
@@ -12,21 +16,28 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
   - Code Server
   - Hugging Face API
   - CivitAI API
-- Supports advanced workflows for **video generation** and **enhancement** using pre-installed custom nodes.
+- Supports advanced workflows for **image generation** and **enhancement** using pre-installed custom nodes.
 - Compatible with high-performance NVIDIA GPUs.
 
 ## 🧩 Template Deployment
 
 ### Deployment.
 
-- All available templates on runpod are tested on a L40S/A40.
+- All available templates on runpod are tested on a A40/RTX A5000.
 - Try to avoid regions US-TX-x as they often fail to download or run the image (Pytorch CUDA mismatch).
 
 ### Runpod templates
 
-## Tutorial
+- 👉 [Runpod Z-Image Turbo](https://console.runpod.io/deploy?template=ia5t70hfak&ref=se4tkc5o)
+- 👉 [Runpod Flux.2 Dev](https://console.runpod.io/deploy?template=8nl523gts5&ref=se4tkc5o)
 
-- [Specific for these templates](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial.md)
+### Documenation
+
+- [Documentation](https://awesome-comfyui.rozenlaan.site/ComfyUI_image/)
+
+### Tutorial
+
+- [Specific for these templates](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial)
 
 ### Workflows
 

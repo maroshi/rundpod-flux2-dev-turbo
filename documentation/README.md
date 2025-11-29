@@ -3,7 +3,7 @@
 ## Workflows
 
 - Open from ComfyUI's interface on the left
-- Download from [workflow examples](https://awesome-comfyui.rozenlaan.site/ComfyUI_workflows/)
+- Download from [workflow examples](https://awesome-comfyui.rozenlaan.site/ComfyUI_workflows)
 
 ## Pre-Installed Custom Nodes
 
@@ -17,7 +17,7 @@
 - [Image setup](docs/ComfyUI_image_image_setup.md)
 - [Environment variables](docs/ComfyUI_image_configuration.md)
 - [Hardware Requirements](docs/ComfyUI_image_hardware.md)
-- [Tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial/)
+- [Tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial)
 
 #### **Huggingface**  
 
