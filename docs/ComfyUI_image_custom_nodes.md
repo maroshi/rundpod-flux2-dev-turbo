@@ -24,6 +24,7 @@
 - [EasyColorCorrection](https://github.com/regiellis/ComfyUI-EasyColorCorrector)
 - [EsesImageEffectCurves](https://github.com/quasiblob/ComfyUI-EsesImageEffectCurves)
 - [EsesImageEffectLevels](https://github.com/quasiblob/ComfyUI-EsesImageEffectLevels)
+- [VRgamedevgirl](https://github.com/vrgamegirl19/comfyui-vrgamedevgirl)
 
 #### Inference
 

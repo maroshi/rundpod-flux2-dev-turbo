@@ -1,12 +1,12 @@
-# 🚀 Run image with ComfyUI with provisioning — [RunPod.io Deployment](https://runpod.io?ref=se4tkc5o)
-
 [![Docker Image Version](https://img.shields.io/docker/v/ls250824/run-comfyui-image)](https://hub.docker.com/r/ls250824/run-comfyui-image)
 
+# 🚀 Run image with ComfyUI with provisioning RunPod
+
+A streamlined and automated environment for running **ComfyUI** with **image models**, optimized for use on RunPod
+
+## Running Z-Image Turbo on RTX A5000
+
 ![runpod](images/runpod_ZIT.jpg)
-
-A streamlined and automated environment for running **ComfyUI** with **image models**, optimized for use on [RunPod.io](https://runpod.io?ref=se4tkc5o).
-
-For example running Z-Image Turbo on RTX A5000
 
 ## 🔧 Features
 
@@ -23,8 +23,7 @@ For example running Z-Image Turbo on RTX A5000
 
 ### Deployment.
 
-- All available templates on runpod are tested on a A40/RTX A5000.
-- Try to avoid regions US-TX-x as they often fail to download or run the image (Pytorch CUDA mismatch).
+- All available templates on runpod are tested on a RTX A5000/A40.
 
 ### Runpod templates
 
