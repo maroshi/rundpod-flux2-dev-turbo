@@ -48,6 +48,10 @@ RUN --mount=type=cache,target=/root/.cache/git \
 	git clone --depth=1 --filter=blob:none https://github.com/heyburns/image-chooser-classic.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/neonr-0/ComfyUI-PixelConstrainedScaler.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/vrgamegirl19/comfyui-vrgamedevgirl.git && \
+	git clone --depth=1 --filter=blob:none https://github.com/SaTaNoob/ComfyUI-Z-Image-Turbo-Resolutions.git && \
+	git clone --depth=1 --filter=blob:none https://github.com/ChangeTheConstants/SeedVarianceEnhancer.git && \
+	git clone --depth=1 --filter=blob:none https://github.com/erosDiffusion/ComfyUI-EulerDiscreteScheduler.git && \
+	git clone --depth=1 --filter=blob:none https://github.com/HellerCommaA/ComfyUI-ZImageLatent.git
 
 # Rewrite any top-level CPU ORT refs to GPU ORT
 RUN set -eux; \
@@ -73,6 +77,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 	-r Comfyui-SecNodes/requirements.txt \
 	-r ComfyUI-EasyColorCorrector/requirements.txt \
 	-r ComfyUI-Image-Saver/requirements.txt \
+	-r comfyui-vrgamedevgirl/requirements.txt \
     -r ComfyUI-Detail-Daemon/requirements.txt
 
 WORKDIR /ComfyUI/custom_nodes/ComfyUI-SAM3
@@ -87,7 +92,7 @@ EXPOSE 8188 9000
 # Labels
 LABEL org.opencontainers.image.title="ComfyUI 0.3.76 for image inference" \
       org.opencontainers.image.description="ComfyUI  + flash-attn + sageattention + onnxruntime-gpu + torch_generic_nms + code-server + civitai downloader + huggingface_hub + custom_nodes" \
-      org.opencontainers.image.source="https://hub.docker.com/r/ls250824/run-comfyui-wan" \
+      org.opencontainers.image.source="https://hub.docker.com/r/ls250824/run-comfyui-image" \
       org.opencontainers.image.licenses="MIT"
 
 # Test

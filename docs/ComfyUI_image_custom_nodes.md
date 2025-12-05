@@ -1,8 +1,8 @@
-# Image
+# run-comfyui-image
 
 ## 🧩 Pre-Installed Custom Nodes
 
-#### Interface
+### Interface
 
 - [rgthree](https://github.com/rgthree/rgthree-comfy)  
 - [Login](https://github.com/liusida/ComfyUI-Login)  
@@ -18,7 +18,7 @@
 - [Image Chooser classic](https://github.com/heyburns/image-chooser-classic)
 - [PixelConstrainedScaler](https://github.com/neonr-0/ComfyUI-PixelConstrainedScaler)
 
-#### Image manipulation
+### Image manipulation
 
 - [EsesImageAdjustments](https://github.com/quasiblob/ComfyUI-EsesImageAdjustments)
 - [EasyColorCorrection](https://github.com/regiellis/ComfyUI-EasyColorCorrector)
@@ -26,21 +26,25 @@
 - [EsesImageEffectLevels](https://github.com/quasiblob/ComfyUI-EsesImageEffectLevels)
 - [VRgamedevgirl](https://github.com/vrgamegirl19/comfyui-vrgamedevgirl)
 
-#### Inference
+### Inference
 
 - [Detail Deamon](https://github.com/Jonseed/ComfyUI-Detail-Daemon)
 - [NAG](https://github.com/ChenDarYen/ComfyUI-NAG)
-- [RES4LYF](https://github.com/ClownsharkBatwing/RES4LYF)
 
-## Controlnet
+### Samplers
+
+- [RES4LYF](https://github.com/ClownsharkBatwing/RES4LYF)
+- [EulerDiscreteScheduler](https://github.com/erosDiffusion/ComfyUI-EulerDiscreteScheduler)
+
+### Controlnet
 
 - [controlnet_aux](https://github.com/Fannovel16/comfyui_controlnet_aux)
 
-## Flow
+### Flow
 
 - [Power Flow](https://github.com/x3bits/ComfyUI-Power-Flow/tree/main)
 
-## Segmentation
+### Segmentation
 
 - [Segment anything](https://github.com/kijai/ComfyUI-segment-anything-2)
 - [RMBG](https://github.com/1038lab/ComfyUI-RMBG)
@@ -48,7 +52,13 @@
 - [AutoCropFaces](https://github.com/liusida/ComfyUI-AutoCropFaces)
 - [SAM3](https://github.com/PozzettiAndrea/ComfyUI-SAM3)
 
-#### Upscaler
+### Z-Image
+
+- [Z-Image-Turbo-Resolutions](https://github.com/SaTaNoob/ComfyUI-Z-Image-Turbo-Resolutions)
+- [SeedVarianceEnhancer](https://github.com/ChangeTheConstants/SeedVarianceEnhancer)
+- [ZImageLatent](https://github.com/HellerCommaA/ComfyUI-ZImageLatent.git)
+
+### Upscaler
 
 - [SD Upscale](https://github.com/ssitu/ComfyUI_UltimateSDUpscale)
 

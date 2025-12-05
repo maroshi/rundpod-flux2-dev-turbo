@@ -10,8 +10,9 @@
 ## Z-image Turbo
 
 - [Website](https://tongyi-mai.github.io/Z-Image-homepage/)
+- [Project](https://z-image-turbo.ai)
 - [Github](https://github.com/Tongyi-MAI/Z-Image)
-- [HF](https://huggingface.co/Tongyi-MAI/Z-Image-Turbo/blob/main/README.md)
+- [Huggingface](https://huggingface.co/Tongyi-MAI/Z-Image-Turbo/blob/main/README.md)
 - [Examples](https://comfyanonymous.github.io/ComfyUI_examples/z_image/)
 
 ## Hunyuan Image 2.1
