@@ -27,3 +27,4 @@
 
 - [Segmentation](provisioning/hf_segmentation.md)
 - [Upscale](provisioning/hf_upscale.md)
+- [Tagging & Caption](provisioning/hf_vlm.md)

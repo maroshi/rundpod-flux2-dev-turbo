@@ -44,16 +44,23 @@ hf download Comfy-Org/flux2-dev split_files/text_encoders/mistral_3_small_flux2_
 
 ## Vae
 
-## Official
+### Official
 
 ```bash
 hf download black-forest-labs/FLUX.2-dev ae.safetensors \
 --local-dir /workspace/ComfyUI/models/vae/
 ```
 
-## ComfyUI
+### ComfyUI
 
 ```bash
 hf download Comfy-Org/flux2-dev split_files/vae/flux2-vae.safetensors \
 --local-dir /workspace/ComfyUI/models/vae/
+```
+
+#### bf16
+
+```bash
+hf download wangkanai/flux-dev-fp16 vae/flux/flux-vae-bf16.safetensors \
+—local-dir /workspace/ComfyUI/models/vae
 ```

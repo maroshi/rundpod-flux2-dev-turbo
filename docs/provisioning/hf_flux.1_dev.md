@@ -1,6 +1,7 @@
 # Manual provisioning Flux.1 dev
 
-- [HF Flux dev](https://huggingface.co/Comfy-Org/flux1-dev)
+- [Flux dev](https://huggingface.co/Comfy-Org/flux1-dev)
+- [Flux dev bf16](https://huggingface.co/wangkanai/flux-dev-fp16)
 
 ## Diffusion_model
 
@@ -24,7 +25,16 @@ hf download zer0int/CLIP-GmP-ViT-L-14 ViT-L-14-TEXT-detail-improved-hiT-GmP-TE-o
 
 ## Vae
 
+### Original
+
 ```bash
 hf download black-forest-labs/FLUX.1-Kontext-dev ae.safetensors \
 --local-dir /workspace/ComfyUI/models/vae/
+```
+
+### bf16
+
+```bash
+hf download wangkanai/flux-dev-fp16 vae/flux/flux-vae-bf16.safetensors \
+--local-dir /workspace/ComfyUI/models/vae
 ```
