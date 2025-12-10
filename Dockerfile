@@ -11,14 +11,19 @@ COPY --chmod=664 /documentation/README.md /README.md
 COPY --chmod=644 test/ /test
 COPY --chmod=644 docs/ /docs
 
-# clone documentation from Github and merge with docs
+# Clone documentation repo into /awesome-comfyui-docs
 RUN --mount=type=cache,target=/root/.cache/git \
-    git clone --depth=1 --filter=blob:none https://github.com/jalberty2018/awesome-comfyui-docs.git
-COPY --chmod=644 /awesome-comfyui-docs/ComfyUI_image_configuration.md /docs/ComfyUI_image_configuration.md
-COPY --chmod=644 /awesome-comfyui-docs/ComfyUI_image_custom_nodes.md /docs/ComfyUI_image_custom_nodes.md
-COPY --chmod=644 /awesome-comfyui-docs/ComfyUI_image_hardware.md /docs/ComfyUI_image_hardware.md
-COPY --chmod=644 /awesome-comfyui-docs/ComfyUI_image_image_setup.md /docs/ComfyUI_image_image_setup.md
-COPY --chmod=644 /awesome-comfyui-docs/ComfyUI_image_resources.md /docs/ComfyUI_image_resources.md
+    git clone --depth=1 --filter=blob:none https://github.com/jalberty2018/awesome-comfyui-docs.git /awesome-comfyui-docs
+
+# Copy docs *inside* the image
+RUN mkdir -p /docs && \
+    cp /awesome-comfyui-docs/ComfyUI_image_configuration.md /docs/ComfyUI_image_configuration.md && \
+    cp /awesome-comfyui-docs/ComfyUI_image_custom_nodes.md /docs/ComfyUI_image_custom_nodes.md && \
+    cp /awesome-comfyui-docs/ComfyUI_image_hardware.md /docs/ComfyUI_image_hardware.md && \
+    cp /awesome-comfyui-docs/ComfyUI_image_image_setup.md /docs/ComfyUI_image_image_setup.md && \
+    cp /awesome-comfyui-docs/ComfyUI_image_resources.md /docs/ComfyUI_image_resources.md
+
+# Cleanup
 RUN rm -rf /awesome-comfyui-docs
 
 # Copy ComfyUI configurations
