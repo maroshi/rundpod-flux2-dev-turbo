@@ -5,27 +5,6 @@ FROM ls250824/comfyui-runtime:10122025
 # Set Working Directory
 WORKDIR /
 
-# Copy Scripts and documentation
-COPY --chmod=755 start.sh onworkspace/comfyui-on-workspace.sh onworkspace/readme-on-workspace.sh onworkspace/test-on-workspace.sh onworkspace/docs-on-workspace.sh / 
-COPY --chmod=664 /documentation/README.md /README.md
-COPY --chmod=644 test/ /test
-COPY --chmod=644 docs/ /docs
-
-# Clone documentation repo into /awesome-comfyui-docs
-RUN --mount=type=cache,target=/root/.cache/git \
-    git clone --depth=1 --filter=blob:none https://github.com/jalberty2018/awesome-comfyui-docs.git /awesome-comfyui-docs
-
-# Copy docs *inside* the image
-RUN mkdir -p /docs && \
-    cp /awesome-comfyui-docs/ComfyUI_image_configuration.md /docs/ComfyUI_image_configuration.md && \
-    cp /awesome-comfyui-docs/ComfyUI_image_custom_nodes.md /docs/ComfyUI_image_custom_nodes.md && \
-    cp /awesome-comfyui-docs/ComfyUI_image_hardware.md /docs/ComfyUI_image_hardware.md && \
-    cp /awesome-comfyui-docs/ComfyUI_image_image_setup.md /docs/ComfyUI_image_image_setup.md && \
-    cp /awesome-comfyui-docs/ComfyUI_image_resources.md /docs/ComfyUI_image_resources.md
-
-# Cleanup
-RUN rm -rf /awesome-comfyui-docs
-
 # Copy ComfyUI configurations
 COPY --chmod=644 configuration/comfy.settings.json /ComfyUI/user/default/comfy.settings.json
 
@@ -107,10 +86,35 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     -r ComfyUI-Detail-Daemon/requirements.txt \
     -r ComfyUI-SeedVR2_VideoUpscaler/requirements.txt \
 	-r ComfyUI-JoyCaption/requirements.txt \
-	-r ComfyUI-JoyCaption/requirements_gguf.txt
+	-r ComfyUI-JoyCaption/requirements_gguf.txt \
+	-r ComfyUI-outputlists-combiner/requirements.txt
 
 WORKDIR /ComfyUI/custom_nodes/ComfyUI-SAM3
 RUN python install.py
+
+# Set Working Directory
+WORKDIR /
+
+# Copy Scripts and documentation
+COPY --chmod=755 start.sh onworkspace/comfyui-on-workspace.sh onworkspace/readme-on-workspace.sh onworkspace/test-on-workspace.sh onworkspace/docs-on-workspace.sh / 
+COPY --chmod=664 /documentation/README.md /README.md
+COPY --chmod=644 test/ /test
+COPY --chmod=644 docs/ /docs
+
+# Clone documentation repo from awesome-comfyui-docs
+RUN --mount=type=cache,target=/root/.cache/git \
+    git clone --depth=1 --filter=blob:none https://github.com/jalberty2018/awesome-comfyui-docs.git /awesome-comfyui-docs
+
+# Copy docs *inside* the image
+RUN mkdir -p /docs && \
+    cp /awesome-comfyui-docs/ComfyUI_image_configuration.md /docs/ComfyUI_image_configuration.md && \
+    cp /awesome-comfyui-docs/ComfyUI_image_custom_nodes.md /docs/ComfyUI_image_custom_nodes.md && \
+    cp /awesome-comfyui-docs/ComfyUI_image_hardware.md /docs/ComfyUI_image_hardware.md && \
+    cp /awesome-comfyui-docs/ComfyUI_image_image_setup.md /docs/ComfyUI_image_image_setup.md && \
+    cp /awesome-comfyui-docs/ComfyUI_image_resources.md /docs/ComfyUI_image_resources.md
+
+# Cleanup
+RUN rm -rf /awesome-comfyui-docs
 
 # Set Workspace
 WORKDIR /workspace
