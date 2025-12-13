@@ -41,7 +41,7 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 ### Workflows
 
 - Open from ComfyUI's interface on the left
-- View/Download from [Workflow examples](https://awesome-comfyui.rozenlaan.site/ComfyUI_workflows/)
+- View/Download from [Workflow examples](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_workflows/)
 
 ## 🐳 Docker Images
 

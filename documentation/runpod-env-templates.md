@@ -40,14 +40,15 @@ WORKFLOW1=https://awesome-comfyui.rozenlaan.site/pod/image/FLUX2-ti2i-pod.json
 ```bash
 HF_MODEL_DIFFUSION_MODELS1=Comfy-Org/z_image_turbo
 HF_MODEL_DIFFUSION_MODELS_FILENAME1=split_files/diffusion_models/z_image_turbo_bf16.safetensors
-HF_MODEL_VAE1=Comfy-Org/z_image_turbo
-HF_MODEL_VAE_FILENAME1=split_files/vae/ae.safetensors
+HF_MODEL_VAE1=wangkanai/flux-dev-fp16
+HF_MODEL_VAE_FILENAME1=vae/flux/flux-vae-bf16.safetensors
 HF_MODEL_TEXT_ENCODERS1=Comfy-Org/z_image_turbo
 HF_MODEL_TEXT_ENCODERS_FILENAME1=split_files/text_encoders/qwen_3_4b.safetensors
 HF_MODEL_UPSCALER1=LS110824/upscale
 HF_MODEL_UPSCALER_PTH1=4x_foolhardy_Remacri.pth
 WORKFLOW1=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-pod.json
 WORKFLOW2=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-adv-pod.json
+WORKFLOW3=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-clownshark-pod.json
 ```
 
 ### Private
@@ -64,6 +65,10 @@ HF_MODEL_TEXT_ENCODERS1=Comfy-Org/z_image_turbo
 HF_MODEL_TEXT_ENCODERS_FILENAME1=split_files/text_encoders/qwen_3_4b.safetensors
 WORKFLOW1=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-pod.json
 WORKFLOW2=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-adv-pod.json
+WORKFLOW3=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-clownshark-pod.json
+CIVITAI_MODEL_LORA_URL1=https://civitai.com/api/download/models/2489956?type=Model&format=SafeTensor
+CIVITAI_MODEL_LORA_URL2=https://civitai.com/api/download/models/2490815?type=Model&format=SafeTensor
+CIVITAI_MODEL_LORA_URL3=https://civitai.com/api/download/models/2491551?type=Model&format=SafeTensor
 ```
 
 ## Flux.1 dev Kontext

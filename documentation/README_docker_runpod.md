@@ -44,7 +44,7 @@
 ### Workflows
 
 - Open ComfyUI's interface on the left and select template.
-- Download from [examples](https://awesome-comfyui.rozenlaan.site/ComfyUI_workflows/)
+- Download from [examples](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_workflows/)
 
 ### Image specific tutorial
 

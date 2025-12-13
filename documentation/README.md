@@ -3,7 +3,9 @@
 ## Workflows
 
 - Open from ComfyUI's interface on the left
-- Download from [workflow examples](https://awesome-comfyui.rozenlaan.site/ComfyUI_workflows)
+- Download from [workflow examples](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_workflows/)
+
+
 
 ## Pre-Installed Custom Nodes
 
