@@ -69,6 +69,7 @@ WORKFLOW3=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-clownshark-po
 CIVITAI_MODEL_LORA_URL1=https://civitai.com/api/download/models/2489956?type=Model&format=SafeTensor
 CIVITAI_MODEL_LORA_URL2=https://civitai.com/api/download/models/2490815?type=Model&format=SafeTensor
 CIVITAI_MODEL_LORA_URL3=https://civitai.com/api/download/models/2491551?type=Model&format=SafeTensor
+CIVITAI_MODEL_LORA_URL4=https://civitai.com/api/download/models/2509564?type=Model&format=SafeTensor
 ```
 
 ## Flux.1 dev Kontext

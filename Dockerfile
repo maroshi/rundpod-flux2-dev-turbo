@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 # run-comfyui-image
-FROM ls250824/comfyui-runtime:10122025
+FROM ls250824/comfyui-runtime:17122025
 
 # Set Working Directory
 WORKDIR /
@@ -47,7 +47,6 @@ RUN --mount=type=cache,target=/root/.cache/git \
 	git clone --depth=1 --filter=blob:none https://github.com/heyburns/image-chooser-classic.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/neonr-0/ComfyUI-PixelConstrainedScaler.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/vrgamegirl19/comfyui-vrgamedevgirl.git && \
-	git clone --depth=1 --filter=blob:none https://github.com/SaTaNoob/ComfyUI-Z-Image-Turbo-Resolutions.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/ChangeTheConstants/SeedVarianceEnhancer.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/erosDiffusion/ComfyUI-EulerDiscreteScheduler.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/HellerCommaA/ComfyUI-ZImageLatent.git && \
@@ -57,6 +56,9 @@ RUN --mount=type=cache,target=/root/.cache/git \
 	git clone --depth=1 --filter=blob:none https://github.com/geroldmeisinger/ComfyUI-outputlists-combiner.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/lrzjason/Comfyui-LatentUtils.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/RamonGuthrie/ComfyUI-RBG-SmartSeedVariance.git
+
+# triton-windows error
+RUN cd ComfyUI-RMBG && git fetch --unshallow && git checkout 9ecda2e689d72298b4dca39403a85d13e53ea659
 
 # Rewrite any top-level CPU ORT refs to GPU ORT
 RUN set -eux; \
@@ -123,7 +125,7 @@ WORKDIR /workspace
 EXPOSE 8188 9000
 
 # Labels
-LABEL org.opencontainers.image.title="ComfyUI 0.4.0 for image inference" \
+LABEL org.opencontainers.image.title="ComfyUI 0.5.0 for image inference" \
       org.opencontainers.image.description="ComfyUI  + flash-attn + sageattention + onnxruntime-gpu + torch_generic_nms + code-server + civitai downloader + huggingface_hub + custom_nodes" \
       org.opencontainers.image.source="https://hub.docker.com/r/ls250824/run-comfyui-image" \
       org.opencontainers.image.licenses="MIT"
@@ -141,6 +143,9 @@ print(f'{label}: {ver}'); \
 print('CUDA available:', torch.cuda.is_available()); \
 print('CUDA version:', torch.version.cuda); \
 print('Device:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU')"
+
+# ComfyUI
+RUN cat ComfyUI/comfyui_version.py
 
 # Start Server
 CMD [ "/start.sh" ]

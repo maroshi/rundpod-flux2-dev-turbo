@@ -199,7 +199,7 @@ download_model_CIVITAI() {
     mkdir -p "$target"
 
     echo "ℹ️ [DOWNLOAD] Fetching ${!url_var} → $target ..."
-    civitai "${!url_var}" "$target" || \
+    civitai --quit "${!url_var}" "$target" || \
         echo "⚠️ Failed to download ${!url_var}"
     sleep 1
     return 0
@@ -443,9 +443,9 @@ if [[ "$HAS_PROVISIONING" -eq 1 ]]; then
     fi
 	
     if [[ -n "$PASSWORD" ]]; then
-		echo "ℹ️ Code-Server login use $PASSWORD"
+		echo "ℹ️ Code-Server login use PASSWORD set as env"
 	else 
-		echo "ℹ️ Code-Server password not provided via env (PASSWORD) use generated."
+		echo "⚠️ Code-Server password not provided via env (PASSWORD) use generated."
 		cat /root/.config/code-server/config.yaml        
     fi	
 else

@@ -1,6 +1,7 @@
 # Manual provisioning Z-Image
 
 - [HF ComfyUI](https://huggingface.co/Comfy-Org/z_image_turbo/tree/main)
+- [Fun Control](https://huggingface.co/alibaba-pai/Z-Image-Turbo-Fun-Controlnet-Union-2.0)
 - [De-Turbo](https://huggingface.co/ostris/Z-Image-De-Turbo)
 - [Vae](https://huggingface.co/wangkanai/flux-dev-fp16)
 
@@ -42,4 +43,9 @@ hf download wangkanai/flux-dev-fp16 vae/flux/flux-vae-bf16.safetensors \
 --local-dir /workspace/ComfyUI/models/vae
 ```
 
+## Fun-Control Lora
 
+```bash
+hf download alibaba-pai/Z-Image-Turbo-Fun-Controlnet-Union-2.0 Z-Image-Turbo-Fun-Controlnet-Union-2.0.safetensors \
+--local-dir /workspace/ComfyUI/models/loras
+```

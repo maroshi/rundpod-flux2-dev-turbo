@@ -5,8 +5,6 @@
 - Open from ComfyUI's interface on the left
 - Download from [workflow examples](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_workflows/)
 
-
-
 ## Pre-Installed Custom Nodes
 
 - Open ComfyUI manager installed custom nodes.
