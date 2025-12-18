@@ -54,6 +54,7 @@ RUN --mount=type=cache,target=/root/.cache/git \
 	git clone --depth=1 --filter=blob:none https://github.com/BigStationW/ComfyUi-ConditioningNoiseInjection.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/BigStationW/ComfyUi-ConditioningTimestepSwitch.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/lrzjason/Comfyui-LatentUtils.git && \
+	git clone --depth=1 --filter=blob:none https://github.com/geroldmeisinger/ComfyUI-outputlists-combiner.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/RamonGuthrie/ComfyUI-RBG-SmartSeedVariance.git
 
 # triton-windows error
@@ -87,7 +88,8 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     -r ComfyUI-Detail-Daemon/requirements.txt \
     -r ComfyUI-SeedVR2_VideoUpscaler/requirements.txt \
 	-r ComfyUI-JoyCaption/requirements.txt \
-	-r ComfyUI-JoyCaption/requirements_gguf.txt
+	-r ComfyUI-JoyCaption/requirements_gguf.txt \
+	-r ComfyUI-outputlists-combiner/requirements.txt
 
 WORKDIR /ComfyUI/custom_nodes/ComfyUI-SAM3
 RUN python install.py
