@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 # run-comfyui-image
-FROM ls250824/comfyui-runtime:17122025
+FROM ls250824/comfyui-runtime:18122025
 
 # Set Working Directory
 WORKDIR /
@@ -53,7 +53,6 @@ RUN --mount=type=cache,target=/root/.cache/git \
 	git clone --depth=1 --filter=blob:none https://github.com/numz/ComfyUI-SeedVR2_VideoUpscaler.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/BigStationW/ComfyUi-ConditioningNoiseInjection.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/BigStationW/ComfyUi-ConditioningTimestepSwitch.git && \
-	git clone --depth=1 --filter=blob:none https://github.com/geroldmeisinger/ComfyUI-outputlists-combiner.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/lrzjason/Comfyui-LatentUtils.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/RamonGuthrie/ComfyUI-RBG-SmartSeedVariance.git
 
@@ -88,8 +87,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     -r ComfyUI-Detail-Daemon/requirements.txt \
     -r ComfyUI-SeedVR2_VideoUpscaler/requirements.txt \
 	-r ComfyUI-JoyCaption/requirements.txt \
-	-r ComfyUI-JoyCaption/requirements_gguf.txt \
-	-r ComfyUI-outputlists-combiner/requirements.txt
+	-r ComfyUI-JoyCaption/requirements_gguf.txt
 
 WORKDIR /ComfyUI/custom_nodes/ComfyUI-SAM3
 RUN python install.py
@@ -125,7 +123,7 @@ WORKDIR /workspace
 EXPOSE 8188 9000
 
 # Labels
-LABEL org.opencontainers.image.title="ComfyUI 0.5.0 for image inference" \
+LABEL org.opencontainers.image.title="ComfyUI 0.5.1 for image inference" \
       org.opencontainers.image.description="ComfyUI  + flash-attn + sageattention + onnxruntime-gpu + torch_generic_nms + code-server + civitai downloader + huggingface_hub + custom_nodes" \
       org.opencontainers.image.source="https://hub.docker.com/r/ls250824/run-comfyui-image" \
       org.opencontainers.image.licenses="MIT"

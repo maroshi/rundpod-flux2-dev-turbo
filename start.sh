@@ -455,7 +455,7 @@ if [[ "$HAS_PROVISIONING" -eq 1 ]]; then
 	      url="https://${RUNPOD_POD_ID}-${port}.proxy.runpod.net/"
 	      local_url="http://127.0.0.1:${port}/"
 	
-	      echo "🔗 Service ${service} : ${url}"
+	      echo "👉 🔗 Service ${service} : ${url}"
 	
 	      # Check service locally (no proxy dependency)
 	      http_code="$(curl -sS -o /dev/null -m 2 --connect-timeout 1 -w "%{http_code}" "$local_url" || true)"
