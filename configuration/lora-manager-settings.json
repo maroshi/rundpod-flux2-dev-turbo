@@ -2,12 +2,8 @@
   "use_portable_settings": false,
   "civitai_api_key": "your_civitai_api_key_here",
   "folder_paths": {
-    "loras": [
-      "/workspace/ComfyUI/models/loras"
-    ],
-    "checkpoints": [
-      "/workspace/ComfyUI/models/checkpoints"
-    ],
+    "loras": [],
+    "checkpoints": [],
     "embeddings": []
   },
   "auto_organize_exclusions": []

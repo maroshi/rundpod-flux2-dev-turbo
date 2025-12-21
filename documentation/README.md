@@ -18,6 +18,7 @@
 - [Environment variables](docs/ComfyUI_image_configuration.md)
 - [Hardware Requirements](docs/ComfyUI_image_hardware.md)
 - [Tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial)
+- [Update](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_update)
 
 #### **Huggingface**  
 
@@ -31,7 +32,9 @@ hf upload model /workspace/model.safetensors
 hf auth login --token xxxxx
 ```
 
-#### **CivitAI**  
+#### **CivitAI** 
+
+- Use terminal or ComfyUI-Lora-Manager web interface
 
 ```bash
 export CIVITAI_TOKEN="xxxxx"

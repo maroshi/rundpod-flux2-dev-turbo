@@ -112,7 +112,7 @@ if [[ "$HAS_CUDA" -eq 1 ]]; then
 	mkdir -p "$SETTINGS_DIR"
 	
 	if [[ -n "${CIVITAI_TOKEN:-}" ]]; then
-	    echo "ℹ️ ℹ️ Injecting CIVITAI_TOKEN into ComfyUI-Lora-Manager"
+	    echo "ℹ️ Injecting CIVITAI_TOKEN into ComfyUI-Lora-Manager"
 	
 	    jq --arg token "$CIVITAI_TOKEN" \
 	       '.civitai_api_key = $token' \

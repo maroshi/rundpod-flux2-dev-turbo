@@ -99,12 +99,13 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 	-r ComfyUI-outputlists-combiner/requirements.txt \
 	-r ComfyUI-Lora-Manager/requirements.txt
 
+# Activate SAM3
 WORKDIR /ComfyUI/custom_nodes/ComfyUI-SAM3
 RUN python install.py
 
 # Add settings for lora manager 
 WORKDIR /ComfyUI/custom_nodes/ComfyUI-Lora-Manager
-COPY --chmod=644 /configuration/settings.json.template settings.json.template
+COPY --chmod=644 /configuration/lora-manager-settings.json settings.json.template
 
 # Set Working Directory
 WORKDIR /

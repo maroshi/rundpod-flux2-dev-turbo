@@ -23,6 +23,10 @@
 
 - [radiance](provisioning/hf_chroma1_radiance.md)
 
+## Ovis image
+
+- [Ovis](provisioning/hf_ovis.md)
+
 ## Others
 
 - [Segmentation](provisioning/hf_segmentation.md)
