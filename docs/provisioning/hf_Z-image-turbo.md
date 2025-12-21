@@ -43,9 +43,9 @@ hf download wangkanai/flux-dev-fp16 vae/flux/flux-vae-bf16.safetensors \
 --local-dir /workspace/ComfyUI/models/vae
 ```
 
-## Fun-Control Lora
+## Fun-Control patch
 
 ```bash
 hf download alibaba-pai/Z-Image-Turbo-Fun-Controlnet-Union-2.0 Z-Image-Turbo-Fun-Controlnet-Union-2.0.safetensors \
---local-dir /workspace/ComfyUI/models/loras
+--local-dir /workspace/ComfyUI/models/model_patches
 ```

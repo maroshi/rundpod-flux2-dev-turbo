@@ -104,9 +104,28 @@ fi
 HAS_COMFYUI=0
 
 if [[ "$HAS_CUDA" -eq 1 ]]; then  	
-    echo "✅ ComfyUI service starting (CUDA available)"
+	SETTINGS_DIR="/workspace/ComfyUI/custom_nodes/comfyui-lora-manager"
+	SETTINGS_FILE="$SETTINGS_DIR/settings.json"
+	
+	mkdir -p "$SETTINGS_DIR"
+	
+	# Inject CIVITAI_TOKEN if present
+	if [[ -n "${CIVITAI_TOKEN:-}" ]]; then
+	    echo "ℹ️ Injecting CIVITAI_TOKEN into ComfyUI-Lora-Manager"
+	
+	    tmpfile="$(mktemp)"
+	    jq --arg token "$CIVITAI_TOKEN" \
+	       '.civitai_api_key = $token' \
+	       "$SETTINGS_FILE" > "$tmpfile"
+	
+	    mv "$tmpfile" "$SETTINGS_FILE"
+	else
+	    echo "⚠️ CIVITAI_TOKEN not set – Insert your token manually in ComfyUI-Lora-Manager"
+	fi
+		
+	echo "✅ ComfyUI service starting (CUDA available)"
 	    
-    python3 /workspace/ComfyUI/main.py ${COMFYUI_EXTRA_ARGUMENTS:---listen --preview-method auto} &
+    python3 /workspace/ComfyUI/main.py ${COMFYUI_EXTRA_ARGUMENTS:---listen --enable-manager --preview-method auto} &
 
     # Wait until ComfyUI is ready
     MAX_TRIES=40
@@ -467,6 +486,8 @@ if [[ "$HAS_PROVISIONING" -eq 1 ]]; then
 	        echo "❌ ${service} not responding yet (local ${local_url}, HTTP ${http_code})"
 	      fi
 	    done
+		
+		echo "👉 🔗 Lora-Manager: https://${RUNPOD_POD_ID}-8188.proxy.runpod.net/loras"
 	  fi
 	fi
 	

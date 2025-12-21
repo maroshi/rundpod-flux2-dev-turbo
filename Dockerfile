@@ -8,11 +8,21 @@ WORKDIR /
 # Copy ComfyUI configurations
 COPY --chmod=644 configuration/comfy.settings.json /ComfyUI/user/default/comfy.settings.json
 
+# Copy ComfyUI ini settings
+COPY --chmod=644 configuration/config.ini /ComfyUI/user/__manager/config.ini
+
+# Adding requirements internal comfyui-manager
+WORKDIR /ComfyUI
+
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python -m pip install --no-cache-dir --root-user-action ignore -c /constraints.txt \
+    matrix-nio \
+    -r manager_requirements.txt
+
 # Clone
 WORKDIR /ComfyUI/custom_nodes
 
 RUN --mount=type=cache,target=/root/.cache/git \
-    git clone --depth=1 --filter=blob:none https://github.com/ltdrdata/ComfyUI-Manager.git && \
     git clone --depth=1 --filter=blob:none https://github.com/rgthree/rgthree-comfy.git && \
     git clone --depth=1 --filter=blob:none https://github.com/liusida/ComfyUI-Login.git && \
     git clone --depth=1 --filter=blob:none https://github.com/kijai/ComfyUI-KJNodes.git && \
@@ -55,7 +65,8 @@ RUN --mount=type=cache,target=/root/.cache/git \
 	git clone --depth=1 --filter=blob:none https://github.com/BigStationW/ComfyUi-ConditioningTimestepSwitch.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/lrzjason/Comfyui-LatentUtils.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/geroldmeisinger/ComfyUI-outputlists-combiner.git && \
-	git clone --depth=1 --filter=blob:none https://github.com/RamonGuthrie/ComfyUI-RBG-SmartSeedVariance.git
+	git clone --depth=1 --filter=blob:none https://github.com/RamonGuthrie/ComfyUI-RBG-SmartSeedVariance.git && \
+	git clone --depth=1 --filter=blob:none https://github.com/willmiao/ComfyUI-Lora-Manager.git
 
 # triton-windows error
 RUN cd ComfyUI-RMBG && git fetch --unshallow && git checkout 9ecda2e689d72298b4dca39403a85d13e53ea659
@@ -74,7 +85,6 @@ WORKDIR /ComfyUI/custom_nodes
 RUN --mount=type=cache,target=/root/.cache/pip \
   python -m pip install --no-cache-dir --root-user-action ignore -c /constraints.txt \
     diffusers psutil \
-	-r ComfyUI-Manager/requirements.txt \
     -r ComfyUI-Login/requirements.txt \
     -r ComfyUI-KJNodes/requirements.txt \
     -r RES4LYF/requirements.txt \
@@ -89,10 +99,15 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     -r ComfyUI-SeedVR2_VideoUpscaler/requirements.txt \
 	-r ComfyUI-JoyCaption/requirements.txt \
 	-r ComfyUI-JoyCaption/requirements_gguf.txt \
-	-r ComfyUI-outputlists-combiner/requirements.txt
+	-r ComfyUI-outputlists-combiner/requirements.txt \
+	-r ComfyUI-Lora-Manager/requirements.txt
 
 WORKDIR /ComfyUI/custom_nodes/ComfyUI-SAM3
 RUN python install.py
+
+# Add settings for lora manager 
+WORKDIR /ComfyUI/custom_nodes/ComfyUI-Lora-Manager
+COPY --chmod=644 /configuration/lora-manager-settings.json ./settings.json
 
 # Set Working Directory
 WORKDIR /
@@ -126,7 +141,7 @@ EXPOSE 8188 9000
 
 # Labels
 LABEL org.opencontainers.image.title="ComfyUI 0.5.1 for image inference" \
-      org.opencontainers.image.description="ComfyUI  + flash-attn + sageattention + onnxruntime-gpu + torch_generic_nms + code-server + civitai downloader + huggingface_hub + custom_nodes" \
+      org.opencontainers.image.description="ComfyUI + internal manager  + flash-attn + sageattention + onnxruntime-gpu + torch_generic_nms + code-server + civitai downloader + huggingface_hub + custom_nodes" \
       org.opencontainers.image.source="https://hub.docker.com/r/ls250824/run-comfyui-image" \
       org.opencontainers.image.licenses="MIT"
 
