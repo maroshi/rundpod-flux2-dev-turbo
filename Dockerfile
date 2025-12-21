@@ -2,18 +2,15 @@
 # run-comfyui-image
 FROM ls250824/comfyui-runtime:18122025
 
-# Set Working Directory
-WORKDIR /
-
-# Copy ComfyUI configurations
-COPY --chmod=644 configuration/comfy.settings.json /ComfyUI/user/default/comfy.settings.json
-
-# Copy ComfyUI ini settings
-COPY --chmod=644 configuration/config.ini /ComfyUI/user/__manager/config.ini
-
-# Adding requirements internal comfyui-manager
 WORKDIR /ComfyUI
 
+# Copy ComfyUI configurations
+COPY --chmod=644 configuration/comfy.settings.json user/default/comfy.settings.json
+
+# Copy ComfyUI ini settings
+COPY --chmod=644 configuration/config.ini user/__manager/config.ini
+
+# Adding requirements internal comfyui-manager
 RUN --mount=type=cache,target=/root/.cache/pip \
     python -m pip install --no-cache-dir --root-user-action ignore -c /constraints.txt \
     matrix-nio \
@@ -107,7 +104,7 @@ RUN python install.py
 
 # Add settings for lora manager 
 WORKDIR /ComfyUI/custom_nodes/ComfyUI-Lora-Manager
-COPY --chmod=644 /configuration/lora-manager-settings.json ./settings.json
+COPY --chmod=644 /configuration/settings.json.template settings.json.template
 
 # Set Working Directory
 WORKDIR /

@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "ℹ️ Pod run-comfyui-image started"
-echo "ℹ️ Wait until the message 🎉 Provisioning done, ready to create AI content 🎉. is displayed"
+echo "ℹ️ Wait until the message 🎉 Provisioning done, ready to create AI content 🎉 is displayed"
 
 # Enable SSH if PUBLIC_KEY is set
 if [[ -n "$PUBLIC_KEY" ]]; then
@@ -66,7 +66,7 @@ fi
 
 # Start code-server (HTTP port 9000) 
 if [[ "$HAS_GPU" -eq 1 || "$HAS_GPU_RUNPOD" -eq 1 ]]; then    
-    echo "✅ Code-Server service starting"
+    echo "▶️ Code-Server service starting"
 	
     if [[ -n "$PASSWORD" ]]; then
         code-server /workspace --auth password --disable-update-check --disable-telemetry --host 0.0.0.0 --bind-addr 0.0.0.0:9000 &
@@ -103,27 +103,25 @@ fi
 # Start ComfyUI (HTTP port 8188)
 HAS_COMFYUI=0
 
-if [[ "$HAS_CUDA" -eq 1 ]]; then  	
+if [[ "$HAS_CUDA" -eq 1 ]]; then 
+	
 	SETTINGS_DIR="/workspace/ComfyUI/custom_nodes/ComfyUI-Lora-Manager"
 	SETTINGS_FILE="$SETTINGS_DIR/settings.json"
+	TEMPLATE_FILE="$SETTINGS_DIR/settings.json.template"
 	
 	mkdir -p "$SETTINGS_DIR"
 	
-	# Inject CIVITAI_TOKEN if present
 	if [[ -n "${CIVITAI_TOKEN:-}" ]]; then
-	    echo "ℹ️ Injecting CIVITAI_TOKEN into ComfyUI-Lora-Manager"
+	    echo "ℹ️ ℹ️ Injecting CIVITAI_TOKEN into ComfyUI-Lora-Manager"
 	
-	    tmpfile="$(mktemp)"
 	    jq --arg token "$CIVITAI_TOKEN" \
 	       '.civitai_api_key = $token' \
-	       "$SETTINGS_FILE" > "$tmpfile"
-	
-	    mv "$tmpfile" "$SETTINGS_FILE"
+	       "$TEMPLATE_FILE" > "$SETTINGS_FILE"
 	else
 	    echo "⚠️ CIVITAI_TOKEN not set – Insert your token manually in ComfyUI-Lora-Manager"
 	fi
-		
-	echo "✅ ComfyUI service starting (CUDA available)"
+	
+	echo "▶️ ComfyUI service starting (CUDA available)"
 	    
     python3 /workspace/ComfyUI/main.py ${COMFYUI_EXTRA_ARGUMENTS:---listen --enable-manager --preview-method auto} &
 

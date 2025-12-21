@@ -2,7 +2,7 @@
 
 ## Features
 
-- Automatic model and LoRA downloads via environment variables.
+- Automatic model and LoRA downloads via environment variables or lora manager.
 - Supports advanced workflows for **image generation** and **enhancement** using pre-installed custom nodes.
 - Compatible with high-performance NVIDIA GPUs (CUDA 12.8).
 - Compiled attentions and GPU accelerations.

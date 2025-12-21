@@ -8,9 +8,7 @@
     "checkpoints": [
       "/workspace/ComfyUI/models/checkpoints"
     ],
-    "embeddings": [
-      "/workspace/ComfyUI/models/checkpoints/embeddings"
-    ]
+    "embeddings": []
   },
   "auto_organize_exclusions": []
 }
