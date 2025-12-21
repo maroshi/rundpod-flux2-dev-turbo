@@ -35,7 +35,7 @@
 | Model | GPU | VRAM  | RAM |
 |-------|-------------------|-------|-------------------------|
 | Z-Image Turbo | RTX A5000  | 22Gb | 20Gb           |
-| Flux.2 Dev    | A40     | 44Gb | 50Gb           |
+| Flux.2 Dev    | RTX A6000  | 44Gb | 50Gb           |
 
 ## Image documentation
 

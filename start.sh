@@ -104,7 +104,7 @@ fi
 HAS_COMFYUI=0
 
 if [[ "$HAS_CUDA" -eq 1 ]]; then  	
-	SETTINGS_DIR="/workspace/ComfyUI/custom_nodes/comfyui-lora-manager"
+	SETTINGS_DIR="/workspace/ComfyUI/custom_nodes/ComfyUI-Lora-Manager"
 	SETTINGS_FILE="$SETTINGS_DIR/settings.json"
 	
 	mkdir -p "$SETTINGS_DIR"
