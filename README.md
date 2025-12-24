@@ -4,7 +4,7 @@
 
 A streamlined and automated environment for running **ComfyUI** with **image models**, optimized for use on RunPod
 
-## Running Z-Image Turbo on RTX A5000
+## Running Z-Image Turbo
 
 ![runpod](images/runpod_ZIT.jpg)
 
@@ -21,9 +21,9 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 
 ## 🧩 Template Deployment
 
-### Deployment.
+### Deployment
 
-- All available templates on runpod are tested on a RTX A5000/A40.
+- All available templates on runpod are tested on a RTX A4500/A40.
 
 ### Runpod templates
 
@@ -33,15 +33,8 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 ### Documenation
 
 - [Documentation](https://awesome-comfyui.rozenlaan.site/ComfyUI_image/)
-
-### Tutorial
-
-- [Specific for these templates](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial)
-
-### Workflows
-
-- Open from ComfyUI's interface on the left
-- View/Download from [Workflow examples](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_workflows/)
+- [Provisioning](docs/ComfyUI_image_provisioning.md)
+- [Setup](documentation/README_docker_runpod.md)
 
 ## 🐳 Docker Images
 
@@ -53,18 +46,7 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 
 ### Custom Image
 
-```bash
-docker pull ls250824/run-comfyui-wan:<version>
-```
-
-## 📚 Documentation
-
-- [💻 Hardware Requirements](docs/ComfyUI_image_hardware.md)
-- [🧩 Pre-Installed Custom Nodes](docs/ComfyUI_image_custom_nodes.md)
-- [📚 Resources](docs/ComfyUI_image_resources.md)
-- [📦 Model provisioning](docs/ComfyUI_image_provisioning.md)
-- [⚙️ Image setup](docs/ComfyUI_image_image_setup.md)
-- [⚙️ Environment variables](docs/ComfyUI_image_configuration.md)
+docker pull ls250824/run-comfyui-image:<[![Docker Image Version](https://img.shields.io/docker/v/ls250824/run-comfyui-image)](https://hub.docker.com/r/ls250824/run-comfyui-image)>
 
 ## 🛠️ Build & Push Docker Image (Optional)
 
