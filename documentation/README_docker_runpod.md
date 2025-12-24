@@ -22,7 +22,7 @@
 
 ### Deployment/Usage information
 
-- The templates on runpod.io are tested on a A40/RTX 5000.
+- The templates on runpod.io are tested on a RTX 6000,5000,4500.
 - Avoid using ID's without a region as they are not reliable.
 
 ### Runpod.io templates
@@ -30,12 +30,20 @@
 - 👉 [Runpod Z-Image Turbo](https://console.runpod.io/deploy?template=ia5t70hfak&ref=se4tkc5o)
 - 👉 [Runpod Flux.2 Dev](https://console.runpod.io/deploy?template=8nl523gts5&ref=se4tkc5o)
 
-### Hardware requirements
+### Hardware
 
-| Model | GPU | VRAM  | RAM |
-|-------|-------------------|-------|-------------------------|
-| Z-Image Turbo | RTX A5000  | 22Gb | 20Gb           |
-| Flux.2 Dev    | RTX A6000  | 44Gb | 50Gb           |
+| Model | GPU          | VRAM  | RAM |
+|-——|-——————|-——|-————————|
+| Z-Image Turbo | RTX A5000, A4500  | 22Gb | 50Gb           |
+| Flux.2 Dev    | RTX A6000     | 44Gb | 50Gb           |
+
+### Storage
+
+| Component        | Model | Minimum                  |
+|——————|-——|-——————|
+| Volume Storage   | ZIT   | 50Gb (`/workspace`)      |
+| Volume Storage   | Flux  | 90Gb (`/workspace`)      |
+| Pod Storage      |       | 15Gb                     |
 
 ## Image documentation
 
