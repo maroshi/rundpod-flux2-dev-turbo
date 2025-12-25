@@ -34,13 +34,13 @@
 
 | Model | GPU          | VRAM  | RAM |
 |-——|-——————|-——|-————————|
-| Z-Image Turbo | RTX A5000, A4500  | 22Gb | 50Gb           |
+| Z-Image Turbo | RTX A5000 A4500  | 22Gb | 50Gb           |
 | Flux.2 Dev    | RTX A6000     | 44Gb | 50Gb           |
 
 ### Storage
 
 | Component        | Model | Minimum                  |
-|——————|-——|-——————|
+|——————|------------——|-——————--------|
 | Volume Storage   | ZIT   | 50Gb (`/workspace`)      |
 | Volume Storage   | Flux  | 90Gb (`/workspace`)      |
 | Pod Storage      |       | 15Gb                     |
@@ -49,13 +49,15 @@
 
 - [Start](https://awesome-comfyui.rozenlaan.site/ComfyUI_image/)
 
+### Image specific tutorial
+
+- [Tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial/)
+
 ### Workflows
 
 - Open ComfyUI's interface on the left and select template.
 - Download from [examples](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_workflows/)
 
-### Image specific tutorial
 
-- [Tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial/)
 
 

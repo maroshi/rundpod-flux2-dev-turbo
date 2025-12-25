@@ -30,11 +30,11 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 - 👉 [Runpod Z-Image Turbo](https://console.runpod.io/deploy?template=ia5t70hfak&ref=se4tkc5o)
 - 👉 [Runpod Flux.2 Dev](https://console.runpod.io/deploy?template=8nl523gts5&ref=se4tkc5o)
 
-### Documenation
+### Documentation
 
-- [Documentation](https://awesome-comfyui.rozenlaan.site/ComfyUI_image/)
-- [Provisioning](docs/ComfyUI_image_provisioning.md)
-- [Setup](documentation/README_docker_runpod.md)
+- [Start](https://awesome-comfyui.rozenlaan.site/ComfyUI_image/)
+- [Tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial/)
+- [Provisioning examples](docs/ComfyUI_image_provisioning.md)
 
 ## 🐳 Docker Images
 
