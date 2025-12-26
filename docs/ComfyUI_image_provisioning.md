@@ -15,6 +15,10 @@
 
 - [Turbo](provisioning/hf_Z-image-turbo.md)
 
+## Qwen-Image-Edit
+
+- [2511](provisioning/hf_qwen-image-edit-2511.md)
+
 ## Hunyuan image
 
 - [2.1](provisioning/hf_hunyuan_image21.md)
