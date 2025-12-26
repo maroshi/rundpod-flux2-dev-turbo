@@ -118,6 +118,22 @@ HF_MODEL_VAE_FILENAME1=ae.safetensors
 
 ### 2511
 
+#### public
+
+```bash
+HF_MODEL_DIFFUSION_MODELS1=Comfy-Org/Qwen-Image-Edit_ComfyUI
+HF_MODEL_DIFFUSION_MODELS_FILENAME1=split_files/diffusion_models/qwen_image_edit_2511_bf16.safetensors
+HF_MODEL_VAE1=Comfy-Org/Qwen-Image_ComfyUI
+HF_MODEL_VAE_FILENAME1=split_files/vae/qwen_image_vae.safetensors
+HF_MODEL_TEXT_ENCODERS1=Comfy-Org/HunyuanVideo_1.5_repackaged
+HF_MODEL_TEXT_ENCODERS_FILENAME1=split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors
+HF_MODEL_UPSCALER1=LS110824/upscale
+HF_MODEL_UPSCALER_PTH1=4x_foolhardy_Remacri.pth
+HF_MODEL_LORA1=lightx2v/Qwen-Image-Edit-2511-Lightning
+HF_MODEL_LORA_FILENAME1=Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors
+WORKFLOW1=https://awesome-comfyui.rozenlaan.site/pod/image/QWEN-image-edit-pod.json
+```
+
 #### private
 
 ```bash
@@ -134,14 +150,22 @@ HF_MODEL_UPSCALER1=LS110824/upscale
 HF_MODEL_UPSCALER_PTH1=4x_foolhardy_Remacri.pth
 HF_MODEL_LORA1=lightx2v/Qwen-Image-Edit-2511-Lightning
 HF_MODEL_LORA_FILENAME1=Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors
-HF_MODEL_LORA2=Comfy-Org/Qwen-Image-Edit_ComfyUI
-HF_MODEL_LORA_FILENAME2=split_files/loras/Qwen-Image-Edit-2509-Anything2RealAlpha.safetensors
-HF_MODEL_LORA3=Comfy-Org/Qwen-Image-Edit_ComfyUI
-HF_MODEL_LORA_FILENAME3=split_files/loras/Qwen-Image-Edit-2509-Fusion.safetensors
-HF_MODEL_LORA4=Comfy-Org/Qwen-Image-Edit_ComfyUI
-HF_MODEL_LORA_FILENAME4=split_files/loras/Qwen-Image-Edit-2509-Relight.safetensors
-HF_MODEL_LORA5=Comfy-Org/Qwen-Image-Edit_ComfyUI
-HF_MODEL_LORA_FILENAME5=split_files/loras/Qwen-Image-Edit-2509-White_to_Scene.safetensors
-HF_MODEL_LORA6=Org/Qwen-Image-Edit_ComfyUI
-HF_MODEL_LORA_FILENAME6=split_files/loras/Qwen-Edit-2509-Multiple-angles.safetensors
+```
+
+## Qwen-image-layered
+
+### private
+
+```bash
+CIVITAI_TOKEN="{{ RUNPOD_SECRET_CivitAI_API_KEY }}"
+HF_TOKEN="{{ RUNPOD_SECRET_HF_TOKEN_WRITE }}"
+PASSWORD="{{ RUNPOD_SECRET_CODE-SERVER-NEW }}"
+HF_MODEL_DIFFUSION_MODELS1=Comfy-Org/Qwen-Image-Layered_ComfyUI
+HF_MODEL_DIFFUSION_MODELS_FILENAME1=split_files/diffusion_models/qwen_image_layered_bf16.safetensors
+HF_MODEL_VAE1=Comfy-Org/Qwen-Image-Layered_ComfyUI
+HF_MODEL_VAE_FILENAME1=split_files/vae/qwen_image_layered_vae.safetensors
+HF_MODEL_TEXT_ENCODERS1=Comfy-Org/HunyuanVideo_1.5_repackaged
+HF_MODEL_TEXT_ENCODERS_FILENAME1=split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors
+HF_MODEL_UPSCALER1=LS110824/upscale
+HF_MODEL_UPSCALER_PTH1=4x_foolhardy_Remacri.pth
 ```

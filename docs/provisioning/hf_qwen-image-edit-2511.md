@@ -35,8 +35,6 @@ hf download Comfy-Org/HunyuanVideo_1.5_repackaged split_files/text_encoders/qwen
 
 ## Vae
 
-### ComfyUI
-
 ```bash
 hf download Comfy-Org/Qwen-Image_ComfyUI split_files/vae/qwen_image_vae.safetensors \
 --local-dir /workspace/ComfyUI/models/vae/
@@ -60,7 +58,7 @@ hf download lightx2v/Qwen-Image-Edit-2511-Lightning Qwen-Image-Edit-2511-Lightni
 --local-dir /workspace/ComfyUI/models/loras/
 ```
 
-### qwen 2509
+### Lora's 2509
 
 ```bash
 hf download Comfy-Org/Qwen-Image-Edit_ComfyUI split_files/loras/Qwen-Image-Edit-2509-Anything2RealAlpha.safetensors \

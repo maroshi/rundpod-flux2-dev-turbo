@@ -25,32 +25,30 @@
 - The templates on runpod.io are tested on a RTX 6000,5000,4500.
 - Avoid using ID's without a region as they are not reliable.
 
-### Runpod.io templates
+### Runpod templates
 
 - 👉 [Runpod Z-Image Turbo](https://console.runpod.io/deploy?template=ia5t70hfak&ref=se4tkc5o)
 - 👉 [Runpod Flux.2 Dev](https://console.runpod.io/deploy?template=8nl523gts5&ref=se4tkc5o)
+- 👉 [Runpod Qwen image edit 2511](https://console.runpod.io/deploy?template=mxvvx0hcmp&ref=se4tkc5o)
 
-### Hardware
+### Hardware requirements
 
-| Model | GPU          | VRAM  | RAM |
-|-——|-——————|-——|-————————|
-| Z-Image Turbo | RTX A5000 A4500  | 22Gb | 50Gb           |
-| Flux.2 Dev    | RTX A6000     | 44Gb | 50Gb           |
+| Model           | Tested GPU          | Min VRAM | Min RAM |
+|-----------------|---------------------|----------|---------|
+| Z-Image Turbo   | RTX A5000, A4500    | 22 GB    | 50 GB   |
+| Flux.2 Dev      | RTX A6000           | 44 GB    | 50 GB   |
+| Qwen            | RTX A6000           | 44 GB    | 65 GB   |
 
-### Storage
-
-| Component        | Model | Minimum                  |
-|——————|------------——|-——————--------|
-| Volume Storage   | ZIT   | 50Gb (`/workspace`)      |
-| Volume Storage   | Flux  | 90Gb (`/workspace`)      |
-| Pod Storage      |       | 15Gb                     |
+| Component       | Model | Minimum                    |
+|-----------------|-------|----------------------------|
+| Volume Storage  | ZIT   | 50 GB (`/workspace`)       |
+| Volume Storage  | Flux  | 90 GB (`/workspace`)       |
+| Volume Storage  | Qwen  | 70 GB (`/workspace`)       |
+| Pod Storage     | —     | 15 GB                      |
 
 ## Image documentation
 
 - [Start](https://awesome-comfyui.rozenlaan.site/ComfyUI_image/)
-
-### Image specific tutorial
-
 - [Tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial/)
 
 ### Workflows
