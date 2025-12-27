@@ -65,7 +65,8 @@ RUN --mount=type=cache,target=/root/.cache/git \
 	git clone --depth=1 --filter=blob:none https://github.com/RamonGuthrie/ComfyUI-RBG-SmartSeedVariance.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/willmiao/ComfyUI-Lora-Manager.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/rethink-studios/comfyui-model-linker-desktop.git && \
-	git clone --depth=1 --filter=blob:none https://github.com/lrzjason/Comfyui-QwenEditUtils.git
+	git clone --depth=1 --filter=blob:none https://github.com/lrzjason/Comfyui-QwenEditUtils.git && \
+	git clone --depth=1 --filter=blob:none https://github.com/LAOGOU-666/ComfyUI-LG_SamplingUtils.git
 
 # Outputlists-combiner working version
 # RUN cd ComfyUI-outputlists-combiner && git fetch --unshallow && git checkout be17d247db29d555df4bc1c776b2b9289f7f42ba
@@ -143,7 +144,7 @@ WORKDIR /workspace
 EXPOSE 8188 9000
 
 # Labels
-LABEL org.opencontainers.image.title="ComfyUI 0.6.0c for image inference" \
+LABEL org.opencontainers.image.title="ComfyUI 0.6.0d for image inference" \
       org.opencontainers.image.description="ComfyUI + internal manager  + flash-attn + sageattention + onnxruntime-gpu + torch_generic_nms + code-server + civitai downloader + huggingface_hub + custom_nodes" \
       org.opencontainers.image.source="https://hub.docker.com/r/ls250824/run-comfyui-image" \
       org.opencontainers.image.licenses="MIT"

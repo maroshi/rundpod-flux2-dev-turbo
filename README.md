@@ -23,7 +23,7 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 
 ### Deployment
 
-- All available templates on runpod are tested on a RTX A4500/A40.
+- All available templates on runpod are tested on a RTX 6000,5000,4500.
 
 ### Runpod templates
 
@@ -33,9 +33,9 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 
 ### Documentation
 
-- [Start](https://awesome-comfyui.rozenlaan.site/ComfyUI_image/)
-- [Tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial/)
-- [Provisioning examples](docs/ComfyUI_image_provisioning.md)
+- [⚙️ Start](https://awesome-comfyui.rozenlaan.site/ComfyUI_image/)
+- [📚 Tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial/)
+- [⚙️ Provisioning examples](docs/ComfyUI_image_provisioning.md)
 
 ## 🐳 Docker Images
 
