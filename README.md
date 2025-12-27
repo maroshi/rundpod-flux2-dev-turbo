@@ -8,6 +8,9 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 
 ![runpod](images/runpod_ZIT.jpg)
 
+
+![Image](images/image_ZIT.jpg)
+
 ## 🔧 Features
 
 - Automatic model and LoRA downloads via environment variables.
