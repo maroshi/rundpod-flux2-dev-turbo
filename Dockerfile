@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 # run-comfyui-image
-FROM ls250824/comfyui-runtime:24122025
+FROM ls250824/comfyui-runtime:31122025
 
 WORKDIR /ComfyUI
 
@@ -40,7 +40,6 @@ RUN --mount=type=cache,target=/root/.cache/git \
 	git clone --depth=1 --filter=blob:none https://github.com/city96/ComfyUI-GGUF.git && \
     git clone --depth=1 --filter=blob:none https://github.com/Azornes/Comfyui-Resolution-Master.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/ssitu/ComfyUI_UltimateSDUpscale --recursive && \
-	git clone --depth=1 --filter=blob:none https://github.com/WASasquatch/was_affine.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/kijai/ComfyUI-segment-anything-2.git && \
     git clone --depth=1 --filter=blob:none https://github.com/1038lab/ComfyUI-RMBG.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/Fannovel16/comfyui_controlnet_aux.git && \
@@ -56,7 +55,6 @@ RUN --mount=type=cache,target=/root/.cache/git \
 	git clone --depth=1 --filter=blob:none https://github.com/vrgamegirl19/comfyui-vrgamedevgirl.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/ChangeTheConstants/SeedVarianceEnhancer.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/erosDiffusion/ComfyUI-EulerDiscreteScheduler.git && \
-	git clone --depth=1 --filter=blob:none https://github.com/HellerCommaA/ComfyUI-ZImageLatent.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/numz/ComfyUI-SeedVR2_VideoUpscaler.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/BigStationW/ComfyUi-ConditioningNoiseInjection.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/BigStationW/ComfyUi-ConditioningTimestepSwitch.git && \
@@ -66,7 +64,9 @@ RUN --mount=type=cache,target=/root/.cache/git \
 	git clone --depth=1 --filter=blob:none https://github.com/willmiao/ComfyUI-Lora-Manager.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/rethink-studios/comfyui-model-linker-desktop.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/lrzjason/Comfyui-QwenEditUtils.git && \
-	git clone --depth=1 --filter=blob:none https://github.com/LAOGOU-666/ComfyUI-LG_SamplingUtils.git
+	git clone --depth=1 --filter=blob:none https://github.com/LAOGOU-666/ComfyUI-LG_SamplingUtils.git && \
+	git clone --depth=1 --filter=blob:none https://github.com/scraed/LanPaint.git && \
+	git clone --depth=1 --filter=blob:none https://github.com/BigStationW/ComfyUi-TextEncodeQwenImageEditAdvanced.git
 
 # Outputlists-combiner working version
 # RUN cd ComfyUI-outputlists-combiner && git fetch --unshallow && git checkout be17d247db29d555df4bc1c776b2b9289f7f42ba
@@ -144,7 +144,7 @@ WORKDIR /workspace
 EXPOSE 8188 9000
 
 # Labels
-LABEL org.opencontainers.image.title="ComfyUI 0.6.0d for image inference" \
+LABEL org.opencontainers.image.title="ComfyUI 0.7.0 for image inference" \
       org.opencontainers.image.description="ComfyUI + internal manager  + flash-attn + sageattention + onnxruntime-gpu + torch_generic_nms + code-server + civitai downloader + huggingface_hub + custom_nodes" \
       org.opencontainers.image.source="https://hub.docker.com/r/ls250824/run-comfyui-image" \
       org.opencontainers.image.licenses="MIT"
