@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 # run-comfyui-image
-FROM ls250824/comfyui-runtime:31122025
+FROM ls250824/comfyui-runtime:07012026
 
 WORKDIR /ComfyUI
 
@@ -66,7 +66,8 @@ RUN --mount=type=cache,target=/root/.cache/git \
 	git clone --depth=1 --filter=blob:none https://github.com/lrzjason/Comfyui-QwenEditUtils.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/LAOGOU-666/ComfyUI-LG_SamplingUtils.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/scraed/LanPaint.git && \
-	git clone --depth=1 --filter=blob:none https://github.com/BigStationW/ComfyUi-TextEncodeQwenImageEditAdvanced.git
+	git clone --depth=1 --filter=blob:none https://github.com/BigStationW/ComfyUi-TextEncodeQwenImageEditAdvanced.git && \
+	git clone --depth=1 --filter=blob:none https://github.com/princepainter/ComfyUI-PainterQwenImageEdit.git
 
 # Outputlists-combiner working version
 # RUN cd ComfyUI-outputlists-combiner && git fetch --unshallow && git checkout be17d247db29d555df4bc1c776b2b9289f7f42ba
@@ -117,7 +118,7 @@ COPY --chmod=644 /configuration/lora-manager-settings.json settings.json.templat
 WORKDIR /
 
 # Copy Scripts and documentation
-COPY --chmod=755 start.sh onworkspace/comfyui-on-workspace.sh onworkspace/readme-on-workspace.sh onworkspace/test-on-workspace.sh onworkspace/docs-on-workspace.sh / 
+COPY --chmod=755 start.sh onworkspace/comfyui-on-workspace.sh onworkspace/files-on-workspace.sh onworkspace/test-on-workspace.sh onworkspace/docs-on-workspace.sh / 
 COPY --chmod=664 /documentation/README.md /README.md
 COPY --chmod=644 test/ /test
 COPY --chmod=644 docs/ /docs

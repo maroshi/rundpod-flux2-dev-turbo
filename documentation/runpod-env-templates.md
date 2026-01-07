@@ -53,6 +53,7 @@ WORKFLOW2=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-dpmpp-pod.jso
 WORKFLOW3=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-er_sde-pod.json
 WORKFLOW4=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-clownshark-beta-pod.json
 WORKFLOW5=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-clownshark-flowmatch-pod.json
+WORKFLOW6=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-euler-dpmpp-pod.json
 ```
 
 ### Private
@@ -74,11 +75,13 @@ WORKFLOW2=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-dpmpp-pod.jso
 WORKFLOW3=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-er_sde-pod.json
 WORKFLOW4=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-clownshark-beta-pod.json
 WORKFLOW5=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-clownshark-flowmatch-pod.json
+WORKFLOW6=https://awesome-comfyui.rozenlaan.site/pod/image/ZIT-t2i-euler-dpmpp-pod.json
 CIVITAI_MODEL_LORA_URL1=https://civitai.com/api/download/models/2489956?type=Model&format=SafeTensor
 CIVITAI_MODEL_LORA_URL2=https://civitai.com/api/download/models/2506996?type=Model&format=SafeTensor
 CIVITAI_MODEL_LORA_URL3=https://civitai.com/api/download/models/2491551?type=Model&format=SafeTensor
 CIVITAI_MODEL_LORA_URL4=https://civitai.com/api/download/models/2509564?type=Model&format=SafeTensor
 CIVITAI_MODEL_LORA_URL5=https://civitai.com/api/download/models/2546755?type=Model&format=SafeTensor
+CIVITAI_MODEL_LORA_URL6=https://civitai.com/api/download/models/2549555?type=Model&format=SafeTensor
 ```
 
 ## Flux.1 dev Kontext

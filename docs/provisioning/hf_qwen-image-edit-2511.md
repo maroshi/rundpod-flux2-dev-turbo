@@ -14,8 +14,10 @@ hf download Comfy-Org/Qwen-Image-Edit_ComfyUI split_files/diffusion_models/qwen_
 
 ### fp8
 
+```bash
 hf download Comfy-Org/Qwen-Image-Edit_ComfyUI split_files/diffusion_models/qwen_image_edit_2511_fp8mixed.safetensors \
 --local-dir /workspace/ComfyUI/models/diffusion_models/
+``` 
 
 ## CLIP Text encoder
 

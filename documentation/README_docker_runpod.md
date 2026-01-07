@@ -2,11 +2,10 @@
 
 ## Features
 
-- Automatic model and LoRA downloads via [environment variables](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_configuration/).
-- Integrated Lora downloader webinterface [Info](https://github.com/willmiao/ComfyUI-Lora-Manager).
-- Supports advanced workflows for **image generation** and **enhancement** using [pre-installed custom nodes](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_custom_nodes/).
+- Automatic model and LoRA provisioning via environment variables.
+- Supports advanced workflows for **video generation** and **enhancement** using pre-installed custom nodes.
 - Compatible with high-performance NVIDIA GPUs (CUDA 12.8).
-- Compiled attentions and GPU accelerations [Info](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_image_setup/).
+- Compiled attentions and GPU accelerations.
 
 ## Built-in **authentication**
   
@@ -28,6 +27,10 @@
 
 ### Runpod templates
 
+- See hardware requirements for GPU
+- Specific models/loras/workflows for the templates are downloaded when the pod starts.
+- See the [tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial/) for the available features. 
+
 - 👉 [Runpod Z-Image Turbo](https://console.runpod.io/deploy?template=ia5t70hfak&ref=se4tkc5o)
 - 👉 [Runpod Flux.2 Dev](https://console.runpod.io/deploy?template=8nl523gts5&ref=se4tkc5o)
 - 👉 [Runpod Qwen image edit 2511](https://console.runpod.io/deploy?template=mxvvx0hcmp&ref=se4tkc5o)
@@ -36,7 +39,7 @@
 
 | Model           | Tested GPU          | Min VRAM | Min RAM |
 |-----------------|---------------------|----------|---------|
-| Z-Image Turbo   | RTX A5000, A4500    | 22 GB    | 50 GB   |
+| Z-Image Turbo   | RTX A4500, A5000    | 22 GB    | 50 GB   |
 | Flux.2 Dev      | RTX A6000           | 44 GB    | 50 GB   |
 | Qwen            | RTX A6000           | 44 GB    | 65 GB   |
 
