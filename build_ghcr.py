@@ -3,17 +3,26 @@
 Build and push Docker image to GitHub Container Registry (GHCR)
 
 Usage:
-    python build_ghcr.py [--tag TAG] [--no-push] [--registry REGISTRY] [--username USERNAME]
+    From rundpod directory:
+        python build_ghcr.py [--tag TAG] [--no-push] [--registry REGISTRY] [--username USERNAME]
+
+    From parent directory:
+        python rundpod-flux2-dev-turbo/build_ghcr.py [--tag TAG] [--no-push]
 
 Examples:
+    # From rundpod-flux2-dev-turbo directory
+    cd rundpod-flux2-dev-turbo
     python build_ghcr.py                              # Build and push with auto-generated tag
     python build_ghcr.py --tag v1.0                   # Build and push with version tag
     python build_ghcr.py --tag latest                 # Build and push as latest
     python build_ghcr.py --no-push                    # Build only, don't push
-    python build_ghcr.py --token-file ~/.ghcr_token   # Specify token file path
+
+    # From parent directory
+    python rundpod-flux2-dev-turbo/build_ghcr.py --tag v1.0
 
 Token File:
-    Default location: .ghcr_token (in parent directory, committed to repo)
+    Default location: .ghcr_token (in parent directory)
+    The script automatically finds the token file regardless of execution location
     Token format: Just the PAT token value (e.g., ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx)
     Argument: Can override with --token-file /path/to/token
     Note: Keep actual token value secret when committing (use placeholder during development)
@@ -34,7 +43,15 @@ from pathlib import Path
 REGISTRY = os.environ.get("GHCR_REGISTRY", "ghcr.io")
 USERNAME = os.environ.get("GHCR_USERNAME", "maroshi")
 IMAGE_NAME = "flux2-turbo-lora"
-DOCKERFILE_PATH = "rundpod-flux2-dev-turbo"
+
+# Detect if we're running from rundpod directory or parent directory
+script_dir = Path(__file__).parent
+if script_dir.name == "rundpod-flux2-dev-turbo":
+    # Running from rundpod directory
+    DOCKERFILE_PATH = "."
+else:
+    # Running from parent directory
+    DOCKERFILE_PATH = "rundpod-flux2-dev-turbo"
 
 # Colors for output
 class Colors:
