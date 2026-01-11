@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1.7
 ################################################################################
 # ComfyUI Docker Image - Flux.2 Dev Turbo LoRA Edition
 ################################################################################
@@ -27,10 +26,12 @@ WORKDIR /ComfyUI
 # SECTION 1: ComfyUI Core Configuration
 # ============================================================================
 # Copy ComfyUI configurations
-COPY --chmod=644 configuration/comfy.settings.json user/default/comfy.settings.json
+COPY configuration/comfy.settings.json user/default/comfy.settings.json
+RUN chmod 644 user/default/comfy.settings.json
 
 # Copy ComfyUI ini settings
-COPY --chmod=644 configuration/config.ini user/__manager/config.ini
+COPY configuration/config.ini user/__manager/config.ini
+RUN chmod 644 user/__manager/config.ini
 
 # ============================================================================
 # SECTION 2: Core Python Dependencies for LoRA & Model Support
@@ -194,7 +195,8 @@ RUN python install.py
 # Configure LoRA Manager with Settings Template
 # Enables automatic LoRA discovery and management from ~/models/loras
 WORKDIR /ComfyUI/custom_nodes/ComfyUI-Lora-Manager
-COPY --chmod=644 /configuration/lora-manager-settings.json settings.json.template
+COPY /configuration/lora-manager-settings.json settings.json.template
+RUN chmod 644 settings.json.template
 
 # ============================================================================
 # SECTION 7: Create Model Directory Structure for LoRA & Assets
@@ -225,10 +227,17 @@ WORKDIR /
 #   • files-on-workspace.sh: Set up file permissions and directories
 #   • test-on-workspace.sh: Run diagnostic tests
 #   • docs-on-workspace.sh: Copy documentation to accessible location
-COPY --chmod=755 start.sh onworkspace/comfyui-on-workspace.sh onworkspace/files-on-workspace.sh onworkspace/test-on-workspace.sh onworkspace/docs-on-workspace.sh /
-COPY --chmod=664 /documentation/README.md /README.md
-COPY --chmod=644 test/ /test
-COPY --chmod=644 docs/ /docs
+COPY start.sh onworkspace/comfyui-on-workspace.sh onworkspace/files-on-workspace.sh onworkspace/test-on-workspace.sh onworkspace/docs-on-workspace.sh /
+RUN chmod 755 /start.sh /comfyui-on-workspace.sh /files-on-workspace.sh /test-on-workspace.sh /docs-on-workspace.sh
+
+COPY /documentation/README.md /README.md
+RUN chmod 664 /README.md
+
+COPY test/ /test
+RUN chmod -R 644 /test
+
+COPY docs/ /docs
+RUN chmod -R 644 /docs
 
 # ============================================================================
 # SECTION 9: Clone Community Documentation
