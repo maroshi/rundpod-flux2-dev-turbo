@@ -76,17 +76,13 @@ python build_ghcr.py --token-file /path/to/my/token --tag v1.0
 
 ## Step 3: Build and Push Docker Image
 
-### Using Automated Build Script (Recommended)
+### Quick Start (Recommended)
 
-The `build_ghcr.py` script in the parent directory automatically:
-- Finds your token file in standard locations
-- Authenticates with GHCR
-- Builds the Docker image
-- Pushes to GHCR with optional version tagging
+The `build_ghcr.py` script can be run directly from the `rundpod-flux2-dev-turbo` directory:
 
 ```bash
-# Navigate to parent directory
-cd $HOME/dev/image-generation-prompt/
+# Navigate to rundpod directory
+cd $HOME/dev/image-generation-prompt/rundpod-flux2-dev-turbo
 
 # Build with auto-generated tag
 python build_ghcr.py
@@ -94,21 +90,40 @@ python build_ghcr.py
 # Build with version tag
 python build_ghcr.py --tag v1.0
 
-# Build with custom tag
-python build_ghcr.py --tag latest
-
-# Build only, don't push
+# Build only, don't push (for testing)
 python build_ghcr.py --no-push
+```
 
-# Use custom token file path
-python build_ghcr.py --token-file /path/to/token
+### Using Automated Build Script
+
+The `build_ghcr.py` script automatically:
+- Detects whether it's run from rundpod or parent directory
+- Finds your token file in standard locations
+- Authenticates with GHCR
+- Builds the Docker image
+- Pushes to GHCR with optional version tagging
+
+```bash
+# Option 1: From rundpod directory (simplest)
+cd $HOME/dev/image-generation-prompt/rundpod-flux2-dev-turbo
+python build_ghcr.py --tag v1.0
+
+# Option 2: From parent directory
+cd $HOME/dev/image-generation-prompt
+python rundpod-flux2-dev-turbo/build_ghcr.py --tag v1.0
+
+# Additional options (work from either location)
+python build_ghcr.py --tag latest          # Build and push as latest
+python build_ghcr.py --no-push             # Build only, don't push
+python build_ghcr.py --token-file /path/to/token  # Custom token location
 ```
 
 **Script Behavior**:
-- Looks for `.ghcr_token` in parent directory (default location)
+- Auto-detects execution location (parent vs rundpod directory)
+- Looks for `.ghcr_token` in parent directory by default
 - Can override token file path via `--token-file` argument
 - Reads token from file and authenticates with GHCR
-- Builds image from `rundpod-flux2-dev-turbo/Dockerfile`
+- Builds image from Dockerfile in current/child directory
 - Pushes with both version tag and `latest` tag
 - Colored output with clear progress logging
 

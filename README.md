@@ -63,9 +63,13 @@ Build and push the Flux.2 Turbo image to GitHub Container Registry (GHCR) using 
    - Select scopes: `write:packages`, `read:packages`
    - Copy token (you won't see it again)
 
-2. Store token in parent directory:
+2. Store token in parent directory (`$HOME/dev/image-generation-prompt/`):
    ```bash
+   # From rundpod directory
    echo "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" > ../.ghcr_token
+
+   # Or from parent directory
+   echo "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" > .ghcr_token
    ```
 
 ### Build Script: `build_ghcr.py`
@@ -76,33 +80,41 @@ Automated Docker image build and push to GitHub Container Registry.
 |--------------------|---------------------------------------|----------------------|
 | `--tag`            | Custom image tag                      | Auto-generated (timestamp) |
 | `--no-push`        | Build only, don't push to GHCR        | Push enabled         |
-| `--token-file`     | Path to GHCR token file               | `../.ghcr_token`     |
+| `--token-file`     | Path to GHCR token file               | Auto-finds in parent dir |
 | `--registry`       | Container registry URL                | `ghcr.io`            |
 | `--username`       | Registry username                     | `maroshi`            |
 
 ### Example Usage
 
+**Quick Start (from rundpod directory):**
 ```bash
-# Navigate to parent directory
-cd /home/dudi/dev/image-generation-prompt
+cd rundpod-flux2-dev-turbo
+
+# Build and push with auto-generated tag
+python build_ghcr.py --tag v1.0
+
+# Build only (don't push) - for testing
+python build_ghcr.py --no-push --tag test-build
+```
+
+**From parent directory:**
+```bash
+cd $HOME/dev/image-generation-prompt
 
 # Update .ghcr_token with your actual PAT (locally only)
 echo "ghp_your_actual_token_here" > .ghcr_token
 
-# Build and push with auto-generated tag
-python build_ghcr.py
-
-# Build with version tag
-python build_ghcr.py --tag v1.0
+# Build and push with version tag
+python rundpod-flux2-dev-turbo/build_ghcr.py --tag v1.0
 
 # Build with custom tag
-python build_ghcr.py --tag latest
+python rundpod-flux2-dev-turbo/build_ghcr.py --tag latest
 
 # Build only (don't push)
-python build_ghcr.py --no-push
+python rundpod-flux2-dev-turbo/build_ghcr.py --no-push
 
 # Specify custom token file path
-python build_ghcr.py --token-file /path/to/token
+python rundpod-flux2-dev-turbo/build_ghcr.py --token-file /path/to/token
 ```
 
 ### Verify Image
