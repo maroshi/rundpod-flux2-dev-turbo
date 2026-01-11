@@ -4,7 +4,7 @@
 
 A streamlined and automated environment for running **ComfyUI** with **image models**, optimized for use on RunPod
 
-## Running Z-Image Turbo
+## Running Flux.2 dev turbo
 
 ![runpod](images/runpod_ZIT.jpg)
 
@@ -26,7 +26,7 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 
 ### Deployment
 
-- All available templates on runpod are tested on a RTX 6000,5000,4500.
+- All available templates on runpod are tested on a RTX 6000 only.
 
 ### Runpod templates
 
@@ -67,8 +67,8 @@ Use none docker setup to build the image using the included Python script.
 ### Example Usage
 
 ```bash
-git clone https://github.com/jalberty2018/run-comfyui-image.git
-cp ./run-comfyui-image/build-docker.py ..
+git clone https://github.com/maroshi/rundpod-flux2-dev-turbo.git
+cp ./rundpod-flux2-dev-turbo/build-docker.py ..
 
 export DOCKER_BUILDKIT=1
 export COMPOSE_DOCKER_CLI_BUILD=1
