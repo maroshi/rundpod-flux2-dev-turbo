@@ -121,23 +121,37 @@ def find_token_file(token_file_path=None):
 
     Token file path can be:
     1. Provided as argument (--token-file)
-    2. Default location: .ghcr_token in parent directory
+    2. Default location: .ghcr_token in parent directory (relative to script location)
+    3. Fallback: .ghcr_token in current working directory
+    4. Fallback: ~/.ghcr_token in home directory
     """
-    # Use provided path or default
-    if token_file_path:
-        expanded_path = os.path.expanduser(token_file_path)
-    else:
-        expanded_path = os.path.expanduser(".ghcr_token")
+    paths_to_check = []
 
-    if os.path.exists(expanded_path):
-        try:
-            with open(expanded_path, "r") as f:
-                token = f.read().strip()
+    # If token_file_path provided, use that
+    if token_file_path:
+        paths_to_check.append(os.path.expanduser(token_file_path))
+    else:
+        # Default: look in parent directory (relative to script location)
+        script_dir = Path(__file__).parent
+        parent_dir = script_dir.parent
+        paths_to_check.append(parent_dir / ".ghcr_token")
+
+        # Fallback: current working directory
+        paths_to_check.append(Path(".ghcr_token"))
+
+        # Fallback: home directory
+        paths_to_check.append(Path.home() / ".ghcr_token")
+
+    for path in paths_to_check:
+        expanded_path = path.expanduser() if isinstance(path, Path) else Path(path).expanduser()
+        if expanded_path.exists():
+            try:
+                token = expanded_path.read_text().strip()
                 if token:
                     log_success(f"Token file found: {expanded_path}")
                     return token
-        except IOError as e:
-            log_warning(f"Could not read token file {expanded_path}: {e}")
+            except IOError as e:
+                log_warning(f"Could not read token file {expanded_path}: {e}")
 
     return None
 
