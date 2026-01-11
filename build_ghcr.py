@@ -89,15 +89,24 @@ def check_dockerfile():
         return False
 
 def build_image(image_uri):
-    """Build Docker image"""
+    """Build Docker image with BuildKit enabled"""
     log_info(f"Building image: {image_uri}")
+    # Enable BuildKit for features like --chmod in COPY commands
+    env = os.environ.copy()
+    env["DOCKER_BUILDKIT"] = "1"
+
     cmd = ["docker", "build", "-t", image_uri, DOCKERFILE_PATH]
 
-    if run_command(cmd):
-        log_success(f"Image built successfully: {image_uri}")
-        return True
-    else:
-        log_error("Docker build failed")
+    try:
+        result = subprocess.run(cmd, env=env, check=False, capture_output=False)
+        if result.returncode == 0:
+            log_success(f"Image built successfully: {image_uri}")
+            return True
+        else:
+            log_error("Docker build failed")
+            return False
+    except Exception as e:
+        log_error(f"Failed to execute build command: {e}")
         return False
 
 def push_image(image_uri):
