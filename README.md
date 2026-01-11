@@ -52,26 +52,74 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 
 docker pull ls250824/run-comfyui-image:<[![Docker Image Version](https://img.shields.io/docker/v/ls250824/run-comfyui-image)](https://hub.docker.com/r/ls250824/run-comfyui-image)>
 
-## 🛠️ Build & Push Docker Image (Optional)
+## 🛠️ Build & Push Docker Image to GHCR
 
-Use none docker setup to build the image using the included Python script.
+Build and push the Flux.2 Turbo image to GitHub Container Registry (GHCR) using the automated build script.
 
-### Build Script: `build-docker.py`
+### Prerequisites
 
-| Argument       | Description                        | Default          |
-|----------------|------------------------------------|------------------|
-| `--username`   | Your Docker Hub username           | Current user     |
-| `--tag`        | Custom image tag                   | Today's date     |
-| `--latest`     | Also tag image as `latest`         | Disabled         |
+1. Create GitHub Personal Access Token (PAT):
+   - Go to GitHub Settings → Developer Settings → Personal Access Tokens (Classic)
+   - Select scopes: `write:packages`, `read:packages`
+   - Copy token (you won't see it again)
+
+2. Store token in parent directory:
+   ```bash
+   echo "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" > ../.ghcr_token
+   ```
+
+### Build Script: `build_ghcr.py`
+
+Automated Docker image build and push to GitHub Container Registry.
+
+| Argument           | Description                           | Default              |
+|--------------------|---------------------------------------|----------------------|
+| `--tag`            | Custom image tag                      | Auto-generated (timestamp) |
+| `--no-push`        | Build only, don't push to GHCR        | Push enabled         |
+| `--token-file`     | Path to GHCR token file               | `../.ghcr_token`     |
+| `--registry`       | Container registry URL                | `ghcr.io`            |
+| `--username`       | Registry username                     | `maroshi`            |
 
 ### Example Usage
 
 ```bash
-git clone https://github.com/maroshi/rundpod-flux2-dev-turbo.git
-cp ./rundpod-flux2-dev-turbo/build-docker.py ..
+# Navigate to parent directory
+cd /home/dudi/dev/image-generation-prompt
 
-export DOCKER_BUILDKIT=1
-export COMPOSE_DOCKER_CLI_BUILD=1
+# Update .ghcr_token with your actual PAT (locally only)
+echo "ghp_your_actual_token_here" > .ghcr_token
 
-python3 build-docker.py   --username=<your_dockerhub_username>   --tag=<custom_tag>   --latest   run-comfyui-wan
+# Build and push with auto-generated tag
+python build_ghcr.py
+
+# Build with version tag
+python build_ghcr.py --tag v1.0
+
+# Build with custom tag
+python build_ghcr.py --tag latest
+
+# Build only (don't push)
+python build_ghcr.py --no-push
+
+# Specify custom token file path
+python build_ghcr.py --token-file /path/to/token
 ```
+
+### Verify Image
+
+```bash
+# Check in GitHub UI
+# Go to your profile → Packages → flux2-turbo-lora
+
+# Pull and run the image
+docker pull ghcr.io/maroshi/flux2-turbo-lora:v1.0
+docker run -it --gpus all ghcr.io/maroshi/flux2-turbo-lora:v1.0
+```
+
+### Documentation
+
+See [GHCR_SETUP.md](./GHCR_SETUP.md) for:
+- Complete GitHub Container Registry setup guide
+- Security best practices
+- Troubleshooting
+- Production deployment examples
