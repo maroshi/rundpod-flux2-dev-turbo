@@ -48,7 +48,7 @@ Create `.ghcr_token` file in the parent directory (alongside build_ghcr.py). Thi
 
 ```bash
 # Navigate to parent directory
-cd /home/dudi/dev/image-generation-prompt
+cd $HOME/dev/image-generation-prompt
 
 # Create token file with your PAT
 echo "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" > .ghcr_token
@@ -86,7 +86,7 @@ The `build_ghcr.py` script in the parent directory automatically:
 
 ```bash
 # Navigate to parent directory
-cd /home/dudi/dev/image-generation-prompt
+cd $HOME/dev/image-generation-prompt
 
 # Build with auto-generated tag
 python build_ghcr.py
@@ -118,7 +118,7 @@ If you prefer to build and push manually:
 
 ```bash
 # Read token from parent directory
-cd /home/dudi/dev/image-generation-prompt
+cd $HOME/dev/image-generation-prompt
 TOKEN=$(cat .ghcr_token)
 
 # Authenticate with GHCR
@@ -198,7 +198,7 @@ docker run -it --gpus all ghcr.io/maroshi/flux2-turbo-lora:latest
 
 ```bash
 # Create token file in parent directory with placeholder
-cd /home/dudi/dev/image-generation-prompt
+cd $HOME/dev/image-generation-prompt
 echo "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" > .ghcr_token
 
 # Verify it's readable
@@ -213,7 +213,7 @@ git commit -m "chore: Add GHCR token file template"
 
 ```bash
 # Update .ghcr_token with your actual PAT (locally only)
-cd /home/dudi/dev/image-generation-prompt
+cd $HOME/dev/image-generation-prompt
 echo "ghp_your_actual_token_here" > .ghcr_token
 
 # Verify content
@@ -232,7 +232,7 @@ git checkout .ghcr_token  # Revert to placeholder before pushing
 **Solution**:
 ```bash
 # Create token file in parent directory with placeholder
-cd /home/dudi/dev/image-generation-prompt
+cd $HOME/dev/image-generation-prompt
 echo "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" > .ghcr_token
 
 # Verify it's readable
@@ -307,7 +307,7 @@ docker push ghcr.io/maroshi/flux2-turbo-lora:v1.0
 **Solution**:
 ```bash
 # Check if file exists in parent directory
-cd /home/dudi/dev/image-generation-prompt
+cd $HOME/dev/image-generation-prompt
 ls -la .ghcr_token
 
 # If not, create it with placeholder
