@@ -42,7 +42,7 @@ A PAT is required to authenticate with GHCR. This is more secure than using your
 
 ## Step 2: Create Token File in Parent Directory
 
-Create `.ghcr_token` file in the parent directory (alongside build_ghcr.py). This file is committed to the repository.
+Create `.ghcr_token` file in the parent directory. This file is committed to the private repository.
 
 ### Setup Token File
 
@@ -68,8 +68,8 @@ python build_ghcr.py --token-file /path/to/my/token --tag v1.0
 
 ### Token File Security
 
-- ✅ `.ghcr_token` is committed to repository
-- ✅ Default location: parent directory (`./.ghcr_token`)
+- ✅ `.ghcr_token` is committed to private repository
+- ✅ Default location: parent directory (`../.ghcr_token`)
 - ✅ Can override with `--token-file` argument
 - ⚠️ Keep actual PAT secret - use placeholder during initial commit if needed
 - ⚠️ Update file with actual token locally before running build script
@@ -86,7 +86,7 @@ The `build_ghcr.py` script in the parent directory automatically:
 
 ```bash
 # Navigate to parent directory
-cd $HOME/dev/image-generation-prompt
+cd $HOME/dev/image-generation-prompt/
 
 # Build with auto-generated tag
 python build_ghcr.py
@@ -307,7 +307,7 @@ docker push ghcr.io/maroshi/flux2-turbo-lora:v1.0
 **Solution**:
 ```bash
 # Check if file exists in parent directory
-cd $HOME/dev/image-generation-prompt
+cd $HOME/dev/image-generation-prompt/rundpod-flux2-dev-turbo
 ls -la .ghcr_token
 
 # If not, create it with placeholder
@@ -344,22 +344,11 @@ services:
     restart: unless-stopped
 
   # Authentication secret (add to .env file)
-  # Do NOT commit this to Git!
 
 volumes:
   workspace:
 ```
 
-### Kubernetes Secret (Enterprise)
-
-```bash
-# Create image pull secret for Kubernetes
-kubectl create secret docker-registry ghcr-secret \
-  --docker-server=ghcr.io \
-  --docker-username=maroshi \
-  --docker-password="YOUR_PAT_TOKEN" \
-  --docker-email="your-email@example.com"
-```
 
 ## References
 
