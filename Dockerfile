@@ -40,8 +40,7 @@ RUN chmod 644 user/__manager/config.ini
 # safetensors: Secure model weight serialization (required for LoRA files)
 # huggingface-hub: Download models and LoRAs from HuggingFace
 # peft: Parameter-Efficient Fine-Tuning (LoRA framework)
-RUN --mount=type=cache,target=/root/.cache/pip \
-    python -m pip install --no-cache-dir --root-user-action ignore -c /constraints.txt \
+RUN python -m pip install --no-cache-dir --root-user-action ignore -c /constraints.txt \
     matrix-nio \
     safetensors \
     huggingface-hub \
@@ -78,8 +77,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 WORKDIR /ComfyUI/custom_nodes
 
-RUN --mount=type=cache,target=/root/.cache/git \
-    git clone --depth=1 --filter=blob:none https://github.com/rgthree/rgthree-comfy.git && \
+RUN git clone --depth=1 --filter=blob:none https://github.com/rgthree/rgthree-comfy.git && \
     git clone --depth=1 --filter=blob:none https://github.com/liusida/ComfyUI-Login.git && \
     git clone --depth=1 --filter=blob:none https://github.com/kijai/ComfyUI-KJNodes.git && \
 	git clone --depth=1 --filter=blob:none https://github.com/StartHua/Comfyui_joytag.git && \
@@ -164,8 +162,7 @@ RUN set -eux; \
 
 WORKDIR /ComfyUI/custom_nodes
 
-RUN --mount=type=cache,target=/root/.cache/pip \
-  python -m pip install --no-cache-dir --root-user-action ignore -c /constraints.txt \
+RUN python -m pip install --no-cache-dir --root-user-action ignore -c /constraints.txt \
     diffusers psutil \
     -r ComfyUI-Login/requirements.txt \
     -r ComfyUI-KJNodes/requirements.txt \
@@ -247,8 +244,7 @@ RUN chmod -R 644 /docs
 #   • Hardware optimization
 #   • Custom node usage
 #   • Model setup and provisioning
-RUN --mount=type=cache,target=/root/.cache/git \
-    git clone --depth=1 --filter=blob:none https://github.com/jalberty2018/awesome-comfyui-docs.git /awesome-comfyui-docs
+RUN git clone --depth=1 --filter=blob:none https://github.com/jalberty2018/awesome-comfyui-docs.git /awesome-comfyui-docs
 
 # Copy selected docs *inside* the image
 RUN mkdir -p /docs && \
