@@ -1,0 +1,21 @@
+# REST API Dependencies for ComfyUI
+# Used by comfyui_rest_api.py
+
+# Web Framework
+Flask==3.0.0
+Flask-CORS==4.0.0
+
+# HTTP Client
+requests==2.31.0
+
+# WebSocket Support
+websocket-client==1.7.0
+
+# JSON & Data Processing
+python-dateutil==2.8.2
+
+# Async Support
+aiohttp==3.9.1
+
+# Utilities
+python-dotenv==1.0.0

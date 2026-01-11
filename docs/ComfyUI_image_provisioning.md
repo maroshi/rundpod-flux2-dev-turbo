@@ -10,6 +10,7 @@
 ## Flux.2
 
 - [Dev](provisioning/hf_flux.2_dev.md)
+- [Dev Turbo LoRA](provisioning/hf_flux.2_turbo_lora.md) ⭐ **Recommended for fast inference**
 
 ## Z-Image
 

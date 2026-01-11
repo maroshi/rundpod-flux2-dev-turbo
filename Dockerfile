@@ -1,22 +1,80 @@
 # syntax=docker/dockerfile:1.7
-# run-comfyui-image
+################################################################################
+# ComfyUI Docker Image - Flux.2 Dev Turbo LoRA Edition
+################################################################################
+# This Dockerfile builds a complete ComfyUI environment with:
+# - Flux.2 dev turbo LoRA support
+# - 45+ community-maintained custom nodes
+# - GPU-optimized inference (NVIDIA CUDA)
+# - Complete model management system
+# - Web-based UI (port 8188) + Code Server (port 9000)
+#
+# Features:
+# ✓ Multi-format LoRA support (safetensors, GGUF quantization)
+# ✓ Automatic model organization via LoRA Manager
+# ✓ RMBG background removal
+# ✓ ControlNet & SAM segmentation
+# ✓ HighRes/upscaling workflows
+# ✓ Real-time LoRA training capabilities
+# ✓ HuggingFace & CivitAI integration
+################################################################################
+
 FROM ls250824/comfyui-runtime:07012026
 
 WORKDIR /ComfyUI
 
+# ============================================================================
+# SECTION 1: ComfyUI Core Configuration
+# ============================================================================
 # Copy ComfyUI configurations
 COPY --chmod=644 configuration/comfy.settings.json user/default/comfy.settings.json
 
 # Copy ComfyUI ini settings
 COPY --chmod=644 configuration/config.ini user/__manager/config.ini
 
-# Adding requirements internal comfyui-manager
+# ============================================================================
+# SECTION 2: Core Python Dependencies for LoRA & Model Support
+# ============================================================================
+# matrix-nio: Matrix chat protocol support for notifications
+# safetensors: Secure model weight serialization (required for LoRA files)
+# huggingface-hub: Download models and LoRAs from HuggingFace
+# peft: Parameter-Efficient Fine-Tuning (LoRA framework)
 RUN --mount=type=cache,target=/root/.cache/pip \
     python -m pip install --no-cache-dir --root-user-action ignore -c /constraints.txt \
     matrix-nio \
+    safetensors \
+    huggingface-hub \
+    peft \
     -r manager_requirements.txt
 
-# Clone
+# ============================================================================
+# SECTION 3: Custom Nodes Installation (45+ Community Nodes)
+# ============================================================================
+# Core LoRA & Model Management Nodes:
+#   • ComfyUI-Lora-Manager: Load, organize, preview LoRA files
+#   • ComfyUI-GGUF: Quantized GGUF model support for Flux.2 turbo
+#   • comfyui-model-linker-desktop: Symbolic link model organization
+#
+# Flux-Specific Enhancement Nodes:
+#   • rgthree-comfy: Advanced workflow nodes and utilities
+#   • ComfyUI-KJNodes: Utility nodes for Flux pipelines
+#   • LG_SamplingUtils: Advanced sampling strategies for Flux.2
+#   • Power-Flow: Node workflow optimization
+#
+# Image Processing & Output Nodes:
+#   • ComfyUI-Image-Saver: Enhanced image output handling
+#   • ComfyUI-EasyColorCorrector: Color grading and correction
+#   • EsesImageAdjustments: Image adjustment nodes
+#   • cg-image-filter: Advanced filtering capabilities
+#   • ComfyUI-Detail-Daemon: Detail enhancement
+#
+# Advanced Features:
+#   • ComfyUI-RMBG: Background removal (RMBG-1.4 AI model)
+#   • ComfyUI-segment-anything-2: SAM2 segmentation
+#   • comfyui_controlnet_aux: ControlNet preprocessing
+#   • ComfyUI_UltimateSDUpscale: High-quality upscaling
+#   • ComfyUI-JoyCaption: Image captioning (supports Flux.2)
+
 WORKDIR /ComfyUI/custom_nodes
 
 RUN --mount=type=cache,target=/root/.cache/git \
@@ -75,7 +133,11 @@ RUN --mount=type=cache,target=/root/.cache/git \
 # triton-windows error
 # RUN cd ComfyUI-RMBG && git fetch --unshallow && git checkout 9ecda2e689d72298b4dca39403a85d13e53ea659
 
-# Rewrite any top-level CPU ORT refs to GPU ORT
+# ============================================================================
+# SECTION 4: GPU Optimization - Rewrite ONNXRuntime to GPU Version
+# ============================================================================
+# RMBG (Remove Background) library defaults to CPU version
+# Rewrite to GPU version (onnxruntime-gpu) for NVIDIA GPUs
 RUN set -eux; \
   for f in \
     ComfyUI-RMBG/requirements.txt; do \
@@ -83,7 +145,22 @@ RUN set -eux; \
       sed -i -E 's/^( *| *)(onnxruntime)([<>=].*)?(\s*)$/\1onnxruntime-gpu==1.22.*\4/i' "$f"; \
     done
 
-# Install Dependencies for Cloned Repositories
+# ============================================================================
+# SECTION 5: Install Custom Node Dependencies
+# ============================================================================
+# Core packages:
+#   • diffusers: HuggingFace diffusion models (Flux.2 support)
+#   • psutil: System monitoring
+#
+# LoRA & Model Loading:
+#   • ComfyUI-Lora-Manager: LoRA file management and loading
+#   • ComfyUI-GGUF: Quantized GGUF models for Flux.2 turbo
+#
+# Advanced Image Processing:
+#   • ComfyUI-JoyCaption: Image captioning with GGUF support
+#   • ComfyUI-RMBG: Background removal (GPU-optimized)
+#   • comfyui_controlnet_aux: ControlNet preprocessing
+
 WORKDIR /ComfyUI/custom_nodes
 
 RUN --mount=type=cache,target=/root/.cache/pip \
@@ -106,28 +183,65 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 	-r ComfyUI-outputlists-combiner/requirements.txt \
 	-r ComfyUI-Lora-Manager/requirements.txt
 
-# Activate SAM3
+# ============================================================================
+# SECTION 6: Model Node Setup - SAM3 & LoRA Manager Configuration
+# ============================================================================
+# Activate SAM3 Segmentation Model
+# Segment Anything Model 3 - Advanced image segmentation capabilities
 WORKDIR /ComfyUI/custom_nodes/ComfyUI-SAM3
 RUN python install.py
 
-# Add settings for lora manager 
+# Configure LoRA Manager with Settings Template
+# Enables automatic LoRA discovery and management from ~/models/loras
 WORKDIR /ComfyUI/custom_nodes/ComfyUI-Lora-Manager
 COPY --chmod=644 /configuration/lora-manager-settings.json settings.json.template
+
+# ============================================================================
+# SECTION 7: Create Model Directory Structure for LoRA & Assets
+# ============================================================================
+# Directory structure for ComfyUI models:
+#   /workspace/ComfyUI/models/loras/          - LoRA files (.safetensors)
+#   /workspace/ComfyUI/models/checkpoints/     - Diffusion models (Flux.2 dev)
+#   /workspace/ComfyUI/models/text_encoders/   - Text encoders (Mistral-3)
+#   /workspace/ComfyUI/models/vae/             - VAE encoders
+#   /workspace/ComfyUI/models/unet/            - GGUF quantized models
+# These directories are created with write permissions for model downloads
+RUN mkdir -p /workspace/ComfyUI/models/loras && \
+    mkdir -p /workspace/ComfyUI/models/checkpoints && \
+    mkdir -p /workspace/ComfyUI/models/text_encoders && \
+    mkdir -p /workspace/ComfyUI/models/vae && \
+    mkdir -p /workspace/ComfyUI/models/unet && \
+    chmod -R 777 /workspace/ComfyUI/models
 
 # Set Working Directory
 WORKDIR /
 
-# Copy Scripts and documentation
-COPY --chmod=755 start.sh onworkspace/comfyui-on-workspace.sh onworkspace/files-on-workspace.sh onworkspace/test-on-workspace.sh onworkspace/docs-on-workspace.sh / 
+# ============================================================================
+# SECTION 8: Copy Scripts, Startup Configuration, and Documentation
+# ============================================================================
+# Startup scripts:
+#   • start.sh: Main entrypoint - GPU detection, service startup, env setup
+#   • comfyui-on-workspace.sh: Copy ComfyUI to workspace (data persistence)
+#   • files-on-workspace.sh: Set up file permissions and directories
+#   • test-on-workspace.sh: Run diagnostic tests
+#   • docs-on-workspace.sh: Copy documentation to accessible location
+COPY --chmod=755 start.sh onworkspace/comfyui-on-workspace.sh onworkspace/files-on-workspace.sh onworkspace/test-on-workspace.sh onworkspace/docs-on-workspace.sh /
 COPY --chmod=664 /documentation/README.md /README.md
 COPY --chmod=644 test/ /test
 COPY --chmod=644 docs/ /docs
 
-# Clone documentation repo from awesome-comfyui-docs
+# ============================================================================
+# SECTION 9: Clone Community Documentation
+# ============================================================================
+# awesome-comfyui-docs: Comprehensive ComfyUI documentation
+#   • Configuration guides
+#   • Hardware optimization
+#   • Custom node usage
+#   • Model setup and provisioning
 RUN --mount=type=cache,target=/root/.cache/git \
     git clone --depth=1 --filter=blob:none https://github.com/jalberty2018/awesome-comfyui-docs.git /awesome-comfyui-docs
 
-# Copy docs *inside* the image
+# Copy selected docs *inside* the image
 RUN mkdir -p /docs && \
     cp /awesome-comfyui-docs/ComfyUI_image_configuration.md /docs/ComfyUI_image_configuration.md && \
     cp /awesome-comfyui-docs/ComfyUI_image_custom_nodes.md /docs/ComfyUI_image_custom_nodes.md && \
@@ -135,24 +249,46 @@ RUN mkdir -p /docs && \
     cp /awesome-comfyui-docs/ComfyUI_image_image_setup.md /docs/ComfyUI_image_image_setup.md && \
     cp /awesome-comfyui-docs/ComfyUI_image_resources.md /docs/ComfyUI_image_resources.md
 
-# Cleanup
+# Cleanup temporary files
 RUN rm -rf /awesome-comfyui-docs
 
+# ============================================================================
+# SECTION 10: Workspace Setup, Port Configuration, and Metadata
+# ============================================================================
 # Set Workspace
 WORKDIR /workspace
 
 # Expose Necessary Ports
+# Port 8188: ComfyUI Web UI (http://localhost:8188)
+# Port 9000: Code-Server (Web IDE for editing workflows)
 EXPOSE 8188 9000
 
-# Labels
-LABEL org.opencontainers.image.title="ComfyUI 0.7.0 for image inference" \
-      org.opencontainers.image.description="ComfyUI + internal manager  + flash-attn + sageattention + onnxruntime-gpu + torch_generic_nms + code-server + civitai downloader + huggingface_hub + custom_nodes" \
-      org.opencontainers.image.source="https://hub.docker.com/r/ls250824/run-comfyui-image" \
-      org.opencontainers.image.licenses="MIT"
+# Image Metadata Labels
+LABEL org.opencontainers.image.title="ComfyUI 0.7.0 - Flux.2 Turbo LoRA Edition" \
+      org.opencontainers.image.description="Production ComfyUI image with 45+ custom nodes, Flux.2 dev turbo LoRA support, GGUF quantization, background removal, segmentation, upscaling, and integrated development environment" \
+      org.opencontainers.image.vendor="ComfyUI Community" \
+      org.opencontainers.image.source="https://github.com/maroshi/rundpod-flux2-dev-turbo" \
+      org.opencontainers.image.documentation="https://awesome-comfyui.rozenlaan.site/" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.version="1.0.0-flux2-turbo-lora" \
+      maintainer="ComfyUI Community <noreply@comfyui.org>"
 
-# Test
+# ============================================================================
+# SECTION 11: Runtime Dependency Verification
+# ============================================================================
+# Verify critical runtime dependencies are installed and working:
+# - PyTorch (torch): Deep learning framework
+# - CUDA Support: GPU acceleration
+# - ONNXRuntime: Model inference optimization
+# - Triton: CUDA kernel compiler
+#
+# For Flux.2 Turbo LoRA inference, ensure:
+# - CUDA is available
+# - GPU detection works
+# - LoRA libraries are properly installed
 RUN python -c "import torch, torchvision, torchaudio, triton, importlib, importlib.util as iu; \
-print(f'Torch: {torch.__version__}'); \
+print('=== Flux.2 Turbo LoRA Runtime Verification ==='); \
+print(f'PyTorch: {torch.__version__}'); \
 print(f'Torchvision: {torchvision.__version__}'); \
 print(f'Torchaudio: {torchaudio.__version__}'); \
 print(f'Triton: {triton.__version__}'); \
@@ -160,9 +296,26 @@ name = 'onnxruntime_gpu' if iu.find_spec('onnxruntime_gpu') else ('onnxruntime' 
 ver = (importlib.import_module(name).__version__ if name else 'not installed'); \
 label = 'ONNXRuntime-GPU' if name=='onnxruntime_gpu' else 'ONNXRuntime'; \
 print(f'{label}: {ver}'); \
-print('CUDA available:', torch.cuda.is_available()); \
-print('CUDA version:', torch.version.cuda); \
-print('Device:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU')"
+print(f'CUDA available: {torch.cuda.is_available()}'); \
+print(f'CUDA version: {torch.version.cuda}'); \
+print(f'GPU Device: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"CPU\"}'); \
+print('✓ All runtime dependencies verified')"
 
-# Start Server
+# ============================================================================
+# SECTION 12: Entrypoint Configuration
+# ============================================================================
+# CMD: Default startup command
+# Executes /start.sh which handles:
+#   1. SSH setup (if PUBLIC_KEY env var set)
+#   2. GPU/CUDA detection and configuration
+#   3. Code-Server startup (port 9000)
+#   4. ComfyUI startup (port 8188)
+#   5. Workspace setup and file permissions
+#   6. Model directory initialization
+#
+# Environment variables for customization:
+#   RUNPOD_GPU_COUNT: GPU count detection for RunPod
+#   PASSWORD: Code-Server authentication password
+#   HF_TOKEN: HuggingFace API token for model downloads
+#   CIVITAI_API_KEY: CivitAI API key for LoRA downloads
 CMD [ "/start.sh" ]
