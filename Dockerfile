@@ -211,8 +211,11 @@ WORKDIR /ComfyUI/models
 
 RUN python3 << 'EOF'
 import os
-import subprocess
 import shutil
+from huggingface_hub import hf_hub_download
+
+print("📥 Pre-downloading FLUX.2 models to image (~30-40GB)...")
+print("   This will take 20-30 minutes on first build...")
 
 # Create model directories
 os.makedirs('vae', exist_ok=True)
@@ -221,68 +224,22 @@ os.makedirs('diffusion_models', exist_ok=True)
 os.makedirs('upscale_models', exist_ok=True)
 os.makedirs('loras', exist_ok=True)
 
-print("📥 Pre-downloading FLUX.2 models to image (~30-40GB)...")
-print("   This will take 20-30 minutes on first build...")
+print("  ▶️  VAE encoder (flux2-vae.safetensors)...")
+hf_hub_download(repo_id="Comfy-Org/flux2-dev", filename="flux2-vae.safetensors", local_dir="vae")
 
-try:
-    # Download VAE
-    print("  ▶️  VAE encoder...")
-    subprocess.run([
-        'hf_transfer', 'download', 'Comfy-Org/flux2-dev',
-        'split_files/vae/flux2-vae.safetensors',
-        '--local-dir', 'vae', '--local-dir-use-symlinks', 'False'
-    ], check=True)
-    # Move from split_files subdirectory
-    if os.path.exists('vae/split_files/vae/flux2-vae.safetensors'):
-        shutil.move('vae/split_files/vae/flux2-vae.safetensors', 'vae/flux2-vae.safetensors')
-        shutil.rmtree('vae/split_files', ignore_errors=True)
+print("  ▶️  Text encoder (mistral_3_small_flux2_fp8.safetensors)...")
+hf_hub_download(repo_id="Comfy-Org/flux2-dev", filename="mistral_3_small_flux2_fp8.safetensors", local_dir="text_encoders")
 
-    # Download Text Encoder
-    print("  ▶️  Text encoder (Mistral-3)...")
-    subprocess.run([
-        'hf_transfer', 'download', 'Comfy-Org/flux2-dev',
-        'split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors',
-        '--local-dir', 'text_encoders', '--local-dir-use-symlinks', 'False'
-    ], check=True)
-    # Move from split_files subdirectory
-    if os.path.exists('text_encoders/split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors'):
-        shutil.move('text_encoders/split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors', 'text_encoders/mistral_3_small_flux2_fp8.safetensors')
-        shutil.rmtree('text_encoders/split_files', ignore_errors=True)
+print("  ▶️  FLUX.2 dev diffusion model (flux2_dev_fp8mixed.safetensors) - 24GB...")
+hf_hub_download(repo_id="Comfy-Org/flux2-dev", filename="flux2_dev_fp8mixed.safetensors", local_dir="diffusion_models")
 
-    # Download Main Diffusion Model (LARGEST FILE ~24GB)
-    print("  ▶️  FLUX.2 dev turbo model (24GB - this takes time)...")
-    subprocess.run([
-        'hf_transfer', 'download', 'Comfy-Org/flux2-dev',
-        'split_files/diffusion_models/flux2_dev_fp8mixed.safetensors',
-        '--local-dir', 'diffusion_models', '--local-dir-use-symlinks', 'False'
-    ], check=True)
-    # Move from split_files subdirectory
-    if os.path.exists('diffusion_models/split_files/diffusion_models/flux2_dev_fp8mixed.safetensors'):
-        shutil.move('diffusion_models/split_files/diffusion_models/flux2_dev_fp8mixed.safetensors', 'diffusion_models/flux2_dev_fp8mixed.safetensors')
-        shutil.rmtree('diffusion_models/split_files', ignore_errors=True)
+print("  ▶️  Upscaler (4x_foolhardy_Remacri.pth)...")
+hf_hub_download(repo_id="LS110824/upscale", filename="4x_foolhardy_Remacri.pth", local_dir="upscale_models")
 
-    # Download Upscaler
-    print("  ▶️  Upscaler (4x_foolhardy_Remacri)...")
-    subprocess.run([
-        'hf_transfer', 'download', 'LS110824/upscale',
-        '4x_foolhardy_Remacri.pth',
-        '--local-dir', 'upscale_models', '--local-dir-use-symlinks', 'False'
-    ], check=True)
+print("  ▶️  Flux.2 Turbo LoRA (Flux2TurboComfyv2.safetensors)...")
+hf_hub_download(repo_id="ByteZSzn/Flux.2-Turbo-ComfyUI", filename="Flux2TurboComfyv2.safetensors", local_dir="loras")
 
-    # Download Flux.2 Turbo LoRA
-    print("  ▶️  Flux.2 Turbo LoRA (Flux2TurboComfyv2.safetensors)...")
-    subprocess.run([
-        'hf_transfer', 'download', 'ByteZSzn/Flux.2-Turbo-ComfyUI',
-        'Flux2TurboComfyv2.safetensors',
-        '--local-dir', 'loras', '--local-dir-use-symlinks', 'False'
-    ], check=True)
-
-    print("✅ All models downloaded successfully!")
-
-except Exception as e:
-    print(f"⚠️ Warning: Model download error (non-critical): {e}")
-    print("   Models will be downloaded at startup instead")
-
+print("✅ All models downloaded successfully!")
 EOF
 
 # ============================================================================
