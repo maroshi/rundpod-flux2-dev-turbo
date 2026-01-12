@@ -22,24 +22,12 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 - Supports advanced workflows for **image generation** and **enhancement** using pre-installed custom nodes.
 - Compatible with high-performance NVIDIA GPUs.
 
-## 🧩 Template Deployment
+## 📚 Documentation
 
-### Deployment
-
-- All available templates on runpod are tested on a RTX 6000 only.
-
-### Runpod templates
-
-- 👉 [Runpod Z-Image Turbo](https://console.runpod.io/deploy?template=ia5t70hfak&ref=se4tkc5o)
-- 👉 [Runpod Flux.2 Dev](https://console.runpod.io/deploy?template=8nl523gts5&ref=se4tkc5o)
-- 👉 [Runpod Qwen image edit 2511](https://console.runpod.io/deploy?template=mxvvx0hcmp&ref=se4tkc5o)
-
-### Documentation
-
+- [📖 Complete Documentation Table of Contents](documentation/MAIN.md)
+- [⚙️ Provisioning examples](documentation/ComfyUI_image_provisioning.md)
 - [⚙️ Start](https://awesome-comfyui.rozenlaan.site/ComfyUI_image/)
 - [📚 Tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial/)
-- [⚙️ Provisioning examples](documentation/ComfyUI_image_provisioning.md)
-- [📖 Complete Documentation](documentation/MAIN.md)
 
 ## 🐳 Docker Images
 
@@ -56,6 +44,8 @@ docker pull ls250824/run-comfyui-image:<[![Docker Image Version](https://img.shi
 ## 🛠️ Build & Push Docker Image to GHCR
 
 Build and push the Flux.2 Turbo image to GitHub Container Registry (GHCR) using the automated build script.
+
+**⚠️ Storage Requirements:** Building this image requires approximately **30GB of free disk space**.
 
 ### Prerequisites
 
@@ -87,35 +77,17 @@ Automated Docker image build and push to GitHub Container Registry.
 
 ### Example Usage
 
-**Quick Start (from rundpod directory):**
 ```bash
 cd rundpod-flux2-dev-turbo
 
-# Build and push with auto-generated tag
+# Build and push with version tag
 python build_ghcr.py --tag v1.0
 
 # Build only (don't push) - for testing
 python build_ghcr.py --no-push --tag test-build
-```
-
-**From parent directory:**
-```bash
-cd $HOME/dev/image-generation-prompt
-
-# Update .ghcr_token with your actual PAT (locally only)
-echo "ghp_your_actual_token_here" > .ghcr_token
-
-# Build and push with version tag
-python rundpod-flux2-dev-turbo/build_ghcr.py --tag v1.0
-
-# Build with custom tag
-python rundpod-flux2-dev-turbo/build_ghcr.py --tag latest
-
-# Build only (don't push)
-python rundpod-flux2-dev-turbo/build_ghcr.py --no-push
 
 # Specify custom token file path
-python rundpod-flux2-dev-turbo/build_ghcr.py --token-file /path/to/token
+python build_ghcr.py --token-file /path/to/token
 ```
 
 ### Verify Image
