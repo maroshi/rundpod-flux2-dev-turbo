@@ -20,7 +20,7 @@
 
 FROM ls250824/comfyui-runtime:07012026
 
-WORKDIR /workspace/ComfyUI
+WORKDIR /ComfyUI
 
 # ============================================================================
 # SECTION 1: ComfyUI Core Configuration
@@ -75,7 +75,7 @@ RUN python -m pip install --no-cache-dir --root-user-action ignore -c /constrain
 #   • ComfyUI_UltimateSDUpscale: High-quality upscaling
 #   • ComfyUI-JoyCaption: Image captioning (supports Flux.2)
 
-WORKDIR /workspace/ComfyUI/custom_nodes
+WORKDIR /ComfyUI/custom_nodes
 
 RUN git clone --depth=1 --filter=blob:none https://github.com/rgthree/rgthree-comfy.git && \
     git clone --depth=1 --filter=blob:none https://github.com/liusida/ComfyUI-Login.git && \
@@ -160,7 +160,7 @@ RUN set -eux; \
 #   • ComfyUI-RMBG: Background removal (GPU-optimized)
 #   • comfyui_controlnet_aux: ControlNet preprocessing
 
-WORKDIR /workspace/ComfyUI/custom_nodes
+WORKDIR /ComfyUI/custom_nodes
 
 RUN python -m pip install --no-cache-dir --root-user-action ignore -c /constraints.txt \
     diffusers psutil \
@@ -186,12 +186,12 @@ RUN python -m pip install --no-cache-dir --root-user-action ignore -c /constrain
 # ============================================================================
 # Activate SAM3 Segmentation Model
 # Segment Anything Model 3 - Advanced image segmentation capabilities
-WORKDIR /workspace/ComfyUI/custom_nodes/ComfyUI-SAM3
+WORKDIR /ComfyUI/custom_nodes/ComfyUI-SAM3
 RUN python install.py
 
 # Configure LoRA Manager with Settings Template
 # Enables automatic LoRA discovery and management from ~/models/loras
-WORKDIR /workspace/ComfyUI/custom_nodes/ComfyUI-Lora-Manager
+WORKDIR /ComfyUI/custom_nodes/ComfyUI-Lora-Manager
 COPY /configuration/lora-manager-settings.json settings.json.template
 RUN chmod 644 settings.json.template
 
@@ -207,7 +207,7 @@ RUN chmod 644 settings.json.template
 #   • flux2_dev_fp8mixed.safetensors (Main diffusion model) ~24GB
 #   • 4x_foolhardy_Remacri.pth (Upscaler) ~3.5MB
 
-WORKDIR /workspace/ComfyUI/models
+WORKDIR /ComfyUI/models
 
 RUN python3 << 'EOF'
 import os
@@ -289,18 +289,19 @@ EOF
 # SECTION 7: Create Model Directory Structure for LoRA & Assets
 # ============================================================================
 # Directory structure for ComfyUI models:
-#   /workspace/ComfyUI/models/loras/          - LoRA files (.safetensors)
-#   /workspace/ComfyUI/models/checkpoints/     - Diffusion models (Flux.2 dev)
-#   /workspace/ComfyUI/models/text_encoders/   - Text encoders (Mistral-3)
-#   /workspace/ComfyUI/models/vae/             - VAE encoders
-#   /workspace/ComfyUI/models/unet/            - GGUF quantized models
+#   /ComfyUI/models/loras/          - LoRA files (.safetensors)
+#   /ComfyUI/models/checkpoints/     - Diffusion models (Flux.2 dev)
+#   /ComfyUI/models/text_encoders/   - Text encoders (Mistral-3)
+#   /ComfyUI/models/vae/             - VAE encoders
+#   /ComfyUI/models/unet/            - GGUF quantized models
+# Note: These will be at /workspace/ComfyUI/models at runtime after move
 # These directories are created with write permissions for model downloads
-RUN mkdir -p /workspace/ComfyUI/models/loras && \
-    mkdir -p /workspace/ComfyUI/models/checkpoints && \
-    mkdir -p /workspace/ComfyUI/models/text_encoders && \
-    mkdir -p /workspace/ComfyUI/models/vae && \
-    mkdir -p /workspace/ComfyUI/models/unet && \
-    chmod -R 777 /workspace/ComfyUI/models
+RUN mkdir -p /ComfyUI/models/loras && \
+    mkdir -p /ComfyUI/models/checkpoints && \
+    mkdir -p /ComfyUI/models/text_encoders && \
+    mkdir -p /ComfyUI/models/vae && \
+    mkdir -p /ComfyUI/models/unet && \
+    chmod -R 777 /ComfyUI/models
 
 # Set Working Directory
 WORKDIR /
@@ -408,9 +409,9 @@ RUN rm -rf /awesome-comfyui-docs
 COPY workflows/ /workspace/workflows/
 
 # Also copy workflows to ComfyUI default workflows directory for immediate loading
-RUN mkdir -p /workspace/ComfyUI/user/default/workflows && \
-    cp /workspace/workflows/*.json /workspace/ComfyUI/user/default/workflows/ 2>/dev/null || true && \
-    ls -la /workspace/ComfyUI/user/default/workflows/
+RUN mkdir -p /ComfyUI/user/default/workflows && \
+    cp /workspace/workflows/*.json /ComfyUI/user/default/workflows/ 2>/dev/null || true && \
+    ls -la /ComfyUI/user/default/workflows/
 
 # ============================================================================
 # SECTION 12: Entrypoint Configuration
