@@ -351,33 +351,116 @@ download_workflow() {
 # Provisioning if comfyUI is responding running on GPU with CUDA
 if [[ "$HAS_COMFYUI" -eq 1 ]]; then
     # Pre-download FLUX.2 core models if missing
-    echo "📥 Provisioning FLUX.2 core models"
+    echo "📥 Provisioning FLUX.2 core models (48GB VRAM optimized - FP8/BF16)"
+
+    # Create model directories
+    mkdir -p /workspace/ComfyUI/models/{vae,text_encoders,unet,diffusion_models,loras}
 
     # Check and download VAE if missing
     if ! find /workspace/ComfyUI/models/vae -type f \( -name "*.safetensors" -o -name "*.pt" \) 2>/dev/null | grep -q .; then
-        echo "  ▶️  Downloading FLUX.2 VAE..."
-        python3 -c "from huggingface_hub import hf_hub_download; hf_hub_download(repo_id='Comfy-Org/flux2-dev', filename='flux2-vae.safetensors', local_dir='/workspace/ComfyUI/models/vae')" 2>/dev/null || echo "⚠️  VAE download failed"
+        echo "  ▶️  Downloading FLUX.2 VAE (~200MB)..."
+        python3 << 'EOF'
+from huggingface_hub import hf_hub_download
+import shutil
+import os
+
+try:
+    # Download to cache first
+    file_path = hf_hub_download(
+        repo_id='black-forest-labs/FLUX.2-dev',
+        filename='ae.safetensors'
+    )
+    # Copy to correct location
+    dest = '/workspace/ComfyUI/models/vae/flux2-vae.safetensors'
+    shutil.copy(file_path, dest)
+    print(f"✅ VAE downloaded to {dest}")
+except Exception as e:
+    print(f"⚠️  VAE download failed: {e}")
+EOF
+    else
+        echo "  ✅ VAE already exists"
     fi
 
     # Check and download Text Encoder if missing
     if ! find /workspace/ComfyUI/models/text_encoders -type f -name "*.safetensors" 2>/dev/null | grep -q .; then
-        echo "  ▶️  Downloading FLUX.2 Text Encoder..."
-        python3 -c "from huggingface_hub import hf_hub_download; hf_hub_download(repo_id='Comfy-Org/flux2-dev', filename='mistral_3_small_flux2_fp8.safetensors', local_dir='/workspace/ComfyUI/models/text_encoders')" 2>/dev/null || echo "⚠️  Text Encoder download failed"
+        echo "  ▶️  Downloading FLUX.2 Text Encoder BF16 (~5.6GB)..."
+        python3 << 'EOF'
+from huggingface_hub import hf_hub_download
+import shutil
+import os
+
+try:
+    # Download to cache first
+    file_path = hf_hub_download(
+        repo_id='Comfy-Org/flux2-dev',
+        filename='split_files/text_encoders/mistral_3_small_flux2_bf16.safetensors'
+    )
+    # Copy to correct location
+    dest = '/workspace/ComfyUI/models/text_encoders/mistral_3_small_flux2_bf16.safetensors'
+    shutil.copy(file_path, dest)
+    print(f"✅ Text Encoder downloaded to {dest}")
+except Exception as e:
+    print(f"⚠️  Text Encoder download failed: {e}")
+EOF
+    else
+        echo "  ✅ Text Encoder already exists"
     fi
 
-    # Check and download Diffusion Model if missing
-    if ! find /workspace/ComfyUI/models/diffusion_models -type f -name "*.safetensors" 2>/dev/null | grep -q .; then
-        echo "  ▶️  Downloading FLUX.2 Dev Turbo Diffusion Model (24GB - this will take a while)..."
-        python3 -c "from huggingface_hub import hf_hub_download; hf_hub_download(repo_id='Comfy-Org/flux2-dev', filename='flux2_dev_fp8mixed.safetensors', local_dir='/workspace/ComfyUI/models/diffusion_models')" 2>/dev/null || echo "⚠️  Diffusion model download failed"
+    # Check and download Diffusion Model if missing (check both unet and diffusion_models)
+    if ! find /workspace/ComfyUI/models/unet /workspace/ComfyUI/models/diffusion_models -type f -name "*.safetensors" 2>/dev/null | grep -q .; then
+        echo "  ▶️  Downloading FLUX.2 Dev FP8 Diffusion Model (~17GB - this will take a while)..."
+        python3 << 'EOF'
+from huggingface_hub import hf_hub_download
+import shutil
+import os
+
+try:
+    # Download to cache first
+    file_path = hf_hub_download(
+        repo_id='Comfy-Org/flux2-dev',
+        filename='split_files/diffusion_models/flux2_dev_fp8mixed.safetensors'
+    )
+    # Copy to both locations for compatibility
+    dest_unet = '/workspace/ComfyUI/models/unet/flux2_dev_fp8mixed.safetensors'
+    dest_diffusion = '/workspace/ComfyUI/models/diffusion_models/flux2_dev_fp8mixed.safetensors'
+
+    shutil.copy(file_path, dest_unet)
+    shutil.copy(file_path, dest_diffusion)
+    print(f"✅ Diffusion Model downloaded to {dest_unet} and {dest_diffusion}")
+except Exception as e:
+    print(f"⚠️  Diffusion model download failed: {e}")
+EOF
+    else
+        echo "  ✅ Diffusion Model already exists"
     fi
 
-    # Check and download LoRA if missing
-    if ! find /workspace/ComfyUI/models/loras -type f \( -name "*Flux*" -o -name "*flux*" \) 2>/dev/null | grep -q .; then
-        echo "  ▶️  Downloading FLUX.2 Turbo LoRA..."
-        python3 -c "from huggingface_hub import hf_hub_download; hf_hub_download(repo_id='ByteZSzn/Flux.2-Turbo-ComfyUI', filename='Flux2TurboComfyv2.safetensors', local_dir='/workspace/ComfyUI/models/loras')" 2>/dev/null || echo "⚠️  LoRA download failed"
+    # Check and download Turbo LoRA if missing
+    if ! find /workspace/ComfyUI/models/loras -type f \( -name "*Flux2Turbo*" -o -name "*flux2turbo*" \) 2>/dev/null | grep -q .; then
+        echo "  ▶️  Downloading FLUX.2 Turbo LoRA (~35MB)..."
+        python3 << 'EOF'
+from huggingface_hub import hf_hub_download
+import shutil
+import os
+
+try:
+    # Download to cache first
+    file_path = hf_hub_download(
+        repo_id='ByteZSzn/Flux.2-Turbo-ComfyUI',
+        filename='Flux2TurboComfyv2.safetensors'
+    )
+    # Copy to correct location
+    dest = '/workspace/ComfyUI/models/loras/Flux2TurboComfyv2.safetensors'
+    shutil.copy(file_path, dest)
+    print(f"✅ Turbo LoRA downloaded to {dest}")
+except Exception as e:
+    print(f"⚠️  LoRA download failed: {e}")
+EOF
+    else
+        echo "  ✅ Turbo LoRA already exists"
     fi
 
     echo "✅ FLUX.2 models provisioning complete"
+    echo "📊 Storage used for FLUX.2 models: ~23GB (VAE: 0.2GB, Text Encoder: 5.6GB, Diffusion: 17GB, LoRA: 0.035GB)"
 
     # provisioning workflows
     echo "📥 Provisioning workflows"
