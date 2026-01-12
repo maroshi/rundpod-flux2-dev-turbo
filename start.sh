@@ -156,10 +156,18 @@ download_model_HF() {
     local model_var="$1"
     local file_var="$2"
     local dest_dir="$3"
-	
-    if [[ -n "${!model_var}" && -n "${!file_var}" ]]; then		
+
+    if [[ -n "${!model_var}" && -n "${!file_var}" ]]; then
         local target="/ComfyUI/models/$dest_dir"
         mkdir -p "$target"
+
+        # Check if file already exists (including in subdirectories)
+        local filename=$(basename "${!file_var}")
+        if find "$target" -name "$filename" -o -name "*.safetensors" -o -name "*.pth" 2>/dev/null | grep -q .; then
+            echo "✅ [SKIP] ${filename} already exists in $target"
+            return 0
+        fi
+
         echo "ℹ️ [DOWNLOAD] Fetching ${!model_var}/${!file_var} → $target"
         hf download "${!model_var}" "${!file_var}" --local-dir "$target" || \
             echo "⚠️ Failed to download ${!model_var}/${!file_var}"
@@ -185,6 +193,12 @@ download_generic_HF() {
     local target="/ComfyUI/$dest_dir"
     mkdir -p "$target"
 
+    # Check if files already exist in target directory
+    if [[ -n "$(find "$target" -type f \( -name "*.safetensors" -o -name "*.pth" -o -name "*.bin" \) 2>/dev/null | head -1)" ]]; then
+        echo "✅ [SKIP] Models already exist in $target"
+        return 0
+    fi
+
     if [[ -n "$file" ]]; then
         echo "ℹ️ [DOWNLOAD] Fetching $model/$file → $target"
         hf download "$model" "$file" --local-dir "$target" || \
@@ -203,7 +217,7 @@ download_model_CIVITAI() {
     local url_var="$1"
     local dest_dir="$2"
 
-    # Geen URL → niets doen
+    # Check if URL variable is set
     if [[ -z "${!url_var}" ]]; then
         return 0
     fi
@@ -219,18 +233,24 @@ download_model_CIVITAI() {
 
     local url="${!url_var}"
 
-    # Probeer bestandsnaam te bepalen
+    # Try to determine filename
     local filename
     filename="$(basename "$(printf '%s\n' "$url" | sed 's/[?#].*$//')")"
 
-    # Fallback: onbekende naam (bij API download)
+    # Fallback: unknown name (for API downloads)
     if [[ "$filename" == "download" || "$filename" == "models" || -z "$filename" ]]; then
         filename=""
     fi
 
-    # Bestaat het bestand al?
+    # Check if file already exists
     if [[ -n "$filename" ]] && compgen -G "$target/$filename*" > /dev/null; then
         echo "✅ [SKIP] $filename already exists in $target"
+        return 0
+    fi
+
+    # Check if directory already has models
+    if [[ -n "$(find "$target" -type f \( -name "*.safetensors" -o -name "*.pth" \) 2>/dev/null | head -1)" ]]; then
+        echo "✅ [SKIP] Models already exist in $target - skipping CivitAI download"
         return 0
     fi
 

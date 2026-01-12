@@ -207,17 +207,19 @@ RUN chmod 644 settings.json.template
 #   • flux2_dev_fp8mixed.safetensors (Main diffusion model) ~24GB
 #   • 4x_foolhardy_Remacri.pth (Upscaler) ~3.5MB
 
-WORKDIR /workspace/ComfyUI/models
+WORKDIR /ComfyUI/models
 
 RUN python3 << 'EOF'
 import os
 import subprocess
+import shutil
 
 # Create model directories
 os.makedirs('vae', exist_ok=True)
 os.makedirs('text_encoders', exist_ok=True)
 os.makedirs('diffusion_models', exist_ok=True)
 os.makedirs('upscale_models', exist_ok=True)
+os.makedirs('loras', exist_ok=True)
 
 print("📥 Pre-downloading FLUX.2 models to image (~30-40GB)...")
 print("   This will take 20-30 minutes on first build...")
@@ -230,6 +232,10 @@ try:
         'split_files/vae/flux2-vae.safetensors',
         '--local-dir', 'vae', '--local-dir-use-symlinks', 'False'
     ], check=True)
+    # Move from split_files subdirectory
+    if os.path.exists('vae/split_files/vae/flux2-vae.safetensors'):
+        shutil.move('vae/split_files/vae/flux2-vae.safetensors', 'vae/flux2-vae.safetensors')
+        shutil.rmtree('vae/split_files', ignore_errors=True)
 
     # Download Text Encoder
     print("  ▶️  Text encoder (Mistral-3)...")
@@ -238,6 +244,10 @@ try:
         'split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors',
         '--local-dir', 'text_encoders', '--local-dir-use-symlinks', 'False'
     ], check=True)
+    # Move from split_files subdirectory
+    if os.path.exists('text_encoders/split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors'):
+        shutil.move('text_encoders/split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors', 'text_encoders/mistral_3_small_flux2_fp8.safetensors')
+        shutil.rmtree('text_encoders/split_files', ignore_errors=True)
 
     # Download Main Diffusion Model (LARGEST FILE ~24GB)
     print("  ▶️  FLUX.2 dev turbo model (24GB - this takes time)...")
@@ -246,6 +256,10 @@ try:
         'split_files/diffusion_models/flux2_dev_fp8mixed.safetensors',
         '--local-dir', 'diffusion_models', '--local-dir-use-symlinks', 'False'
     ], check=True)
+    # Move from split_files subdirectory
+    if os.path.exists('diffusion_models/split_files/diffusion_models/flux2_dev_fp8mixed.safetensors'):
+        shutil.move('diffusion_models/split_files/diffusion_models/flux2_dev_fp8mixed.safetensors', 'diffusion_models/flux2_dev_fp8mixed.safetensors')
+        shutil.rmtree('diffusion_models/split_files', ignore_errors=True)
 
     # Download Upscaler
     print("  ▶️  Upscaler (4x_foolhardy_Remacri)...")
@@ -253,6 +267,14 @@ try:
         'hf_transfer', 'download', 'LS110824/upscale',
         '4x_foolhardy_Remacri.pth',
         '--local-dir', 'upscale_models', '--local-dir-use-symlinks', 'False'
+    ], check=True)
+
+    # Download Flux.2 Turbo LoRA
+    print("  ▶️  Flux.2 Turbo LoRA (Flux2TurboComfyv2.safetensors)...")
+    subprocess.run([
+        'hf_transfer', 'download', 'ByteZSzn/Flux.2-Turbo-ComfyUI',
+        'Flux2TurboComfyv2.safetensors',
+        '--local-dir', 'loras', '--local-dir-use-symlinks', 'False'
     ], check=True)
 
     print("✅ All models downloaded successfully!")
@@ -267,18 +289,18 @@ EOF
 # SECTION 7: Create Model Directory Structure for LoRA & Assets
 # ============================================================================
 # Directory structure for ComfyUI models:
-#   /workspace/ComfyUI/models/loras/          - LoRA files (.safetensors)
-#   /workspace/ComfyUI/models/checkpoints/     - Diffusion models (Flux.2 dev)
-#   /workspace/ComfyUI/models/text_encoders/   - Text encoders (Mistral-3)
-#   /workspace/ComfyUI/models/vae/             - VAE encoders
-#   /workspace/ComfyUI/models/unet/            - GGUF quantized models
+#   /ComfyUI/models/loras/          - LoRA files (.safetensors)
+#   /ComfyUI/models/checkpoints/     - Diffusion models (Flux.2 dev)
+#   /ComfyUI/models/text_encoders/   - Text encoders (Mistral-3)
+#   /ComfyUI/models/vae/             - VAE encoders
+#   /ComfyUI/models/unet/            - GGUF quantized models
 # These directories are created with write permissions for model downloads
-RUN mkdir -p /workspace/ComfyUI/models/loras && \
-    mkdir -p /workspace/ComfyUI/models/checkpoints && \
-    mkdir -p /workspace/ComfyUI/models/text_encoders && \
-    mkdir -p /workspace/ComfyUI/models/vae && \
-    mkdir -p /workspace/ComfyUI/models/unet && \
-    chmod -R 777 /workspace/ComfyUI/models
+RUN mkdir -p /ComfyUI/models/loras && \
+    mkdir -p /ComfyUI/models/checkpoints && \
+    mkdir -p /ComfyUI/models/text_encoders && \
+    mkdir -p /ComfyUI/models/vae && \
+    mkdir -p /ComfyUI/models/unet && \
+    chmod -R 777 /ComfyUI/models
 
 # Set Working Directory
 WORKDIR /
@@ -386,8 +408,9 @@ RUN rm -rf /awesome-comfyui-docs
 COPY workflows/ /workspace/workflows/
 
 # Also copy workflows to ComfyUI default workflows directory for immediate loading
-RUN mkdir -p /workspace/ComfyUI/user/default/workflows && \
-    cp /workspace/workflows/*.json /workspace/ComfyUI/user/default/workflows/ 2>/dev/null || true
+RUN mkdir -p /ComfyUI/user/default/workflows && \
+    cp /workspace/workflows/*.json /ComfyUI/user/default/workflows/ 2>/dev/null || true && \
+    ls -la /ComfyUI/user/default/workflows/
 
 # ============================================================================
 # SECTION 12: Entrypoint Configuration
