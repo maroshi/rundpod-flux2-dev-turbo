@@ -108,7 +108,7 @@ def check_dockerfile():
 def build_image(image_uri):
     """Build Docker image"""
     log_info(f"Building image: {image_uri}")
-    cmd = ["docker", "build", "-t", image_uri, DOCKERFILE_PATH]
+    cmd = ["docker", "build", "--no-cache", "-t", image_uri, DOCKERFILE_PATH]
 
     if run_command(cmd):
         log_success(f"Image built successfully: {image_uri}")
