@@ -103,9 +103,9 @@ fi
 # Start ComfyUI (HTTP port 8188)
 HAS_COMFYUI=0
 
-if [[ "$HAS_CUDA" -eq 1 ]]; then 
-	
-	SETTINGS_DIR="/ComfyUI/custom_nodes/ComfyUI-Lora-Manager"
+if [[ "$HAS_CUDA" -eq 1 ]]; then
+
+	SETTINGS_DIR="/workspace/ComfyUI/custom_nodes/ComfyUI-Lora-Manager"
 	SETTINGS_FILE="$SETTINGS_DIR/settings.json"
 	TEMPLATE_FILE="$SETTINGS_DIR/settings.json.template"
 	
@@ -123,7 +123,7 @@ if [[ "$HAS_CUDA" -eq 1 ]]; then
 	
 	echo "▶️ ComfyUI service starting (CUDA available)"
 
-    python3 /ComfyUI/main.py ${COMFYUI_EXTRA_ARGUMENTS:---listen --enable-manager --preview-method auto} &
+    python3 /workspace/ComfyUI/main.py ${COMFYUI_EXTRA_ARGUMENTS:---listen --enable-manager --preview-method auto} &
 
     # Wait until ComfyUI is ready
     MAX_TRIES=40
@@ -158,7 +158,7 @@ download_model_HF() {
     local dest_dir="$3"
 
     if [[ -n "${!model_var}" && -n "${!file_var}" ]]; then
-        local target="/ComfyUI/models/$dest_dir"
+        local target="/workspace/ComfyUI/models/$dest_dir"
         mkdir -p "$target"
 
         # Check if file already exists (including in subdirectories)
@@ -190,7 +190,7 @@ download_generic_HF() {
         file="${!file_var}"
     fi
 
-    local target="/ComfyUI/$dest_dir"
+    local target="/workspace/ComfyUI/$dest_dir"
     mkdir -p "$target"
 
     # Check if files already exist in target directory
@@ -228,7 +228,7 @@ download_model_CIVITAI() {
         return 1
     fi
 
-    local target="/ComfyUI/models/$dest_dir"
+    local target="/workspace/ComfyUI/models/$dest_dir"
     mkdir -p "$target"
 
     local url="${!url_var}"
@@ -273,7 +273,7 @@ download_workflow() {
     fi
 
     # Destination directory
-    local dest_dir="/ComfyUI/user/default/workflows/"
+    local dest_dir="/workspace/ComfyUI/user/default/workflows/"
     mkdir -p "$dest_dir"
 
     # Get filename from URL
