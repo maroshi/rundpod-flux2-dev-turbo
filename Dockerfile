@@ -196,6 +196,74 @@ COPY /configuration/lora-manager-settings.json settings.json.template
 RUN chmod 644 settings.json.template
 
 # ============================================================================
+# SECTION 6.5: Pre-download FLUX.2 Models into Image
+# ============================================================================
+# Download core FLUX.2 models during image build to speed up container startup
+# This removes the need for multi-gigabyte downloads at runtime!
+#
+# Models downloaded (~30-40GB total):
+#   • flux2-vae.safetensors (VAE encoder) ~0.5GB
+#   • mistral_3_small_flux2_fp8.safetensors (Text encoder) ~2GB
+#   • flux2_dev_fp8mixed.safetensors (Main diffusion model) ~24GB
+#   • 4x_foolhardy_Remacri.pth (Upscaler) ~3.5MB
+
+WORKDIR /workspace/ComfyUI/models
+
+RUN python3 << 'EOF'
+import os
+import subprocess
+
+# Create model directories
+os.makedirs('vae', exist_ok=True)
+os.makedirs('text_encoders', exist_ok=True)
+os.makedirs('diffusion_models', exist_ok=True)
+os.makedirs('upscale_models', exist_ok=True)
+
+print("📥 Pre-downloading FLUX.2 models to image (~30-40GB)...")
+print("   This will take 20-30 minutes on first build...")
+
+try:
+    # Download VAE
+    print("  ▶️  VAE encoder...")
+    subprocess.run([
+        'hf_transfer', 'download', 'Comfy-Org/flux2-dev',
+        'split_files/vae/flux2-vae.safetensors',
+        '--local-dir', 'vae', '--local-dir-use-symlinks', 'False'
+    ], check=True)
+
+    # Download Text Encoder
+    print("  ▶️  Text encoder (Mistral-3)...")
+    subprocess.run([
+        'hf_transfer', 'download', 'Comfy-Org/flux2-dev',
+        'split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors',
+        '--local-dir', 'text_encoders', '--local-dir-use-symlinks', 'False'
+    ], check=True)
+
+    # Download Main Diffusion Model (LARGEST FILE ~24GB)
+    print("  ▶️  FLUX.2 dev turbo model (24GB - this takes time)...")
+    subprocess.run([
+        'hf_transfer', 'download', 'Comfy-Org/flux2-dev',
+        'split_files/diffusion_models/flux2_dev_fp8mixed.safetensors',
+        '--local-dir', 'diffusion_models', '--local-dir-use-symlinks', 'False'
+    ], check=True)
+
+    # Download Upscaler
+    print("  ▶️  Upscaler (4x_foolhardy_Remacri)...")
+    subprocess.run([
+        'hf_transfer', 'download', 'LS110824/upscale',
+        '4x_foolhardy_Remacri.pth',
+        '--local-dir', 'upscale_models', '--local-dir-use-symlinks', 'False'
+    ], check=True)
+
+    print("✅ All models downloaded successfully!")
+
+except Exception as e:
+    print(f"⚠️ Warning: Model download error (non-critical): {e}")
+    print("   Models will be downloaded at startup instead")
+
+EOF
+
+# ============================================================================
 # SECTION 7: Create Model Directory Structure for LoRA & Assets
 # ============================================================================
 # Directory structure for ComfyUI models:
@@ -316,6 +384,10 @@ RUN rm -rf /awesome-comfyui-docs
 # When workflows are updated frequently, only this layer will be rebuilt,
 # all previous layers will be reused from cache.
 COPY workflows/ /workspace/workflows/
+
+# Also copy workflows to ComfyUI default workflows directory for immediate loading
+RUN mkdir -p /workspace/ComfyUI/user/default/workflows && \
+    cp /workspace/workflows/*.json /workspace/ComfyUI/user/default/workflows/ 2>/dev/null || true
 
 # ============================================================================
 # SECTION 12: Entrypoint Configuration
