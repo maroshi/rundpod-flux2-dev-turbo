@@ -211,35 +211,70 @@ WORKDIR /ComfyUI/models
 
 RUN python3 << 'EOF'
 import os
+import sys
 import shutil
-from huggingface_hub import hf_hub_download
 
-print("📥 Pre-downloading FLUX.2 models to image (~30-40GB)...")
-print("   This will take 20-30 minutes on first build...")
+# Force unbuffered output
+sys.stdout = os.__stdout__
+sys.stderr = os.__stderr__
+
+print("DEBUG: Starting model download script...", flush=True)
+
+try:
+    from huggingface_hub import hf_hub_download
+    print("✓ huggingface_hub imported successfully", flush=True)
+except ImportError as e:
+    print(f"ERROR: Failed to import huggingface_hub: {e}", flush=True)
+    sys.exit(1)
+
+print("📥 Pre-downloading FLUX.2 models to image (~30-40GB)...", flush=True)
+print("   This will take 20-30 minutes on first build...", flush=True)
 
 # Create model directories
+print("DEBUG: Creating model directories...", flush=True)
 os.makedirs('vae', exist_ok=True)
 os.makedirs('text_encoders', exist_ok=True)
 os.makedirs('diffusion_models', exist_ok=True)
 os.makedirs('upscale_models', exist_ok=True)
 os.makedirs('loras', exist_ok=True)
+print("DEBUG: Model directories created", flush=True)
 
-print("  ▶️  VAE encoder (flux2-vae.safetensors)...")
-hf_hub_download(repo_id="Comfy-Org/flux2-dev", filename="flux2-vae.safetensors", local_dir="vae")
+print("  ▶️  VAE encoder (flux2-vae.safetensors)...", flush=True)
+try:
+    hf_hub_download(repo_id="Comfy-Org/flux2-dev", filename="flux2-vae.safetensors", local_dir="vae")
+    print("      ✓ Downloaded", flush=True)
+except Exception as e:
+    print(f"      ERROR: {e}", flush=True)
 
-print("  ▶️  Text encoder (mistral_3_small_flux2_fp8.safetensors)...")
-hf_hub_download(repo_id="Comfy-Org/flux2-dev", filename="mistral_3_small_flux2_fp8.safetensors", local_dir="text_encoders")
+print("  ▶️  Text encoder (mistral_3_small_flux2_fp8.safetensors)...", flush=True)
+try:
+    hf_hub_download(repo_id="Comfy-Org/flux2-dev", filename="mistral_3_small_flux2_fp8.safetensors", local_dir="text_encoders")
+    print("      ✓ Downloaded", flush=True)
+except Exception as e:
+    print(f"      ERROR: {e}", flush=True)
 
-print("  ▶️  FLUX.2 dev diffusion model (flux2_dev_fp8mixed.safetensors) - 24GB...")
-hf_hub_download(repo_id="Comfy-Org/flux2-dev", filename="flux2_dev_fp8mixed.safetensors", local_dir="diffusion_models")
+print("  ▶️  FLUX.2 dev diffusion model (flux2_dev_fp8mixed.safetensors) - 24GB...", flush=True)
+try:
+    hf_hub_download(repo_id="Comfy-Org/flux2-dev", filename="flux2_dev_fp8mixed.safetensors", local_dir="diffusion_models")
+    print("      ✓ Downloaded", flush=True)
+except Exception as e:
+    print(f"      ERROR: {e}", flush=True)
 
-print("  ▶️  Upscaler (4x_foolhardy_Remacri.pth)...")
-hf_hub_download(repo_id="LS110824/upscale", filename="4x_foolhardy_Remacri.pth", local_dir="upscale_models")
+print("  ▶️  Upscaler (4x_foolhardy_Remacri.pth)...", flush=True)
+try:
+    hf_hub_download(repo_id="LS110824/upscale", filename="4x_foolhardy_Remacri.pth", local_dir="upscale_models")
+    print("      ✓ Downloaded", flush=True)
+except Exception as e:
+    print(f"      ERROR: {e}", flush=True)
 
-print("  ▶️  Flux.2 Turbo LoRA (Flux2TurboComfyv2.safetensors)...")
-hf_hub_download(repo_id="ByteZSzn/Flux.2-Turbo-ComfyUI", filename="Flux2TurboComfyv2.safetensors", local_dir="loras")
+print("  ▶️  Flux.2 Turbo LoRA (Flux2TurboComfyv2.safetensors)...", flush=True)
+try:
+    hf_hub_download(repo_id="ByteZSzn/Flux.2-Turbo-ComfyUI", filename="Flux2TurboComfyv2.safetensors", local_dir="loras")
+    print("      ✓ Downloaded", flush=True)
+except Exception as e:
+    print(f"      ERROR: {e}", flush=True)
 
-print("✅ All models downloaded successfully!")
+print("✅ All models downloaded successfully!", flush=True)
 EOF
 
 # ============================================================================
