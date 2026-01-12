@@ -349,17 +349,46 @@ download_workflow() {
 }
 
 # Provisioning if comfyUI is responding running on GPU with CUDA
-if [[ "$HAS_COMFYUI" -eq 1 ]]; then  
+if [[ "$HAS_COMFYUI" -eq 1 ]]; then
+    # Pre-download FLUX.2 core models if missing
+    echo "📥 Provisioning FLUX.2 core models"
+
+    # Check and download VAE if missing
+    if ! find /workspace/ComfyUI/models/vae -type f \( -name "*.safetensors" -o -name "*.pt" \) 2>/dev/null | grep -q .; then
+        echo "  ▶️  Downloading FLUX.2 VAE..."
+        python3 -c "from huggingface_hub import hf_hub_download; hf_hub_download(repo_id='Comfy-Org/flux2-dev', filename='flux2-vae.safetensors', local_dir='/workspace/ComfyUI/models/vae')" 2>/dev/null || echo "⚠️  VAE download failed"
+    fi
+
+    # Check and download Text Encoder if missing
+    if ! find /workspace/ComfyUI/models/text_encoders -type f -name "*.safetensors" 2>/dev/null | grep -q .; then
+        echo "  ▶️  Downloading FLUX.2 Text Encoder..."
+        python3 -c "from huggingface_hub import hf_hub_download; hf_hub_download(repo_id='Comfy-Org/flux2-dev', filename='mistral_3_small_flux2_fp8.safetensors', local_dir='/workspace/ComfyUI/models/text_encoders')" 2>/dev/null || echo "⚠️  Text Encoder download failed"
+    fi
+
+    # Check and download Diffusion Model if missing
+    if ! find /workspace/ComfyUI/models/diffusion_models -type f -name "*.safetensors" 2>/dev/null | grep -q .; then
+        echo "  ▶️  Downloading FLUX.2 Dev Turbo Diffusion Model (24GB - this will take a while)..."
+        python3 -c "from huggingface_hub import hf_hub_download; hf_hub_download(repo_id='Comfy-Org/flux2-dev', filename='flux2_dev_fp8mixed.safetensors', local_dir='/workspace/ComfyUI/models/diffusion_models')" 2>/dev/null || echo "⚠️  Diffusion model download failed"
+    fi
+
+    # Check and download LoRA if missing
+    if ! find /workspace/ComfyUI/models/loras -type f \( -name "*Flux*" -o -name "*flux*" \) 2>/dev/null | grep -q .; then
+        echo "  ▶️  Downloading FLUX.2 Turbo LoRA..."
+        python3 -c "from huggingface_hub import hf_hub_download; hf_hub_download(repo_id='ByteZSzn/Flux.2-Turbo-ComfyUI', filename='Flux2TurboComfyv2.safetensors', local_dir='/workspace/ComfyUI/models/loras')" 2>/dev/null || echo "⚠️  LoRA download failed"
+    fi
+
+    echo "✅ FLUX.2 models provisioning complete"
+
     # provisioning workflows
     echo "📥 Provisioning workflows"
-	
+
     for i in $(seq 1 50); do
         VAR="WORKFLOW${i}"
         download_workflow "$VAR"
     done
-	
-    # provisioning Models and loras
-    echo "📥 Provisioning models HF"
+
+    # provisioning Models and loras (custom models via env vars)
+    echo "📥 Provisioning custom models via environment variables"
 	
     # categorie:  NAME:SUFFIX:MAP
     CATEGORIES_HF=(
