@@ -105,10 +105,15 @@ def check_dockerfile():
         log_error(f"Dockerfile not found at {dockerfile}")
         return False
 
-def build_image(image_uri):
+def build_image(image_uri, no_cache=False):
     """Build Docker image"""
     log_info(f"Building image: {image_uri}")
-    cmd = ["docker", "build", "--no-cache", "-t", image_uri, DOCKERFILE_PATH]
+    cmd = ["docker", "build"]
+
+    if no_cache:
+        cmd.append("--no-cache")
+
+    cmd.extend(["-t", image_uri, DOCKERFILE_PATH])
 
     if run_command(cmd):
         log_success(f"Image built successfully: {image_uri}")
@@ -209,10 +214,12 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python build_ghcr.py                              # Build and push with auto-generated tag
+  python build_ghcr.py                              # Build and push (use cache)
+  python build_ghcr.py --no-cache                   # Build and push (force rebuild, no cache)
   python build_ghcr.py --tag v1.0                   # Build and push with version tag
   python build_ghcr.py --tag latest                 # Build and push as latest
   python build_ghcr.py --no-push                    # Build only, don't push
+  python build_ghcr.py --no-cache --tag v1.0        # Force rebuild with version tag
   IMAGE_TAG=v1.0 python build_ghcr.py               # Use environment variable
         """
     )
@@ -253,6 +260,12 @@ Examples:
         help="Skip GHCR authentication (if already logged in)"
     )
 
+    parser.add_argument(
+        "--no-cache",
+        action="store_true",
+        help="Force rebuild without using Docker cache (useful for ensuring models are pre-downloaded)"
+    )
+
     args = parser.parse_args()
 
     # Use provided registry and username
@@ -283,7 +296,7 @@ Examples:
         return 1
 
     # Build image
-    if not build_image(image_uri):
+    if not build_image(image_uri, no_cache=args.no_cache):
         return 1
 
     print()
