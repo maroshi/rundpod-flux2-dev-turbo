@@ -227,7 +227,7 @@ WORKDIR /
 COPY start.sh onworkspace/comfyui-on-workspace.sh onworkspace/files-on-workspace.sh onworkspace/test-on-workspace.sh onworkspace/docs-on-workspace.sh /
 RUN chmod 755 /start.sh /comfyui-on-workspace.sh /files-on-workspace.sh /test-on-workspace.sh /docs-on-workspace.sh
 
-COPY /documentation/README.md /README.md
+COPY README.md /README.md
 RUN chmod 664 /README.md
 
 COPY test/ /test
