@@ -102,7 +102,20 @@ def run_command(cmd, description=""):
     logger.debug(f"Executing: {cmd_str}")
 
     try:
-        result = subprocess.run(cmd, check=False, capture_output=False)
+        result = subprocess.run(cmd, check=False, capture_output=True, text=True)
+
+        # Log both stdout and stderr to file
+        if result.stdout:
+            logger.info(result.stdout)
+        if result.stderr:
+            logger.warning(result.stderr)
+
+        # Print to console for user feedback
+        if result.stdout:
+            print(result.stdout, end='')
+        if result.stderr:
+            print(result.stderr, end='', file=sys.__stderr__)
+
         if result.returncode == 0:
             logger.debug(f"Command succeeded: {cmd_str}")
             return True
