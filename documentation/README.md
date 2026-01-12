@@ -8,15 +8,13 @@
 ## Pre-Installed Custom Nodes
 
 - Open ComfyUI manager installed custom nodes.
-- [custom_nodes](docs/ComfyUI_image_custom_nodes.md)
-
 ## Documentation
 
-- [Model provisioning](docs/ComfyUI_image_provisioning.md)
-- [Resources](docs/ComfyUI_image_resources.md)
-- [Image setup](docs/ComfyUI_image_image_setup.md)
-- [Environment variables](docs/ComfyUI_image_configuration.md)
-- [Hardware Requirements](docs/ComfyUI_image_hardware.md)
+- [📖 Complete Documentation Table of Contents](MAIN.md)
+- [Model Provisioning Guide](ComfyUI_image_provisioning.md)
+- [Flux.2 Turbo LoRA Setup](FLUX2_TURBO_LORA_SETUP.md)
+- [REST API Guide](REST_API_GUIDE.md)
+- [GitHub Container Registry Setup](GHCR_SETUP.md)
 - [Tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial)
 - [Update](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_update)
 

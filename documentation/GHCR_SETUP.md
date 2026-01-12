@@ -373,9 +373,9 @@ volumes:
 
 ## Related Documentation
 
-- **Flux.2 Turbo Setup**: See `rundpod-flux2-dev-turbo/FLUX2_TURBO_WORKFLOWS_API_SETUP.md`
-- **REST API Guide**: See `rundpod-flux2-dev-turbo/docs/REST_API_GUIDE.md`
-- **LoRA Setup**: See `rundpod-flux2-dev-turbo/docs/provisioning/hf_flux.2_turbo_lora.md`
+- **Flux.2 Turbo Setup**: See `FLUX2_TURBO_WORKFLOWS_API_SETUP.md`
+- **REST API Guide**: See `REST_API_GUIDE.md`
+- **LoRA Setup**: See `provisioning/hf_flux.2_turbo_lora.md`
 
 ---
 

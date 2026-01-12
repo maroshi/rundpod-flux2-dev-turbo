@@ -714,6 +714,6 @@ nvidia-smi
 ## References
 
 - **ComfyUI API Docs:** https://docs.comfy.org
-- **Flux.2 Turbo Guide:** `docs/provisioning/hf_flux.2_turbo_lora.md`
+- **Flux.2 Turbo Guide:** `provisioning/hf_flux.2_turbo_lora.md`
 - **Default Workflow:** `workflows/flux2_turbo_default.json`
 

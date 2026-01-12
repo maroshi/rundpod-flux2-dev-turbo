@@ -233,7 +233,7 @@ RUN chmod 664 /README.md
 COPY test/ /test
 RUN chmod -R 644 /test
 
-COPY docs/ /docs
+COPY documentation/ /docs
 RUN chmod -R 644 /docs
 
 # ============================================================================

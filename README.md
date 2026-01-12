@@ -38,7 +38,8 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 
 - [⚙️ Start](https://awesome-comfyui.rozenlaan.site/ComfyUI_image/)
 - [📚 Tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial/)
-- [⚙️ Provisioning examples](docs/ComfyUI_image_provisioning.md)
+- [⚙️ Provisioning examples](documentation/ComfyUI_image_provisioning.md)
+- [📖 Complete Documentation](documentation/MAIN.md)
 
 ## 🐳 Docker Images
 

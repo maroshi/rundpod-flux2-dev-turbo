@@ -251,8 +251,8 @@ fi
 
 echo ""
 log_info "Documentation:"
-echo "  • REST API Guide:    docs/REST_API_GUIDE.md"
-echo "  • Flux.2 LoRA Guide: docs/provisioning/hf_flux.2_turbo_lora.md"
+echo "  • REST API Guide:    documentation/REST_API_GUIDE.md"
+echo "  • Flux.2 LoRA Guide: documentation/provisioning/hf_flux.2_turbo_lora.md"
 echo ""
 
 ################################################################################

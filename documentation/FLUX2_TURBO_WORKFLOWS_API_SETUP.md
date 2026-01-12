@@ -58,13 +58,14 @@ rundpod-flux2-dev-turbo/
 │   └── requirements.txt                  # API dependencies
 ├── start-with-api.sh                     # Combined startup script
 ├── start.sh                              # Original ComfyUI start
-├── docs/
-│   ├── REST_API_GUIDE.md                 # API documentation
-│   ├── provisioning/
-│   │   └── hf_flux.2_turbo_lora.md       # LoRA setup guide
-│   └── ...
-├── FLUX2_TURBO_SETUP.md                  # Main setup guide
-└── FLUX2_TURBO_WORKFLOWS_API_SETUP.md    # This file
+└── documentation/
+    ├── REST_API_GUIDE.md                 # API documentation
+    ├── FLUX2_TURBO_LORA_SETUP.md         # Main setup guide
+    ├── FLUX2_TURBO_WORKFLOWS_API_SETUP.md # This file
+    ├── GHCR_SETUP.md                     # GitHub Container Registry setup
+    ├── provisioning/
+    │   └── hf_flux.2_turbo_lora.md       # LoRA setup guide
+    └── ...
 ```
 
 ## Default Workflow Structure
@@ -492,15 +493,15 @@ export DEBUG=false
 
 ## Documentation
 
-- **REST API Guide**: `docs/REST_API_GUIDE.md` (Complete API reference)
-- **Flux.2 LoRA Setup**: `docs/provisioning/hf_flux.2_turbo_lora.md` (Model details)
+- **REST API Guide**: `REST_API_GUIDE.md` (Complete API reference)
+- **Flux.2 LoRA Setup**: `provisioning/hf_flux.2_turbo_lora.md` (Model details)
 - **Docker Setup**: `FLUX2_TURBO_SETUP.md` (Container configuration)
 
 ## Support
 
 For issues:
 1. Check logs: `tail -f /tmp/comfyui_api.log`
-2. Review REST API Guide: `docs/REST_API_GUIDE.md`
+2. Review REST API Guide: `REST_API_GUIDE.md`
 3. Check GitHub issues: https://github.com/maroshi/rundpod-flux2-dev-turbo/issues
 
 ---

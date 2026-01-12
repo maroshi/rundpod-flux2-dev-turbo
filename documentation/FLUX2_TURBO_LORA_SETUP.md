@@ -49,7 +49,7 @@ The Dockerfile has been updated with comprehensive documentation and LoRA suppor
 
 ### 2. **Comprehensive Documentation**
 
-New documentation file created: `docs/provisioning/hf_flux.2_turbo_lora.md`
+New documentation file created: `provisioning/hf_flux.2_turbo_lora.md`
 
 **Covers:**
 - Overview and benefits of Flux.2 Turbo LoRA
@@ -66,7 +66,7 @@ New documentation file created: `docs/provisioning/hf_flux.2_turbo_lora.md`
 
 ### 3. **Updated Documentation Index**
 
-The main provisioning guide (`docs/ComfyUI_image_provisioning.md`) now includes:
+The main provisioning guide (`ComfyUI_image_provisioning.md`) now includes:
 ```markdown
 ## Flux.2
 
@@ -386,7 +386,7 @@ All required dependencies are pre-installed in the Docker image:
 ## References
 
 - **Dockerfile:** Complete build instructions with detailed comments
-- **Flux.2 Turbo LoRA Guide:** `docs/provisioning/hf_flux.2_turbo_lora.md`
+- **Flux.2 Turbo LoRA Guide:** `provisioning/hf_flux.2_turbo_lora.md`
 - **HuggingFace Models:**
   - [black-forest-labs/FLUX.2-dev](https://huggingface.co/black-forest-labs/FLUX.2-dev)
   - [fal/FLUX.2-dev-Turbo](https://huggingface.co/fal/FLUX.2-dev-Turbo)
