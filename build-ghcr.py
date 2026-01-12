@@ -36,6 +36,7 @@ Environment Variables:
 import subprocess
 import os
 import argparse
+import logging
 from datetime import datetime
 from pathlib import Path
 
@@ -43,6 +44,21 @@ from pathlib import Path
 REGISTRY = os.environ.get("GHCR_REGISTRY", "ghcr.io")
 USERNAME = os.environ.get("GHCR_USERNAME", "maroshi")
 IMAGE_NAME = "flux2-dev-turbo"
+
+# Setup logging to file
+LOG_DIR = Path("build_logs")
+LOG_DIR.mkdir(exist_ok=True)
+LOG_FILE = LOG_DIR / f"build-{datetime.now().strftime('%Y%m%d-%H%M%S')}.log"
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+# File handler for log file
+file_handler = logging.FileHandler(LOG_FILE)
+file_handler.setLevel(logging.DEBUG)
+file_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
 
 # Detect if we're running from rundpod directory or parent directory
 script_dir = Path(__file__).parent
@@ -63,26 +79,39 @@ class Colors:
 
 def log_info(msg):
     print(f"{Colors.BLUE}[INFO]{Colors.NC} {msg}")
+    logger.info(msg)
 
 def log_success(msg):
     print(f"{Colors.GREEN}[✓]{Colors.NC} {msg}")
+    logger.info(f"[SUCCESS] {msg}")
 
 def log_warning(msg):
     print(f"{Colors.YELLOW}[WARN]{Colors.NC} {msg}")
+    logger.warning(msg)
 
 def log_error(msg):
     print(f"{Colors.RED}[ERROR]{Colors.NC} {msg}")
+    logger.error(msg)
 
 def run_command(cmd, description=""):
     """Run a shell command and return success status"""
     if description:
         log_info(description)
 
+    cmd_str = " ".join(cmd)
+    logger.debug(f"Executing: {cmd_str}")
+
     try:
         result = subprocess.run(cmd, check=False, capture_output=False)
-        return result.returncode == 0
+        if result.returncode == 0:
+            logger.debug(f"Command succeeded: {cmd_str}")
+            return True
+        else:
+            logger.debug(f"Command failed with exit code {result.returncode}: {cmd_str}")
+            return False
     except Exception as e:
         log_error(f"Failed to execute command: {e}")
+        logger.exception(f"Exception during command execution: {cmd_str}")
         return False
 
 def check_docker():
@@ -278,15 +307,20 @@ Examples:
     # Build full image URI
     image_uri = f"{registry}/{username}/{IMAGE_NAME}:{tag}"
 
-    print(f"\n{Colors.BLUE}═══════════════════════════════════════════════════════════{Colors.NC}")
+    header = "═══════════════════════════════════════════════════════════"
+    print(f"\n{Colors.BLUE}{header}{Colors.NC}")
     print(f"{Colors.BLUE}Docker Image Build and Push to GHCR{Colors.NC}")
-    print(f"{Colors.BLUE}═══════════════════════════════════════════════════════════{Colors.NC}\n")
+    print(f"{Colors.BLUE}{header}{Colors.NC}\n")
+    logger.info(header)
+    logger.info("Docker Image Build and Push to GHCR")
+    logger.info(header)
 
     log_info(f"Registry: {registry}")
     log_info(f"Username: {username}")
     log_info(f"Image: {IMAGE_NAME}")
     log_info(f"Tag: {tag}")
-    log_info(f"Full URI: {image_uri}\n")
+    log_info(f"Full URI: {image_uri}")
+    logger.info(f"Log file: {LOG_FILE}")
 
     # Pre-flight checks
     if not check_docker():
@@ -329,9 +363,12 @@ Examples:
             else:
                 log_warning("Could not push latest tag")
 
-    print(f"\n{Colors.BLUE}═══════════════════════════════════════════════════════════{Colors.NC}")
+    print(f"\n{Colors.BLUE}{header}{Colors.NC}")
     print(f"{Colors.GREEN}✓ Build complete!{Colors.NC}")
-    print(f"{Colors.BLUE}═══════════════════════════════════════════════════════════{Colors.NC}\n")
+    print(f"{Colors.BLUE}{header}{Colors.NC}\n")
+    logger.info(header)
+    logger.info("Build complete!")
+    logger.info(header)
 
     log_info(f"Image built: {image_uri}")
 
@@ -342,6 +379,7 @@ Examples:
         log_info("Use 'docker push' to upload the image manually:")
         log_info(f"  docker push {image_uri}")
 
+    logger.info(f"Build log saved to: {LOG_FILE}")
     print()
 
     return 0
