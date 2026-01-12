@@ -22,13 +22,6 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 - Supports advanced workflows for **image generation** and **enhancement** using pre-installed custom nodes.
 - Compatible with high-performance NVIDIA GPUs.
 
-## 📚 Documentation
-
-- [📖 Complete Documentation Table of Contents](documentation/MAIN.md)
-- [⚙️ Provisioning examples](documentation/ComfyUI_image_provisioning.md)
-- [⚙️ Start](https://awesome-comfyui.rozenlaan.site/ComfyUI_image/)
-- [📚 Tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial/)
-
 ## 🐳 Docker Images
 
 ### Base Images
@@ -40,6 +33,13 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 ### Custom Image
 
 docker pull ls250824/run-comfyui-image:<[![Docker Image Version](https://img.shields.io/docker/v/ls250824/run-comfyui-image)](https://hub.docker.com/r/ls250824/run-comfyui-image)>
+
+## 📚 Documentation
+
+- [📖 Complete Documentation Table of Contents](documentation/MAIN.md)
+- [⚙️ Provisioning examples](documentation/ComfyUI_image_provisioning.md)
+- [⚙️ Start](https://awesome-comfyui.rozenlaan.site/ComfyUI_image/)
+- [📚 Tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial/)
 
 ## 🛠️ Build & Push Docker Image to GHCR
 
@@ -100,8 +100,6 @@ python build_ghcr.py --token-file /path/to/token
 docker pull ghcr.io/maroshi/flux2-turbo-lora:v1.0
 docker run -it --gpus all ghcr.io/maroshi/flux2-turbo-lora:v1.0
 ```
-
-### Documentation
 
 See [documentation/GHCR_SETUP.md](documentation/GHCR_SETUP.md) for:
 - Complete GitHub Container Registry setup guide
