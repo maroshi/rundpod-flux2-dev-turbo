@@ -42,7 +42,7 @@ from pathlib import Path
 # Configuration
 REGISTRY = os.environ.get("GHCR_REGISTRY", "ghcr.io")
 USERNAME = os.environ.get("GHCR_USERNAME", "maroshi")
-IMAGE_NAME = "flux2-turbo-lora"
+IMAGE_NAME = "flux2-dev-turbo"
 
 # Detect if we're running from rundpod directory or parent directory
 script_dir = Path(__file__).parent

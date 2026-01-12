@@ -237,28 +237,7 @@ COPY docs/ /docs
 RUN chmod -R 644 /docs
 
 # ============================================================================
-# SECTION 9: Clone Community Documentation
-# ============================================================================
-# awesome-comfyui-docs: Comprehensive ComfyUI documentation
-#   • Configuration guides
-#   • Hardware optimization
-#   • Custom node usage
-#   • Model setup and provisioning
-RUN git clone --depth=1 --filter=blob:none https://github.com/jalberty2018/awesome-comfyui-docs.git /awesome-comfyui-docs
-
-# Copy selected docs *inside* the image
-RUN mkdir -p /docs && \
-    cp /awesome-comfyui-docs/ComfyUI_image_configuration.md /docs/ComfyUI_image_configuration.md && \
-    cp /awesome-comfyui-docs/ComfyUI_image_custom_nodes.md /docs/ComfyUI_image_custom_nodes.md && \
-    cp /awesome-comfyui-docs/ComfyUI_image_hardware.md /docs/ComfyUI_image_hardware.md && \
-    cp /awesome-comfyui-docs/ComfyUI_image_image_setup.md /docs/ComfyUI_image_image_setup.md && \
-    cp /awesome-comfyui-docs/ComfyUI_image_resources.md /docs/ComfyUI_image_resources.md
-
-# Cleanup temporary files
-RUN rm -rf /awesome-comfyui-docs
-
-# ============================================================================
-# SECTION 10: Workspace Setup, Port Configuration, and Metadata
+# SECTION 9: Workspace Setup, Port Configuration, and Metadata
 # ============================================================================
 # Set Workspace
 WORKDIR /workspace
@@ -305,6 +284,38 @@ print(f'CUDA available: {torch.cuda.is_available()}'); \
 print(f'CUDA version: {torch.version.cuda}'); \
 print(f'GPU Device: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"CPU\"}'); \
 print('✓ All runtime dependencies verified')"
+
+# ============================================================================
+# SECTION 10: Clone Community Documentation (Frequently Updated)
+# ============================================================================
+# awesome-comfyui-docs: Comprehensive ComfyUI documentation
+#   • Configuration guides
+#   • Hardware optimization
+#   • Custom node usage
+#   • Model setup and provisioning
+# NOTE: This section is placed LAST to optimize Docker layer caching.
+# When the workflow is updated frequently, only this layer will be rebuilt.
+RUN git clone --depth=1 --filter=blob:none https://github.com/jalberty2018/comfyui-docs.git /awesome-comfyui-docs
+
+# Copy selected docs *inside* the image
+RUN mkdir -p /docs && \
+    cp /awesome-comfyui-docs/ComfyUI_image_configuration.md /docs/ComfyUI_image_configuration.md && \
+    cp /awesome-comfyui-docs/ComfyUI_image_custom_nodes.md /docs/ComfyUI_image_custom_nodes.md && \
+    cp /awesome-comfyui-docs/ComfyUI_image_hardware.md /docs/ComfyUI_image_hardware.md && \
+    cp /awesome-comfyui-docs/ComfyUI_image_image_setup.md /docs/ComfyUI_image_image_setup.md && \
+    cp /awesome-comfyui-docs/ComfyUI_image_resources.md /docs/ComfyUI_image_resources.md
+
+# Cleanup temporary files
+RUN rm -rf /awesome-comfyui-docs
+
+# ============================================================================
+# SECTION 11: Copy Workflows (Frequently Updated)
+# ============================================================================
+# Copy workflow files to workspace
+# NOTE: This is placed LAST to optimize Docker layer caching.
+# When workflows are updated frequently, only this layer will be rebuilt,
+# all previous layers will be reused from cache.
+COPY workflows/ /workspace/workflows/
 
 # ============================================================================
 # SECTION 12: Entrypoint Configuration
