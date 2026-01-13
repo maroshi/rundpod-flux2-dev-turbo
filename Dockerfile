@@ -16,9 +16,8 @@ WORKDIR /ComfyUI
 # ============================================================================
 # Copy ComfyUI configurations
 COPY configuration/comfy.settings.json user/default/comfy.settings.json
-COPY configuration/comfy.templates.json user/default/comfy.templates.json
 COPY configuration/config.ini user/__manager/config.ini
-RUN chmod 644 user/default/comfy.settings.json user/default/comfy.templates.json user/__manager/config.ini
+RUN chmod 644 user/default/comfy.settings.json user/__manager/config.ini
 
 # ============================================================================
 # SECTION 2: Model Directory Structure
