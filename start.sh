@@ -121,6 +121,16 @@ if [[ "$HAS_CUDA" -eq 1 ]]; then
 	    echo "⚠️ CIVITAI_TOKEN not set – Insert your token manually in ComfyUI-Lora-Manager"
 	fi
 	
+    # Remove authentication custom nodes if DISABLE_AUTH is set (default: true)
+    if [[ "${DISABLE_AUTH:-true}" == "true" ]]; then
+        echo "🔓 Disabling authentication (set DISABLE_AUTH=false to enable)"
+        rm -rf /workspace/ComfyUI/custom_nodes/ComfyUI-Login 2>/dev/null || true
+        rm -rf /workspace/ComfyUI/custom_nodes/ComfyUI-Basic-Auth 2>/dev/null || true
+        rm -rf /workspace/ComfyUI/custom_nodes/comfyui-basic-auth 2>/dev/null || true
+    else
+        echo "🔒 Authentication enabled"
+    fi
+
 	echo "▶️ ComfyUI service starting (CUDA available)"
 
     python3 /workspace/ComfyUI/main.py ${COMFYUI_EXTRA_ARGUMENTS:---listen --enable-manager --preview-method auto} &

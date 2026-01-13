@@ -14,9 +14,9 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 ## 🔧 Features
 
 - **Auto-load default workflow** via `DEFAULT_WORKFLOW_URL` environment variable (see [documentation](documentation/DEFAULT_WORKFLOW.md))
+- **Disable authentication by default** - No login screen required (configurable via `DISABLE_AUTH` environment variable, see [security documentation](documentation/SECURITY.md))
 - Automatic model and LoRA downloads via environment variables.
-- Built-in **authentication** for:
-  - ComfyUI
+- Built-in **API authentication** for:
   - Code Server
   - Hugging Face API
   - CivitAI API
