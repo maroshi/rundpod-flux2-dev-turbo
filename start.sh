@@ -365,8 +365,8 @@ if [[ "$HAS_COMFYUI" -eq 1 ]]; then
     # Create model directories
     mkdir -p /workspace/ComfyUI/models/{vae,text_encoders,unet,diffusion_models,loras}
 
-    # Check and download VAE if missing
-    if ! find /workspace/ComfyUI/models/vae -type f \( -name "*.safetensors" -o -name "*.pt" \) 2>/dev/null | grep -q .; then
+    # Check and download VAE if missing (check only root directory, not subdirectories)
+    if ! find /workspace/ComfyUI/models/vae -maxdepth 1 -type f \( -name "*.safetensors" -o -name "*.pt" \) 2>/dev/null | grep -q .; then
         echo "  ▶️  Downloading FLUX.2 VAE (~200MB)..."
         python3 << 'EOF'
 from huggingface_hub import hf_hub_download
@@ -405,8 +405,8 @@ EOF
         echo "  ✅ VAE already exists"
     fi
 
-    # Check and download Text Encoder if missing
-    if ! find /workspace/ComfyUI/models/text_encoders -type f -name "*.safetensors" 2>/dev/null | grep -q .; then
+    # Check and download Text Encoder if missing (check only root directory, not subdirectories)
+    if ! find /workspace/ComfyUI/models/text_encoders -maxdepth 1 -type f -name "*.safetensors" 2>/dev/null | grep -q .; then
         echo "  ▶️  Downloading FLUX.2 Text Encoder BF16 (~5.6GB)..."
         python3 << 'EOF'
 from huggingface_hub import hf_hub_download
@@ -444,8 +444,8 @@ EOF
         echo "  ✅ Text Encoder already exists"
     fi
 
-    # Check and download Diffusion Model if missing (check both unet and diffusion_models)
-    if ! find /workspace/ComfyUI/models/unet /workspace/ComfyUI/models/diffusion_models -type f -name "*.safetensors" 2>/dev/null | grep -q .; then
+    # Check and download Diffusion Model if missing (check both unet and diffusion_models root directories only)
+    if ! find /workspace/ComfyUI/models/unet /workspace/ComfyUI/models/diffusion_models -maxdepth 1 -type f -name "*.safetensors" 2>/dev/null | grep -q .; then
         echo "  ▶️  Downloading FLUX.2 Dev FP8 Diffusion Model (~17GB - this will take a while)..."
         python3 << 'EOF'
 from huggingface_hub import hf_hub_download
@@ -489,8 +489,8 @@ EOF
         echo "  ✅ Diffusion Model already exists"
     fi
 
-    # Check and download Turbo LoRA if missing
-    if ! find /workspace/ComfyUI/models/loras -type f \( -name "*Flux2Turbo*" -o -name "*flux2turbo*" \) 2>/dev/null | grep -q .; then
+    # Check and download Turbo LoRA if missing (check only root directory, not subdirectories)
+    if ! find /workspace/ComfyUI/models/loras -maxdepth 1 -type f \( -name "*Flux2Turbo*" -o -name "*flux2turbo*" \) 2>/dev/null | grep -q .; then
         echo "  ▶️  Downloading FLUX.2 Turbo LoRA (~35MB)..."
         python3 << 'EOF'
 from huggingface_hub import hf_hub_download
