@@ -13,6 +13,7 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 
 ## 🔧 Features
 
+- **Auto-load default workflow** via `DEFAULT_WORKFLOW_URL` environment variable (see [documentation](documentation/DEFAULT_WORKFLOW.md))
 - Automatic model and LoRA downloads via environment variables.
 - Built-in **authentication** for:
   - ComfyUI

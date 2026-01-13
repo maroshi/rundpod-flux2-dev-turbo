@@ -534,6 +534,63 @@ EOF
         download_workflow "$VAR"
     done
 
+    # Provision default workflow that auto-loads on startup
+    if [[ -n "$DEFAULT_WORKFLOW_URL" ]]; then
+        echo "🎯 Provisioning default auto-load workflow"
+        local dest_dir="/workspace/ComfyUI/user/default/workflows/"
+        mkdir -p "$dest_dir"
+
+        local filename
+        filename=$(basename "$DEFAULT_WORKFLOW_URL")
+        local filepath="${dest_dir}${filename}"
+
+        # Download the default workflow
+        if [[ ! -f "$filepath" ]]; then
+            echo "ℹ️ [DOWNLOAD] Fetching default workflow: $filename ..."
+            if wget -q -P "$dest_dir" "$DEFAULT_WORKFLOW_URL"; then
+                echo "✅ Downloaded default workflow: $filename"
+            else
+                echo "⚠️ Failed to download default workflow from $DEFAULT_WORKFLOW_URL"
+                filename=""  # Clear filename if download failed
+            fi
+        else
+            echo "⏭️ [SKIP] Default workflow already exists"
+        fi
+
+        # Configure ComfyUI to auto-load this workflow
+        if [[ -n "$filename" && -f "$filepath" ]]; then
+            local settings_file="/workspace/ComfyUI/user/default/comfy.settings.json"
+
+            # Update comfy.settings.json to set the default workflow
+            python3 - <<PYTHON
+import json
+import os
+
+settings_file = "${settings_file}"
+workflow_name = "${filename}"
+
+# Read existing settings
+try:
+    with open(settings_file, 'r') as f:
+        settings = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError):
+    settings = {}
+
+# Set the default workflow to auto-load
+settings["Comfy.PreviousWorkflow"] = workflow_name
+
+# Write back to settings file
+os.makedirs(os.path.dirname(settings_file), exist_ok=True)
+with open(settings_file, 'w') as f:
+    json.dump(settings, f, indent=4)
+
+print(f"✅ Configured ComfyUI to auto-load: {workflow_name}")
+PYTHON
+        fi
+    else
+        echo "ℹ️ No DEFAULT_WORKFLOW_URL set, using built-in workflows"
+    fi
+
     # provisioning Models and loras (custom models via env vars)
     echo "📥 Provisioning custom models via environment variables"
 	

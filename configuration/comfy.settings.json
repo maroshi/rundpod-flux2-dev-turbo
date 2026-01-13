@@ -1,5 +1,10 @@
 {
     "Comfy.DevMode": true,
     "Comfy.Minimap.Visible": false,
-    "VHS.LatentPreview": false
+    "VHS.LatentPreview": false,
+    "Comfy.UseNewMenu": "Disabled",
+    "Comfy.Workflow.WorkflowTabsPosition": "Topbar",
+    "Comfy.Workflow.ShowMissingNodesWarning": false,
+    "Comfy.Workflow.OpenWorkflowsInNewTab": false,
+    "Comfy.Graph.CanvasMenu": true
 }
