@@ -382,16 +382,20 @@ try:
     os.makedirs(os.path.dirname(dest), exist_ok=True)
 
     file_path = hf_hub_download(
-        repo_id='black-forest-labs/FLUX.2-dev',
-        filename='ae.safetensors',
-        local_dir='/workspace/ComfyUI/models/vae',
-        local_dir_use_symlinks=False
+        repo_id='Comfy-Org/flux2-dev',
+        filename='split_files/vae/flux2-vae.safetensors',
+        local_dir='/workspace/ComfyUI/models/vae'
     )
 
-    # Rename if needed
-    downloaded_file = '/workspace/ComfyUI/models/vae/ae.safetensors'
-    if os.path.exists(downloaded_file) and not os.path.exists(dest):
-        os.rename(downloaded_file, dest)
+    # Move from split_files structure to flat structure
+    source = '/workspace/ComfyUI/models/vae/split_files/vae/flux2-vae.safetensors'
+    if os.path.exists(source) and not os.path.exists(dest):
+        shutil.move(source, dest)
+        # Clean up split_files directory
+        import shutil as sh
+        split_dir = '/workspace/ComfyUI/models/vae/split_files'
+        if os.path.exists(split_dir):
+            sh.rmtree(split_dir)
 
     print(f"✅ VAE downloaded to {dest}")
 except Exception as e:
@@ -419,8 +423,7 @@ try:
     file_path = hf_hub_download(
         repo_id='Comfy-Org/flux2-dev',
         filename='split_files/text_encoders/mistral_3_small_flux2_bf16.safetensors',
-        local_dir='/workspace/ComfyUI/models/text_encoders',
-        local_dir_use_symlinks=False
+        local_dir='/workspace/ComfyUI/models/text_encoders'
     )
 
     # Move from split_files structure to flat structure
@@ -459,8 +462,7 @@ try:
     file_path = hf_hub_download(
         repo_id='Comfy-Org/flux2-dev',
         filename='split_files/diffusion_models/flux2_dev_fp8mixed.safetensors',
-        local_dir='/workspace/ComfyUI/models/unet',
-        local_dir_use_symlinks=False
+        local_dir='/workspace/ComfyUI/models/unet'
     )
 
     # Move from split_files structure to flat structure
@@ -505,8 +507,7 @@ try:
     file_path = hf_hub_download(
         repo_id='ByteZSzn/Flux.2-Turbo-ComfyUI',
         filename='Flux2TurboComfyv2.safetensors',
-        local_dir='/workspace/ComfyUI/models/loras',
-        local_dir_use_symlinks=False
+        local_dir='/workspace/ComfyUI/models/loras'
     )
 
     # Ensure correct location
