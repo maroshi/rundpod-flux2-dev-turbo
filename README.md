@@ -39,6 +39,9 @@ docker pull ls250824/run-comfyui-image:<[![Docker Image Version](https://img.shi
 
 - [📖 Complete Documentation Table of Contents](documentation/MAIN.md)
 - [⚙️ Provisioning examples](documentation/ComfyUI_image_provisioning.md)
+- [🔒 Security & Authentication Settings](documentation/SECURITY.md)
+- [📋 Template Manager Configuration](documentation/TEMPLATE_MANAGER.md)
+- [🔄 Auto-Load Default Workflow](documentation/DEFAULT_WORKFLOW.md)
 - [⚙️ Start](https://awesome-comfyui.rozenlaan.site/ComfyUI_image/)
 - [📚 Tutorial](https://awesome-comfyui.rozenlaan.site/ComfyUI_image_tutorial/)
 
