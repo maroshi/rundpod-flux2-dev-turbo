@@ -2,14 +2,23 @@
   "version": 0.4,
   "1": {
     "inputs": {
-      "ckpt_name": "flux2_dev_fp8mixed.safetensors"
+      "unet_name": "flux2_dev_fp8mixed.safetensors"
     },
-    "class_type": "CheckpointLoaderSimple",
+    "class_type": "UNETLoader",
     "_meta": {
-      "title": "Load Flux.2 Dev Checkpoint"
+      "title": "Load FLUX.2 Dev Diffusion Model"
     }
   },
   "2": {
+    "inputs": {
+      "clip_name": "mistral_3_small_flux2_bf16.safetensors"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "Load FLUX.2 Text Encoder"
+    }
+  },
+  "3": {
     "inputs": {
       "lora_name": "Flux2TurboComfyv2.safetensors",
       "strength_model": 1.0,
@@ -19,8 +28,8 @@
         0
       ],
       "clip": [
-        "1",
-        1
+        "2",
+        0
       ]
     },
     "class_type": "LoraLoader",
@@ -28,63 +37,70 @@
       "title": "Load Flux.2 Turbo LoRA"
     }
   },
-  "3": {
-    "inputs": {
-      "text": "a serene mountain landscape at sunset, oil painting style, photorealistic"
-    },
-    "class_type": "CLIPTextEncode",
-    "title": "Positive Prompt",
-    "_meta": {
-      "title": "CLIP Text Encode (Positive)"
-    }
-  },
   "4": {
     "inputs": {
-      "text": ""
+      "text": "a serene mountain landscape at sunset, oil painting style, photorealistic",
+      "clip": [
+        "3",
+        1
+      ]
     },
     "class_type": "CLIPTextEncode",
     "_meta": {
-      "title": "CLIP Text Encode (Negative)"
+      "title": "Positive Prompt"
     }
   },
   "5": {
     "inputs": {
+      "text": "",
+      "clip": [
+        "3",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Negative Prompt"
+    }
+  },
+  "6": {
+    "inputs": {
       "seed": 0,
-      "steps": 25,
-      "cfg": 3.5,
-      "sampler_name": "euler_ancestral",
-      "scheduler": "karras",
+      "steps": 4,
+      "cfg": 1.0,
+      "sampler_name": "euler",
+      "scheduler": "simple",
       "denoise": 1.0,
       "model": [
-        "2",
-        0
-      ],
-      "positive": [
         "3",
         0
       ],
-      "negative": [
+      "positive": [
         "4",
         0
       ],
+      "negative": [
+        "5",
+        0
+      ],
       "latent_image": [
-        "8",
+        "9",
         0
       ]
     },
     "class_type": "KSampler",
     "_meta": {
-      "title": "KSampler (Turbo Optimized)"
+      "title": "KSampler (Turbo - 4 steps)"
     }
   },
-  "6": {
+  "7": {
     "inputs": {
       "samples": [
-        "5",
+        "6",
         0
       ],
       "vae": [
-        "7",
+        "8",
         0
       ]
     },
@@ -93,7 +109,7 @@
       "title": "VAE Decode"
     }
   },
-  "7": {
+  "8": {
     "inputs": {
       "vae_name": "flux2-vae.safetensors"
     },
@@ -102,11 +118,10 @@
       "title": "Load VAE"
     }
   },
-  "8": {
+  "9": {
     "inputs": {
       "width": 1024,
       "height": 1024,
-      "length": 1,
       "batch_size": 1
     },
     "class_type": "EmptyLatentImage",
@@ -114,33 +129,17 @@
       "title": "Empty Latent Image"
     }
   },
-  "9": {
+  "10": {
     "inputs": {
       "filename_prefix": "Flux2_Turbo",
       "images": [
-        "6",
+        "7",
         0
       ]
     },
     "class_type": "SaveImage",
     "_meta": {
       "title": "Save Image"
-    }
-  },
-  "10": {
-    "inputs": {
-      "clip": [
-        "2",
-        1
-      ],
-      "text": [
-        "3",
-        0
-      ]
-    },
-    "class_type": "CLIPTextEncode",
-    "_meta": {
-      "title": "CLIP Text Encode (Positive) - Fixed"
     }
   }
 }
