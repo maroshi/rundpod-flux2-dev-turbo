@@ -353,6 +353,15 @@ if [[ "$HAS_COMFYUI" -eq 1 ]]; then
     # Pre-download FLUX.2 core models if missing
     echo "📥 Provisioning FLUX.2 core models (48GB VRAM optimized - FP8/BF16)"
 
+    # CRITICAL: Storage Allocation on RunPod
+    # ========================================
+    # Root filesystem (/):       ~15GB total (VERY LIMITED - DO NOT USE FOR DOWNLOADS!)
+    # Workspace (/workspace):    ~90TB+ available (USE THIS FOR ALL MODEL DOWNLOADS!)
+    #
+    # HuggingFace downloads default to /root/.cache/huggingface which fills up the 15GB root.
+    # SOLUTION: Always set HF_HUB_CACHE=/workspace/.cache/huggingface to use workspace storage.
+    # This prevents "No space left on device" errors when downloading 23GB+ of models.
+
     # Create model directories
     mkdir -p /workspace/ComfyUI/models/{vae,text_encoders,unet,diffusion_models,loras}
 
