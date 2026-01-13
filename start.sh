@@ -365,14 +365,25 @@ import shutil
 import os
 
 try:
-    # Download to cache first
+    # Set cache to workspace to avoid disk space issues
+    os.environ['HF_HUB_CACHE'] = '/workspace/.cache/huggingface'
+
+    # Download directly to destination
+    dest = '/workspace/ComfyUI/models/vae/flux2-vae.safetensors'
+    os.makedirs(os.path.dirname(dest), exist_ok=True)
+
     file_path = hf_hub_download(
         repo_id='black-forest-labs/FLUX.2-dev',
-        filename='ae.safetensors'
+        filename='ae.safetensors',
+        local_dir='/workspace/ComfyUI/models/vae',
+        local_dir_use_symlinks=False
     )
-    # Copy to correct location
-    dest = '/workspace/ComfyUI/models/vae/flux2-vae.safetensors'
-    shutil.copy(file_path, dest)
+
+    # Rename if needed
+    downloaded_file = '/workspace/ComfyUI/models/vae/ae.safetensors'
+    if os.path.exists(downloaded_file) and not os.path.exists(dest):
+        os.rename(downloaded_file, dest)
+
     print(f"✅ VAE downloaded to {dest}")
 except Exception as e:
     print(f"⚠️  VAE download failed: {e}")
@@ -390,14 +401,29 @@ import shutil
 import os
 
 try:
-    # Download to cache first
+    # Set cache to workspace
+    os.environ['HF_HUB_CACHE'] = '/workspace/.cache/huggingface'
+
+    dest = '/workspace/ComfyUI/models/text_encoders/mistral_3_small_flux2_bf16.safetensors'
+    os.makedirs(os.path.dirname(dest), exist_ok=True)
+
     file_path = hf_hub_download(
         repo_id='Comfy-Org/flux2-dev',
-        filename='split_files/text_encoders/mistral_3_small_flux2_bf16.safetensors'
+        filename='split_files/text_encoders/mistral_3_small_flux2_bf16.safetensors',
+        local_dir='/workspace/ComfyUI/models/text_encoders',
+        local_dir_use_symlinks=False
     )
-    # Copy to correct location
-    dest = '/workspace/ComfyUI/models/text_encoders/mistral_3_small_flux2_bf16.safetensors'
-    shutil.copy(file_path, dest)
+
+    # Move from split_files structure to flat structure
+    source = '/workspace/ComfyUI/models/text_encoders/split_files/text_encoders/mistral_3_small_flux2_bf16.safetensors'
+    if os.path.exists(source) and not os.path.exists(dest):
+        shutil.move(source, dest)
+        # Clean up split_files directory
+        import shutil as sh
+        split_dir = '/workspace/ComfyUI/models/text_encoders/split_files'
+        if os.path.exists(split_dir):
+            sh.rmtree(split_dir)
+
     print(f"✅ Text Encoder downloaded to {dest}")
 except Exception as e:
     print(f"⚠️  Text Encoder download failed: {e}")
@@ -415,17 +441,35 @@ import shutil
 import os
 
 try:
-    # Download to cache first
+    # Set cache to workspace
+    os.environ['HF_HUB_CACHE'] = '/workspace/.cache/huggingface'
+
+    dest_unet = '/workspace/ComfyUI/models/unet/flux2_dev_fp8mixed.safetensors'
+    os.makedirs(os.path.dirname(dest_unet), exist_ok=True)
+
     file_path = hf_hub_download(
         repo_id='Comfy-Org/flux2-dev',
-        filename='split_files/diffusion_models/flux2_dev_fp8mixed.safetensors'
+        filename='split_files/diffusion_models/flux2_dev_fp8mixed.safetensors',
+        local_dir='/workspace/ComfyUI/models/unet',
+        local_dir_use_symlinks=False
     )
-    # Copy to both locations for compatibility
-    dest_unet = '/workspace/ComfyUI/models/unet/flux2_dev_fp8mixed.safetensors'
-    dest_diffusion = '/workspace/ComfyUI/models/diffusion_models/flux2_dev_fp8mixed.safetensors'
 
-    shutil.copy(file_path, dest_unet)
-    shutil.copy(file_path, dest_diffusion)
+    # Move from split_files structure to flat structure
+    source = '/workspace/ComfyUI/models/unet/split_files/diffusion_models/flux2_dev_fp8mixed.safetensors'
+    if os.path.exists(source) and not os.path.exists(dest_unet):
+        shutil.move(source, dest_unet)
+        # Clean up split_files directory
+        import shutil as sh
+        split_dir = '/workspace/ComfyUI/models/unet/split_files'
+        if os.path.exists(split_dir):
+            sh.rmtree(split_dir)
+
+    # Copy to diffusion_models for compatibility
+    dest_diffusion = '/workspace/ComfyUI/models/diffusion_models/flux2_dev_fp8mixed.safetensors'
+    os.makedirs(os.path.dirname(dest_diffusion), exist_ok=True)
+    if os.path.exists(dest_unet) and not os.path.exists(dest_diffusion):
+        shutil.copy(dest_unet, dest_diffusion)
+
     print(f"✅ Diffusion Model downloaded to {dest_unet} and {dest_diffusion}")
 except Exception as e:
     print(f"⚠️  Diffusion model download failed: {e}")
@@ -443,15 +487,25 @@ import shutil
 import os
 
 try:
-    # Download to cache first
+    # Set cache to workspace
+    os.environ['HF_HUB_CACHE'] = '/workspace/.cache/huggingface'
+
+    dest = '/workspace/ComfyUI/models/loras/Flux2TurboComfyv2.safetensors'
+    os.makedirs(os.path.dirname(dest), exist_ok=True)
+
     file_path = hf_hub_download(
         repo_id='ByteZSzn/Flux.2-Turbo-ComfyUI',
-        filename='Flux2TurboComfyv2.safetensors'
+        filename='Flux2TurboComfyv2.safetensors',
+        local_dir='/workspace/ComfyUI/models/loras',
+        local_dir_use_symlinks=False
     )
-    # Copy to correct location
-    dest = '/workspace/ComfyUI/models/loras/Flux2TurboComfyv2.safetensors'
-    shutil.copy(file_path, dest)
-    print(f"✅ Turbo LoRA downloaded to {dest}")
+
+    # Ensure correct location
+    downloaded = '/workspace/ComfyUI/models/loras/Flux2TurboComfyv2.safetensors'
+    if os.path.exists(downloaded):
+        print(f"✅ Turbo LoRA downloaded to {dest}")
+    else:
+        print(f"⚠️  File not found at expected location")
 except Exception as e:
     print(f"⚠️  LoRA download failed: {e}")
 EOF
