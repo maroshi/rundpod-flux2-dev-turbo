@@ -1,5 +1,5 @@
 {
-  "last_node_id": 10,
+  "last_node_id": 13,
   "last_link_id": 11,
   "nodes": [
     {
@@ -291,6 +291,57 @@
       },
       "widgets_values": ["Flux2_Turbo"],
       "title": "Save Image"
+    },
+    {
+      "id": 11,
+      "type": "Note",
+      "pos": [-350, 25],
+      "size": [580, 550],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "# FLUX.2 Dev Turbo - Default Workflow\n\n## 📋 About\nThis is a simple, fast workflow for FLUX.2 Dev with Turbo acceleration.\n- **Speed**: ~6 seconds per image (4 steps)\n- **Resolution**: 1024×1024 (square)\n- **Quality**: Good (optimized for speed)\n\n## 🔧 Required Models\nAll models are auto-downloaded to /workspace on first run:\n\n**Diffusion Model** (~34GB)\nflux2_dev_fp8mixed.safetensors\nLocation: ComfyUI/models/unet/\n\n**Text Encoder** (~34GB)\nmistral_3_small_flux2_bf16.safetensors\nLocation: ComfyUI/models/clip/\n\n**VAE** (~321MB)\nflux2-vae.safetensors\nLocation: ComfyUI/models/vae/\n\n**Turbo LoRA** (~2.6GB)\nFlux2TurboComfyv2.safetensors\nLocation: ComfyUI/models/loras/\n\n## 🔗 Model Sources\n- Models from: Comfy-Org/flux2-dev (HuggingFace)\n- Turbo LoRA: ByteZSzn/Flux.2-Turbo-ComfyUI\n- No authentication required (public repos)\n\n## ⚠️ FLUX.1 vs FLUX.2\nThis workflow is for FLUX.2 ONLY. FLUX.1 models and LoRAs are incompatible due to:\n- Different text encoder (Mistral vs T5+CLIP)\n- Different model architecture\n- Different VAE structure"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 12,
+      "type": "Note",
+      "pos": [-350, 620],
+      "size": [580, 280],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "## 🎨 Workflow Architecture\n\n**Model Loading**\n1. UNETLoader → Load diffusion model (FP8 quantized)\n2. CLIPLoader → Load Mistral-3-Small text encoder\n3. LoraLoader → Apply Turbo LoRA for 4-step generation\n\n**Generation Pipeline**\n4. CLIPTextEncode (Positive) → Process your prompt\n5. CLIPTextEncode (Negative) → Process negative prompt (usually empty)\n6. EmptyLatentImage → Create 1024×1024 latent canvas\n7. KSampler → Generate image in 4 steps (Turbo mode)\n   - CFG: 1.0 (low guidance for Turbo)\n   - Sampler: euler\n   - Scheduler: simple\n8. VAEDecode → Convert latent to pixel image\n9. SaveImage → Save final result\n\n**Performance Tips**\n- 4 steps = ~6s generation time on RTX 3090\n- For higher quality, use flux2_turbo_2-8steps workflow (8 steps)\n- For reference images, use flux2_turbo_kombitz_6ref workflow"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 13,
+      "type": "Note",
+      "pos": [1520, 420],
+      "size": [315, 180],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "💡 Turbo Settings\n\nThe Turbo LoRA enables 4-step generation:\n- Steps: 4 (optimized)\n- CFG: 1.0 (minimal guidance)\n- Sampler: euler (recommended)\n- Denoise: 1.0 (full)\n\nDo NOT increase steps beyond 4-8 with Turbo LoRA - it's optimized for speed, not traditional multi-step sampling.\n\nFor traditional sampling (20-25 steps), disable the Turbo LoRA."
+      ],
+      "color": "#323",
+      "bgcolor": "#535"
     }
   ],
   "links": [
