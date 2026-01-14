@@ -547,37 +547,36 @@ EOF
     # Provision default workflow that auto-loads on startup
     if [[ -n "$DEFAULT_WORKFLOW_URL" ]]; then
         echo "🎯 Provisioning default auto-load workflow"
-        local dest_dir="/workspace/ComfyUI/user/default/workflows/"
-        mkdir -p "$dest_dir"
+        default_wf_dir="/workspace/ComfyUI/user/default/workflows/"
+        mkdir -p "$default_wf_dir"
 
-        local filename
-        filename=$(basename "$DEFAULT_WORKFLOW_URL")
-        local filepath="${dest_dir}${filename}"
+        default_wf_filename=$(basename "$DEFAULT_WORKFLOW_URL")
+        default_wf_filepath="${default_wf_dir}${default_wf_filename}"
 
         # Download the default workflow
-        if [[ ! -f "$filepath" ]]; then
-            echo "ℹ️ [DOWNLOAD] Fetching default workflow: $filename ..."
-            if wget -q -P "$dest_dir" "$DEFAULT_WORKFLOW_URL"; then
-                echo "✅ Downloaded default workflow: $filename"
+        if [[ ! -f "$default_wf_filepath" ]]; then
+            echo "ℹ️ [DOWNLOAD] Fetching default workflow: $default_wf_filename ..."
+            if wget -q -P "$default_wf_dir" "$DEFAULT_WORKFLOW_URL"; then
+                echo "✅ Downloaded default workflow: $default_wf_filename"
             else
                 echo "⚠️ Failed to download default workflow from $DEFAULT_WORKFLOW_URL"
-                filename=""  # Clear filename if download failed
+                default_wf_filename=""  # Clear filename if download failed
             fi
         else
             echo "⏭️ [SKIP] Default workflow already exists"
         fi
 
         # Configure ComfyUI to auto-load this workflow
-        if [[ -n "$filename" && -f "$filepath" ]]; then
-            local settings_file="/workspace/ComfyUI/user/default/comfy.settings.json"
+        if [[ -n "$default_wf_filename" && -f "$default_wf_filepath" ]]; then
+            default_wf_settings_file="/workspace/ComfyUI/user/default/comfy.settings.json"
 
             # Update comfy.settings.json to set the default workflow
             python3 - <<PYTHON
 import json
 import os
 
-settings_file = "${settings_file}"
-workflow_name = "${filename}"
+settings_file = "${default_wf_settings_file}"
+workflow_name = "${default_wf_filename}"
 
 # Read existing settings
 try:
