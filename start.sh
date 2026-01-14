@@ -370,7 +370,7 @@ if [[ "$HAS_COMFYUI" -eq 1 ]]; then
     #
     # HuggingFace downloads default to /root/.cache/huggingface which fills up the 15GB root.
     # SOLUTION: Always set HF_HUB_CACHE=/workspace/.cache/huggingface to use workspace storage.
-    # This prevents "No space left on device" errors when downloading 23GB+ of models.
+    # This prevents "No space left on device" errors when downloading 40GB+ of models.
 
     # Create model directories
     mkdir -p /workspace/ComfyUI/models/{vae,text_encoders,diffusion_models,loras}
@@ -456,7 +456,7 @@ EOF
 
     # Check and download Diffusion Model if missing (check diffusion_models root directory only)
     if ! find /workspace/ComfyUI/models/diffusion_models -maxdepth 1 -type f -name "*.safetensors" 2>/dev/null | grep -q .; then
-        echo "  ▶️  Downloading FLUX.2 Dev FP8 Diffusion Model (~17GB - this will take a while)..."
+        echo "  ▶️  Downloading FLUX.2 Dev FP8 Diffusion Model (~34GB - this will take a while)..."
         python3 << 'EOF'
 from huggingface_hub import hf_hub_download
 import shutil
@@ -528,7 +528,7 @@ EOF
     fi
 
     echo "✅ FLUX.2 models provisioning complete"
-    echo "📊 Storage used for FLUX.2 models: ~23GB (VAE: 0.2GB, Text Encoder: 5.6GB, Diffusion: 17GB, LoRA: 0.035GB)"
+    echo "📊 Storage used for FLUX.2 models: ~40GB (VAE: 0.2GB, Text Encoder: 5.6GB, Diffusion: 34GB, LoRA: 0.035GB)"
 
     # provisioning workflows
     echo "📥 Provisioning workflows"
