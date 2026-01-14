@@ -373,7 +373,7 @@ if [[ "$HAS_COMFYUI" -eq 1 ]]; then
     # This prevents "No space left on device" errors when downloading 23GB+ of models.
 
     # Create model directories
-    mkdir -p /workspace/ComfyUI/models/{vae,text_encoders,unet,diffusion_models,loras}
+    mkdir -p /workspace/ComfyUI/models/{vae,text_encoders,diffusion_models,loras}
 
     # Check and download VAE if missing (check only root directory, not subdirectories)
     if ! find /workspace/ComfyUI/models/vae -maxdepth 1 -type f \( -name "*.safetensors" -o -name "*.pt" \) 2>/dev/null | grep -q .; then
@@ -454,8 +454,8 @@ EOF
         echo "  ✅ Text Encoder already exists"
     fi
 
-    # Check and download Diffusion Model if missing (check both unet and diffusion_models root directories only)
-    if ! find /workspace/ComfyUI/models/unet /workspace/ComfyUI/models/diffusion_models -maxdepth 1 -type f -name "*.safetensors" 2>/dev/null | grep -q .; then
+    # Check and download Diffusion Model if missing (check diffusion_models root directory only)
+    if ! find /workspace/ComfyUI/models/diffusion_models -maxdepth 1 -type f -name "*.safetensors" 2>/dev/null | grep -q .; then
         echo "  ▶️  Downloading FLUX.2 Dev FP8 Diffusion Model (~17GB - this will take a while)..."
         python3 << 'EOF'
 from huggingface_hub import hf_hub_download
@@ -466,32 +466,26 @@ try:
     # Set cache to workspace
     os.environ['HF_HUB_CACHE'] = '/workspace/.cache/huggingface'
 
-    dest_unet = '/workspace/ComfyUI/models/unet/flux2_dev_fp8mixed.safetensors'
-    os.makedirs(os.path.dirname(dest_unet), exist_ok=True)
+    dest_diffusion = '/workspace/ComfyUI/models/diffusion_models/flux2_dev_fp8mixed.safetensors'
+    os.makedirs(os.path.dirname(dest_diffusion), exist_ok=True)
 
     file_path = hf_hub_download(
         repo_id='Comfy-Org/flux2-dev',
         filename='split_files/diffusion_models/flux2_dev_fp8mixed.safetensors',
-        local_dir='/workspace/ComfyUI/models/unet'
+        local_dir='/workspace/ComfyUI/models/diffusion_models'
     )
 
     # Move from split_files structure to flat structure
-    source = '/workspace/ComfyUI/models/unet/split_files/diffusion_models/flux2_dev_fp8mixed.safetensors'
-    if os.path.exists(source) and not os.path.exists(dest_unet):
-        shutil.move(source, dest_unet)
+    source = '/workspace/ComfyUI/models/diffusion_models/split_files/diffusion_models/flux2_dev_fp8mixed.safetensors'
+    if os.path.exists(source) and not os.path.exists(dest_diffusion):
+        shutil.move(source, dest_diffusion)
         # Clean up split_files directory
         import shutil as sh
-        split_dir = '/workspace/ComfyUI/models/unet/split_files'
+        split_dir = '/workspace/ComfyUI/models/diffusion_models/split_files'
         if os.path.exists(split_dir):
             sh.rmtree(split_dir)
 
-    # Copy to diffusion_models for compatibility
-    dest_diffusion = '/workspace/ComfyUI/models/diffusion_models/flux2_dev_fp8mixed.safetensors'
-    os.makedirs(os.path.dirname(dest_diffusion), exist_ok=True)
-    if os.path.exists(dest_unet) and not os.path.exists(dest_diffusion):
-        shutil.copy(dest_unet, dest_diffusion)
-
-    print(f"✅ Diffusion Model downloaded to {dest_unet} and {dest_diffusion}")
+    print(f"✅ Diffusion Model downloaded to {dest_diffusion}")
 except Exception as e:
     print(f"⚠️  Diffusion model download failed: {e}")
 EOF

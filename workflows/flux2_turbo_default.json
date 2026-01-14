@@ -20,7 +20,14 @@
         }
       ],
       "properties": {
-        "Node name for S&R": "UNETLoader"
+        "Node name for S&R": "UNETLoader",
+        "models": [
+          {
+            "name": "flux2_dev_fp8mixed.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/split_files/diffusion_models/flux2_dev_fp8mixed.safetensors",
+            "directory": "diffusion_models"
+          }
+        ]
       },
       "widgets_values": ["flux2_dev_fp8mixed.safetensors", "default"],
       "title": "Load FLUX.2 Dev Diffusion Model"
