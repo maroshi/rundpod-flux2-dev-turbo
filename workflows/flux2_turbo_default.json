@@ -52,7 +52,7 @@
       "properties": {
         "Node name for S&R": "CLIPLoader"
       },
-      "widgets_values": ["mistral_3_small_flux2_bf16.safetensors", "flux2", "default"],
+      "widgets_values": ["mistral_3_small_flux2_fp8.safetensors", "flux2", "default"],
       "title": "Load FLUX.2 Text Encoder"
     },
     {
@@ -311,7 +311,7 @@
         "text": ""
       },
       "widgets_values": [
-        "# FLUX.2 Dev Turbo - Default Workflow\n\n## 📋 About\nThis is a simple, fast workflow for FLUX.2 Dev with Turbo acceleration.\n- **Speed**: ~6 seconds per image (4 steps)\n- **Resolution**: 1024×1024 (square)\n- **Quality**: Good (optimized for speed)\n\n## 🔧 Required Models\nAll models are auto-downloaded to /workspace on first run:\n\n**Diffusion Model** (~34GB)\nflux2_dev_fp8mixed.safetensors\nLocation: ComfyUI/models/unet/\n\n**Text Encoder** (~34GB)\nmistral_3_small_flux2_bf16.safetensors\nLocation: ComfyUI/models/clip/\n\n**VAE** (~321MB)\nflux2-vae.safetensors\nLocation: ComfyUI/models/vae/\n\n**Turbo LoRA** (~2.6GB)\nFlux2TurboComfyv2.safetensors\nLocation: ComfyUI/models/loras/\n\n## 🔗 Model Sources\n- Models from: Comfy-Org/flux2-dev (HuggingFace)\n- Turbo LoRA: ByteZSzn/Flux.2-Turbo-ComfyUI\n- No authentication required (public repos)\n\n## ⚠️ FLUX.1 vs FLUX.2\nThis workflow is for FLUX.2 ONLY. FLUX.1 models and LoRAs are incompatible due to:\n- Different text encoder (Mistral vs T5+CLIP)\n- Different model architecture\n- Different VAE structure"
+        "# FLUX.2 Dev Turbo - Default Workflow\n\n## 📋 About\nThis is a simple, fast workflow for FLUX.2 Dev with Turbo acceleration.\n- **Speed**: ~6 seconds per image (4 steps)\n- **Resolution**: 1024×1024 (square)\n- **Quality**: Good (optimized for speed)\n\n## 🔧 Required Models\nAll models are auto-downloaded to /workspace on first run:\n\n**Diffusion Model** (~34GB)\nflux2_dev_fp8mixed.safetensors\nLocation: ComfyUI/models/unet/\n\n**Text Encoder** (~34GB)\nmistral_3_small_flux2_fp8.safetensors\nLocation: ComfyUI/models/clip/\n\n**VAE** (~321MB)\nflux2-vae.safetensors\nLocation: ComfyUI/models/vae/\n\n**Turbo LoRA** (~2.6GB)\nFlux2TurboComfyv2.safetensors\nLocation: ComfyUI/models/loras/\n\n## 🔗 Model Sources\n- Models from: Comfy-Org/flux2-dev (HuggingFace)\n- Turbo LoRA: ByteZSzn/Flux.2-Turbo-ComfyUI\n- No authentication required (public repos)\n\n## ⚠️ FLUX.1 vs FLUX.2\nThis workflow is for FLUX.2 ONLY. FLUX.1 models and LoRAs are incompatible due to:\n- Different text encoder (Mistral vs T5+CLIP)\n- Different model architecture\n- Different VAE structure"
       ],
       "color": "#432",
       "bgcolor": "#653"

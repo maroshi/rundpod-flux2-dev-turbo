@@ -370,7 +370,7 @@ if [[ "$HAS_COMFYUI" -eq 1 ]]; then
     #
     # HuggingFace downloads default to /root/.cache/huggingface which fills up the 15GB root.
     # SOLUTION: Always set HF_HUB_CACHE=/workspace/.cache/huggingface to use workspace storage.
-    # This prevents "No space left on device" errors when downloading 40GB+ of models.
+    # This prevents "No space left on device" errors when downloading 37GB+ of models.
 
     # Create model directories
     mkdir -p /workspace/ComfyUI/models/{vae,text_encoders,diffusion_models,loras}
@@ -417,7 +417,7 @@ EOF
 
     # Check and download Text Encoder if missing (check only root directory, not subdirectories)
     if ! find /workspace/ComfyUI/models/text_encoders -maxdepth 1 -type f -name "*.safetensors" 2>/dev/null | grep -q .; then
-        echo "  ▶️  Downloading FLUX.2 Text Encoder BF16 (~5.6GB)..."
+        echo "  ▶️  Downloading FLUX.2 Text Encoder FP8 (~2.8GB)..."
         python3 << 'EOF'
 from huggingface_hub import hf_hub_download
 import shutil
@@ -427,17 +427,17 @@ try:
     # Set cache to workspace
     os.environ['HF_HUB_CACHE'] = '/workspace/.cache/huggingface'
 
-    dest = '/workspace/ComfyUI/models/text_encoders/mistral_3_small_flux2_bf16.safetensors'
+    dest = '/workspace/ComfyUI/models/text_encoders/mistral_3_small_flux2_fp8.safetensors'
     os.makedirs(os.path.dirname(dest), exist_ok=True)
 
     file_path = hf_hub_download(
         repo_id='Comfy-Org/flux2-dev',
-        filename='split_files/text_encoders/mistral_3_small_flux2_bf16.safetensors',
+        filename='split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors',
         local_dir='/workspace/ComfyUI/models/text_encoders'
     )
 
     # Move from split_files structure to flat structure
-    source = '/workspace/ComfyUI/models/text_encoders/split_files/text_encoders/mistral_3_small_flux2_bf16.safetensors'
+    source = '/workspace/ComfyUI/models/text_encoders/split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors'
     if os.path.exists(source) and not os.path.exists(dest):
         shutil.move(source, dest)
         # Clean up split_files directory
@@ -528,7 +528,7 @@ EOF
     fi
 
     echo "✅ FLUX.2 models provisioning complete"
-    echo "📊 Storage used for FLUX.2 models: ~40GB (VAE: 0.2GB, Text Encoder: 5.6GB, Diffusion: 34GB, LoRA: 0.035GB)"
+    echo "📊 Storage used for FLUX.2 models: ~37GB (VAE: 0.2GB, Text Encoder FP8: 2.8GB, Diffusion: 34GB, LoRA: 0.035GB)"
 
     # provisioning workflows
     echo "📥 Provisioning workflows"
