@@ -155,7 +155,7 @@
     },
     {
       "id": 9,
-      "type": "EmptyLatentImage",
+      "type": "EmptyFlux2LatentImage",
       "pos": [1030, 480],
       "size": [315, 106],
       "flags": {},
@@ -171,10 +171,10 @@
         }
       ],
       "properties": {
-        "Node name for S&R": "EmptyLatentImage"
+        "Node name for S&R": "EmptyFlux2LatentImage"
       },
       "widgets_values": [1024, 1024, 1],
-      "title": "Empty Latent Image"
+      "title": "FLUX.2 Latent Image (1024×1024)"
     },
     {
       "id": 6,
@@ -311,7 +311,7 @@
         "text": ""
       },
       "widgets_values": [
-        "# FLUX.2 Dev Turbo - Default Workflow\n\n## 📋 About\nThis is a simple, fast workflow for FLUX.2 Dev with Turbo acceleration.\n- **Speed**: ~6 seconds per image (4 steps)\n- **Resolution**: 1024×1024 (square)\n- **Quality**: Good (optimized for speed)\n\n## 🔧 Required Models\nAll models are auto-downloaded to /workspace on first run:\n\n**Diffusion Model** (~34GB)\nflux2_dev_fp8mixed.safetensors\nLocation: ComfyUI/models/unet/\n\n**Text Encoder** (~34GB)\nmistral_3_small_flux2_fp8.safetensors\nLocation: ComfyUI/models/clip/\n\n**VAE** (~321MB)\nflux2-vae.safetensors\nLocation: ComfyUI/models/vae/\n\n**Turbo LoRA** (~2.6GB)\nFlux2TurboComfyv2.safetensors\nLocation: ComfyUI/models/loras/\n\n## 🔗 Model Sources\n- Models from: Comfy-Org/flux2-dev (HuggingFace)\n- Turbo LoRA: ByteZSzn/Flux.2-Turbo-ComfyUI\n- No authentication required (public repos)\n\n## ⚠️ FLUX.1 vs FLUX.2\nThis workflow is for FLUX.2 ONLY. FLUX.1 models and LoRAs are incompatible due to:\n- Different text encoder (Mistral vs T5+CLIP)\n- Different model architecture\n- Different VAE structure"
+        "# FLUX.2 Dev Turbo - Default Workflow (FIXED)\n\n## 📋 About\nThis is a simple, fast workflow for FLUX.2 Dev with Turbo acceleration.\n- **Speed**: ~6 seconds per image (4 steps)\n- **Resolution**: 1024×1024 (square) - CORRECTED\n- **Quality**: Good (optimized for speed)\n\n## 🔧 Required Models\nAll models are auto-downloaded to /workspace on first run:\n\n**Diffusion Model** (~34GB)\nflux2_dev_fp8mixed.safetensors\nLocation: ComfyUI/models/unet/\n\n**Text Encoder** (~34GB)\nmistral_3_small_flux2_fp8.safetensors\nLocation: ComfyUI/models/clip/\n\n**VAE** (~321MB)\nflux2-vae.safetensors\nLocation: ComfyUI/models/vae/\n\n**Turbo LoRA** (~2.6GB)\nFlux2TurboComfyv2.safetensors\nLocation: ComfyUI/models/loras/\n\n## 🔗 Model Sources\n- Models from: Comfy-Org/flux2-dev (HuggingFace)\n- Turbo LoRA: ByteZSzn/Flux.2-Turbo-ComfyUI\n- No authentication required (public repos)\n\n## ⚙️ FIX APPLIED\n✅ Replaced EmptyLatentImage with EmptyFlux2LatentImage\n- FLUX.2 uses 16x compression (vs FLUX.1's 8x)\n- Now generates correct 1024×1024 output (not 2048×2048)\n- Should see ~4x faster iteration (1.6s/step instead of 6.5s/step)"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -328,7 +328,7 @@
         "text": ""
       },
       "widgets_values": [
-        "## 🎨 Workflow Architecture\n\n**Model Loading**\n1. UNETLoader → Load diffusion model (FP8 quantized)\n2. CLIPLoader → Load Mistral-3-Small text encoder\n3. LoraLoader → Apply Turbo LoRA for 4-step generation\n\n**Generation Pipeline**\n4. CLIPTextEncode (Positive) → Process your prompt\n5. CLIPTextEncode (Negative) → Process negative prompt (usually empty)\n6. EmptyLatentImage → Create 1024×1024 latent canvas\n7. KSampler → Generate image in 4 steps (Turbo mode)\n   - CFG: 1.0 (low guidance for Turbo)\n   - Sampler: euler\n   - Scheduler: simple\n8. VAEDecode → Convert latent to pixel image\n9. SaveImage → Save final result\n\n**Performance Tips**\n- 4 steps = ~6s generation time on RTX 3090\n- For higher quality, use flux2_turbo_2-8steps workflow (8 steps)\n- For reference images, use flux2_turbo_kombitz_6ref workflow"
+        "## 🎨 Workflow Architecture\n\n**Model Loading**\n1. UNETLoader → Load diffusion model (FP8 quantized)\n2. CLIPLoader → Load Mistral-3-Small text encoder\n3. LoraLoader → Apply Turbo LoRA for 4-step generation\n\n**Generation Pipeline**\n4. CLIPTextEncode (Positive) → Process your prompt\n5. CLIPTextEncode (Negative) → Process negative prompt (usually empty)\n6. EmptyFlux2LatentImage → Create FLUX.2-native 1024×1024 latent\n7. KSampler → Generate image in 4 steps (Turbo mode)\n   - CFG: 1.0 (low guidance for Turbo)\n   - Sampler: euler\n   - Scheduler: simple\n8. VAEDecode → Convert latent to pixel image\n9. SaveImage → Save final result\n\n**Performance Tips**\n- 4 steps = ~6s generation time (1024×1024)\n- For higher quality, use flux2_turbo_2-8steps workflow (8 steps)\n- For reference images, use flux2_turbo_kombitz_6ref workflow"
       ],
       "color": "#432",
       "bgcolor": "#653"

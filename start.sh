@@ -11,6 +11,27 @@ if [[ -n "$PUBLIC_KEY" ]]; then
     echo "✅ [SSH enabled]"
 fi
 
+# Configure SSH for passwordless root access
+echo "ℹ️ Configuring SSH for passwordless root access"
+
+# 1. Add config parameters
+cat >> /etc/ssh/sshd_config << 'EOF'
+
+PermitRootLogin yes
+PasswordAuthentication yes
+PermitEmptyPasswords yes
+UsePAM no
+ChallengeResponseAuthentication no
+EOF
+
+# 2. Remove root password (critical step)
+passwd -d root
+
+# 3. Restart SSH
+service ssh restart
+
+echo "✅ [SSH configured for passwordless root access]"
+
 # Export env variables
 if [[ -n "${RUNPOD_GPU_COUNT:-}" ]]; then
    echo "ℹ️ Exporting runpod.io environment variables..."
