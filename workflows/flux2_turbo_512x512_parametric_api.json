@@ -296,7 +296,7 @@
       "properties": {
         "Node name for S&R": "SaveImage"
       },
-      "widgets_values": ["Flux2_Turbo_${IMAGE_ID}"],
+      "widgets_values": ["${IMAGE_ID}_"],
       "title": "Save Image with ID Suffix"
     },
     {
