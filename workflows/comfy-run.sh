@@ -99,7 +99,7 @@ COMFYUI_URL="http://${COMFYUI_HOST}:${COMFYUI_PORT}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Default values
-WORKFLOW_FILE="${SCRIPT_DIR}/flux2_turbo_512x512_parametric.json"
+WORKFLOW_FILE="${SCRIPT_DIR}/flux2_turbo_default_api.json"
 PROMPT=""
 IMAGE_ID="UNDEFINED_ID_"
 OUTPUT_FOLDER="/workspace/output/"

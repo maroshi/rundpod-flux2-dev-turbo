@@ -1,91 +1,371 @@
 {
-  "1": {
-    "class_type": "UNETLoader",
-    "inputs": {
-      "widget_0": "flux2_dev_fp8mixed.safetensors",
-      "widget_1": "default"
+  "last_node_id": 13,
+  "last_link_id": 11,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "UNETLoader",
+      "pos": [275, 25],
+      "size": [315, 82],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [1],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader",
+        "models": [
+          {
+            "name": "flux2_dev_fp8mixed.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/split_files/diffusion_models/flux2_dev_fp8mixed.safetensors",
+            "directory": "diffusion_models"
+          }
+        ]
+      },
+      "widgets_values": ["flux2_dev_fp8mixed.safetensors", "default"],
+      "title": "Load FLUX.2 Dev Diffusion Model"
+    },
+    {
+      "id": 2,
+      "type": "CLIPLoader",
+      "pos": [275, 150],
+      "size": [315, 82],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [2],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": ["mistral_3_small_flux2_fp8.safetensors", "flux2", "default"],
+      "title": "Load FLUX.2 Text Encoder"
+    },
+    {
+      "id": 3,
+      "type": "LoraLoader",
+      "pos": [650, 80],
+      "size": [315, 126],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [3],
+          "slot_index": 0
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [4, 5],
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoader"
+      },
+      "widgets_values": ["Flux2TurboComfyv2.safetensors", 1.0, 0.9],
+      "title": "Load Flux.2 Turbo LoRA"
+    },
+    {
+      "id": 4,
+      "type": "CLIPTextEncode",
+      "pos": [1030, 50],
+      "size": [422.84503173828125, 164.6060791015625],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [6],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": ["a serene mountain landscape at sunset, oil painting style, photorealistic"],
+      "title": "Positive Prompt"
+    },
+    {
+      "id": 5,
+      "type": "CLIPTextEncode",
+      "pos": [1030, 260],
+      "size": [422.84503173828125, 164.6060791015625],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [7],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [""],
+      "title": "Negative Prompt"
+    },
+    {
+      "id": 9,
+      "type": "EmptyFlux2LatentImage",
+      "pos": [1030, 480],
+      "size": [315, 106],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [8],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyFlux2LatentImage"
+      },
+      "widgets_values": [1024, 1024, 1],
+      "title": "FLUX.2 Latent Image (1024×1024)"
+    },
+    {
+      "id": 6,
+      "type": "KSampler",
+      "pos": [1520, 100],
+      "size": [315, 262],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 3
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 6
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 7
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [9],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [0, "randomize", 4, 1.0, "euler", "simple", 1.0],
+      "title": "KSampler (Turbo - 4 steps)"
+    },
+    {
+      "id": 8,
+      "type": "VAELoader",
+      "pos": [275, 300],
+      "size": [315, 58],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [10],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": ["flux2-vae.safetensors"],
+      "title": "Load VAE"
+    },
+    {
+      "id": 7,
+      "type": "VAEDecode",
+      "pos": [1900, 200],
+      "size": [210, 46],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 9
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 10
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [11],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": [],
+      "title": "VAE Decode"
+    },
+    {
+      "id": 10,
+      "type": "SaveImage",
+      "pos": [2180, 50],
+      "size": [315, 270],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 11
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": ["Flux2_Turbo"],
+      "title": "Save Image"
+    },
+    {
+      "id": 11,
+      "type": "Note",
+      "pos": [-350, 25],
+      "size": [580, 550],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "# FLUX.2 Dev Turbo - Default Workflow (FIXED)\n\n## 📋 About\nThis is a simple, fast workflow for FLUX.2 Dev with Turbo acceleration.\n- **Speed**: ~6 seconds per image (4 steps)\n- **Resolution**: 1024×1024 (square) - CORRECTED\n- **Quality**: Good (optimized for speed)\n\n## 🔧 Required Models\nAll models are auto-downloaded to /workspace on first run:\n\n**Diffusion Model** (~34GB)\nflux2_dev_fp8mixed.safetensors\nLocation: ComfyUI/models/unet/\n\n**Text Encoder** (~34GB)\nmistral_3_small_flux2_fp8.safetensors\nLocation: ComfyUI/models/clip/\n\n**VAE** (~321MB)\nflux2-vae.safetensors\nLocation: ComfyUI/models/vae/\n\n**Turbo LoRA** (~2.6GB)\nFlux2TurboComfyv2.safetensors\nLocation: ComfyUI/models/loras/\n\n## 🔗 Model Sources\n- Models from: Comfy-Org/flux2-dev (HuggingFace)\n- Turbo LoRA: ByteZSzn/Flux.2-Turbo-ComfyUI\n- No authentication required (public repos)\n\n## ⚙️ FIX APPLIED\n✅ Replaced EmptyLatentImage with EmptyFlux2LatentImage\n- FLUX.2 uses 16x compression (vs FLUX.1's 8x)\n- Now generates correct 1024×1024 output (not 2048×2048)\n- Should see ~4x faster iteration (1.6s/step instead of 6.5s/step)"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 12,
+      "type": "Note",
+      "pos": [-350, 620],
+      "size": [580, 280],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "## 🎨 Workflow Architecture\n\n**Model Loading**\n1. UNETLoader → Load diffusion model (FP8 quantized)\n2. CLIPLoader → Load Mistral-3-Small text encoder\n3. LoraLoader → Apply Turbo LoRA for 4-step generation\n\n**Generation Pipeline**\n4. CLIPTextEncode (Positive) → Process your prompt\n5. CLIPTextEncode (Negative) → Process negative prompt (usually empty)\n6. EmptyFlux2LatentImage → Create FLUX.2-native 1024×1024 latent\n7. KSampler → Generate image in 4 steps (Turbo mode)\n   - CFG: 1.0 (low guidance for Turbo)\n   - Sampler: euler\n   - Scheduler: simple\n8. VAEDecode → Convert latent to pixel image\n9. SaveImage → Save final result\n\n**Performance Tips**\n- 4 steps = ~6s generation time (1024×1024)\n- For higher quality, use flux2_turbo_2-8steps workflow (8 steps)\n- For reference images, use flux2_turbo_kombitz_6ref workflow"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 13,
+      "type": "Note",
+      "pos": [1520, 420],
+      "size": [315, 180],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "💡 Turbo Settings\n\nThe Turbo LoRA enables 4-step generation:\n- Steps: 4 (optimized)\n- CFG: 1.0 (minimal guidance)\n- Sampler: euler (recommended)\n- Denoise: 1.0 (full)\n\nDo NOT increase steps beyond 4-8 with Turbo LoRA - it's optimized for speed, not traditional multi-step sampling.\n\nFor traditional sampling (20-25 steps), disable the Turbo LoRA."
+      ],
+      "color": "#323",
+      "bgcolor": "#535"
     }
-  },
-  "2": {
-    "class_type": "CLIPLoader",
-    "inputs": {
-      "widget_0": "mistral_3_small_flux2_fp8.safetensors",
-      "widget_1": "flux2",
-      "widget_2": "default"
-    }
-  },
-  "3": {
-    "class_type": "LoraLoader",
-    "inputs": {
-      "widget_0": "Flux2TurboComfyv2.safetensors",
-      "widget_1": 1.0,
-      "widget_2": 0.9
-    }
-  },
-  "4": {
-    "class_type": "CLIPTextEncode",
-    "inputs": {
-      "widget_0": "a serene mountain landscape at sunset, oil painting style, photorealistic"
-    }
-  },
-  "5": {
-    "class_type": "CLIPTextEncode",
-    "inputs": {
-      "widget_0": ""
-    }
-  },
-  "9": {
-    "class_type": "EmptyFlux2LatentImage",
-    "inputs": {
-      "widget_0": 1024,
-      "widget_1": 1024,
-      "widget_2": 1
-    }
-  },
-  "6": {
-    "class_type": "KSampler",
-    "inputs": {
-      "widget_0": 0,
-      "widget_1": "randomize",
-      "widget_2": 4,
-      "widget_3": 1.0,
-      "widget_4": "euler",
-      "widget_5": "simple",
-      "widget_6": 1.0
-    }
-  },
-  "8": {
-    "class_type": "VAELoader",
-    "inputs": {
-      "widget_0": "flux2-vae.safetensors"
-    }
-  },
-  "7": {
-    "class_type": "VAEDecode",
-    "inputs": {}
-  },
-  "10": {
-    "class_type": "SaveImage",
-    "inputs": {
-      "widget_0": "Flux2_Turbo"
-    }
-  },
-  "11": {
-    "class_type": "Note",
-    "inputs": {
-      "widget_0": "# FLUX.2 Dev Turbo - Default Workflow (FIXED)\n\n## \ud83d\udccb About\nThis is a simple, fast workflow for FLUX.2 Dev with Turbo acceleration.\n- **Speed**: ~6 seconds per image (4 steps)\n- **Resolution**: 1024\u00d71024 (square) - CORRECTED\n- **Quality**: Good (optimized for speed)\n\n## \ud83d\udd27 Required Models\nAll models are auto-downloaded to /workspace on first run:\n\n**Diffusion Model** (~34GB)\nflux2_dev_fp8mixed.safetensors\nLocation: ComfyUI/models/unet/\n\n**Text Encoder** (~34GB)\nmistral_3_small_flux2_fp8.safetensors\nLocation: ComfyUI/models/clip/\n\n**VAE** (~321MB)\nflux2-vae.safetensors\nLocation: ComfyUI/models/vae/\n\n**Turbo LoRA** (~2.6GB)\nFlux2TurboComfyv2.safetensors\nLocation: ComfyUI/models/loras/\n\n## \ud83d\udd17 Model Sources\n- Models from: Comfy-Org/flux2-dev (HuggingFace)\n- Turbo LoRA: ByteZSzn/Flux.2-Turbo-ComfyUI\n- No authentication required (public repos)\n\n## \u2699\ufe0f FIX APPLIED\n\u2705 Replaced EmptyLatentImage with EmptyFlux2LatentImage\n- FLUX.2 uses 16x compression (vs FLUX.1's 8x)\n- Now generates correct 1024\u00d71024 output (not 2048\u00d72048)\n- Should see ~4x faster iteration (1.6s/step instead of 6.5s/step)"
-    }
-  },
-  "12": {
-    "class_type": "Note",
-    "inputs": {
-      "widget_0": "## \ud83c\udfa8 Workflow Architecture\n\n**Model Loading**\n1. UNETLoader \u2192 Load diffusion model (FP8 quantized)\n2. CLIPLoader \u2192 Load Mistral-3-Small text encoder\n3. LoraLoader \u2192 Apply Turbo LoRA for 4-step generation\n\n**Generation Pipeline**\n4. CLIPTextEncode (Positive) \u2192 Process your prompt\n5. CLIPTextEncode (Negative) \u2192 Process negative prompt (usually empty)\n6. EmptyFlux2LatentImage \u2192 Create FLUX.2-native 1024\u00d71024 latent\n7. KSampler \u2192 Generate image in 4 steps (Turbo mode)\n   - CFG: 1.0 (low guidance for Turbo)\n   - Sampler: euler\n   - Scheduler: simple\n8. VAEDecode \u2192 Convert latent to pixel image\n9. SaveImage \u2192 Save final result\n\n**Performance Tips**\n- 4 steps = ~6s generation time (1024\u00d71024)\n- For higher quality, use flux2_turbo_2-8steps workflow (8 steps)\n- For reference images, use flux2_turbo_kombitz_6ref workflow"
-    }
-  },
-  "13": {
-    "class_type": "Note",
-    "inputs": {
-      "widget_0": "\ud83d\udca1 Turbo Settings\n\nThe Turbo LoRA enables 4-step generation:\n- Steps: 4 (optimized)\n- CFG: 1.0 (minimal guidance)\n- Sampler: euler (recommended)\n- Denoise: 1.0 (full)\n\nDo NOT increase steps beyond 4-8 with Turbo LoRA - it's optimized for speed, not traditional multi-step sampling.\n\nFor traditional sampling (20-25 steps), disable the Turbo LoRA."
-    }
-  }
+  ],
+  "links": [
+    [1, 1, 0, 3, 0, "MODEL"],
+    [2, 2, 0, 3, 1, "CLIP"],
+    [3, 3, 0, 6, 0, "MODEL"],
+    [4, 3, 1, 4, 0, "CLIP"],
+    [5, 3, 1, 5, 0, "CLIP"],
+    [6, 4, 0, 6, 1, "CONDITIONING"],
+    [7, 5, 0, 6, 2, "CONDITIONING"],
+    [8, 9, 0, 6, 3, "LATENT"],
+    [9, 6, 0, 7, 0, "LATENT"],
+    [10, 8, 0, 7, 1, "VAE"],
+    [11, 7, 0, 10, 0, "IMAGE"]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
 }
