@@ -187,6 +187,7 @@ log_info "Using workflow: $WORKFLOW_FILE"
 log_info "Using prompt: $PROMPT"
 log_info "Using image-id: $IMAGE_ID"
 log_info "Using output-folder: $OUTPUT_FOLDER"
+log_info "Using seed: $SEED"
 
 # Initialize generation log
 init_generation_log
@@ -390,6 +391,30 @@ TEMP_WORKFLOW_API=$(mktemp /tmp/comfyui-workflow-api-XXXXXX.json)
 convert_ui_to_api_format "$TEMP_WORKFLOW" > "$TEMP_WORKFLOW_API"
 log_info "Workflow converted to API format"
 log_to_file "Workflow converted to API format for REST API submission"
+
+# Substitute SEED in KSampler nodes (find nodes with "sampler" in lowercase type)
+python3 << PYTHON_EOF
+import json
+import sys
+
+with open("$TEMP_WORKFLOW_API", 'r') as f:
+    api_workflow = json.load(f)
+
+# Substitute seed in all KSampler nodes
+seed_value = int("$SEED")
+for node_id, node in api_workflow.items():
+    if isinstance(node, dict) and node.get('class_type') == 'KSampler':
+        if 'inputs' in node and 'seed' in node['inputs']:
+            old_seed = node['inputs']['seed']
+            node['inputs']['seed'] = seed_value
+            # Log the substitution (write to stderr for visibility)
+            print(f"[SEED] Substituted seed in node {node_id}: {old_seed} -> {seed_value}", file=sys.stderr)
+
+with open("$TEMP_WORKFLOW_API", 'w') as f:
+    json.dump(api_workflow, f)
+PYTHON_EOF
+log_success "Seed substituted in workflow"
+log_to_file "Seed value $SEED substituted in KSampler nodes"
 
 # =============================================================================
 # Submit Workflow to ComfyUI
