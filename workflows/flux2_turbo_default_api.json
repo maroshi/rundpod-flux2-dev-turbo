@@ -1,0 +1,91 @@
+{
+  "1": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "widget_0": "flux2_dev_fp8mixed.safetensors",
+      "widget_1": "default"
+    }
+  },
+  "2": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "widget_0": "mistral_3_small_flux2_fp8.safetensors",
+      "widget_1": "flux2",
+      "widget_2": "default"
+    }
+  },
+  "3": {
+    "class_type": "LoraLoader",
+    "inputs": {
+      "widget_0": "Flux2TurboComfyv2.safetensors",
+      "widget_1": 1.0,
+      "widget_2": 0.9
+    }
+  },
+  "4": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "widget_0": "a serene mountain landscape at sunset, oil painting style, photorealistic"
+    }
+  },
+  "5": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "widget_0": ""
+    }
+  },
+  "9": {
+    "class_type": "EmptyFlux2LatentImage",
+    "inputs": {
+      "widget_0": 1024,
+      "widget_1": 1024,
+      "widget_2": 1
+    }
+  },
+  "6": {
+    "class_type": "KSampler",
+    "inputs": {
+      "widget_0": 0,
+      "widget_1": "randomize",
+      "widget_2": 4,
+      "widget_3": 1.0,
+      "widget_4": "euler",
+      "widget_5": "simple",
+      "widget_6": 1.0
+    }
+  },
+  "8": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "widget_0": "flux2-vae.safetensors"
+    }
+  },
+  "7": {
+    "class_type": "VAEDecode",
+    "inputs": {}
+  },
+  "10": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "widget_0": "Flux2_Turbo"
+    }
+  },
+  "11": {
+    "class_type": "Note",
+    "inputs": {
+      "widget_0": "# FLUX.2 Dev Turbo - Default Workflow (FIXED)\n\n## \ud83d\udccb About\nThis is a simple, fast workflow for FLUX.2 Dev with Turbo acceleration.\n- **Speed**: ~6 seconds per image (4 steps)\n- **Resolution**: 1024\u00d71024 (square) - CORRECTED\n- **Quality**: Good (optimized for speed)\n\n## \ud83d\udd27 Required Models\nAll models are auto-downloaded to /workspace on first run:\n\n**Diffusion Model** (~34GB)\nflux2_dev_fp8mixed.safetensors\nLocation: ComfyUI/models/unet/\n\n**Text Encoder** (~34GB)\nmistral_3_small_flux2_fp8.safetensors\nLocation: ComfyUI/models/clip/\n\n**VAE** (~321MB)\nflux2-vae.safetensors\nLocation: ComfyUI/models/vae/\n\n**Turbo LoRA** (~2.6GB)\nFlux2TurboComfyv2.safetensors\nLocation: ComfyUI/models/loras/\n\n## \ud83d\udd17 Model Sources\n- Models from: Comfy-Org/flux2-dev (HuggingFace)\n- Turbo LoRA: ByteZSzn/Flux.2-Turbo-ComfyUI\n- No authentication required (public repos)\n\n## \u2699\ufe0f FIX APPLIED\n\u2705 Replaced EmptyLatentImage with EmptyFlux2LatentImage\n- FLUX.2 uses 16x compression (vs FLUX.1's 8x)\n- Now generates correct 1024\u00d71024 output (not 2048\u00d72048)\n- Should see ~4x faster iteration (1.6s/step instead of 6.5s/step)"
+    }
+  },
+  "12": {
+    "class_type": "Note",
+    "inputs": {
+      "widget_0": "## \ud83c\udfa8 Workflow Architecture\n\n**Model Loading**\n1. UNETLoader \u2192 Load diffusion model (FP8 quantized)\n2. CLIPLoader \u2192 Load Mistral-3-Small text encoder\n3. LoraLoader \u2192 Apply Turbo LoRA for 4-step generation\n\n**Generation Pipeline**\n4. CLIPTextEncode (Positive) \u2192 Process your prompt\n5. CLIPTextEncode (Negative) \u2192 Process negative prompt (usually empty)\n6. EmptyFlux2LatentImage \u2192 Create FLUX.2-native 1024\u00d71024 latent\n7. KSampler \u2192 Generate image in 4 steps (Turbo mode)\n   - CFG: 1.0 (low guidance for Turbo)\n   - Sampler: euler\n   - Scheduler: simple\n8. VAEDecode \u2192 Convert latent to pixel image\n9. SaveImage \u2192 Save final result\n\n**Performance Tips**\n- 4 steps = ~6s generation time (1024\u00d71024)\n- For higher quality, use flux2_turbo_2-8steps workflow (8 steps)\n- For reference images, use flux2_turbo_kombitz_6ref workflow"
+    }
+  },
+  "13": {
+    "class_type": "Note",
+    "inputs": {
+      "widget_0": "\ud83d\udca1 Turbo Settings\n\nThe Turbo LoRA enables 4-step generation:\n- Steps: 4 (optimized)\n- CFG: 1.0 (minimal guidance)\n- Sampler: euler (recommended)\n- Denoise: 1.0 (full)\n\nDo NOT increase steps beyond 4-8 with Turbo LoRA - it's optimized for speed, not traditional multi-step sampling.\n\nFor traditional sampling (20-25 steps), disable the Turbo LoRA."
+    }
+  }
+}

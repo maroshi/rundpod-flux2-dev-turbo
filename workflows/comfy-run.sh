@@ -104,10 +104,14 @@ PROMPT=""
 IMAGE_ID="UNDEFINED_ID_"
 OUTPUT_FOLDER="/workspace/output/"
 GENERATION_LOG_DIR="/workspace/logs/generations/"
+PROMPT_ID=""  # Initialize early to avoid unbound variable errors
 
 # Timestamp for this run
 START_TIME=$(date '+%Y-%m-%d %H:%M:%S')
 START_TIMESTAMP=$(date '+%Y%m%d_%H%M%S')
+
+# Generate unique client ID (needed for logging)
+CLIENT_ID="claude-code-${START_TIMESTAMP}-$(date +%N)"
 
 # =============================================================================
 # Argument Parsing
@@ -236,6 +240,118 @@ log_success "Workflow structure is valid"
 log_to_file "Workflow structure validated successfully"
 
 # =============================================================================
+# Workflow Processing Functions
+# =============================================================================
+
+# Convert UI format workflow to API format for ComfyUI REST API
+convert_ui_to_api_format() {
+    local ui_workflow_file=$1
+    local comfyui_url="${COMFYUI_URL:-http://localhost:8188}"
+
+    # Use Python to convert UI format to API format
+    python3 << PYTHON_EOF
+import json
+import urllib.request
+import urllib.error
+
+# Read the UI format workflow
+with open("$ui_workflow_file", 'r') as f:
+    ui_workflow = json.load(f)
+
+# Try to fetch node definitions from ComfyUI API for proper input name mapping
+node_definitions = {}
+try:
+    req = urllib.request.Request("$comfyui_url/object_info")
+    with urllib.request.urlopen(req, timeout=5) as response:
+        node_definitions = json.loads(response.read().decode())
+except Exception as e:
+    pass  # Continue without node definitions if API is unavailable
+
+# Check if it's already in API format (has nodes as top-level keys)
+if 'nodes' in ui_workflow and isinstance(ui_workflow['nodes'], list):
+    # Build link mapping: link_id -> (source_node_id, output_slot)
+    link_map = {}
+    if 'links' in ui_workflow and ui_workflow['links']:
+        for link in ui_workflow['links']:
+            link_id, source_node, source_slot, target_node, target_slot, link_type = link[:6]
+            link_map[link_id] = [str(source_node), source_slot]
+
+    # Convert from UI format to API format
+    api_workflow = {}
+
+    # UI-only node types that should be filtered out
+    ui_only_nodes = {'Note', 'Reroute', 'PrimitiveNode'}
+
+    for node in ui_workflow['nodes']:
+        node_id = str(node['id'])
+        node_type = node.get('type')
+
+        # Skip UI-only nodes
+        if node_type in ui_only_nodes:
+            continue
+
+        api_node = {
+            'class_type': node_type,
+            'inputs': {}
+        }
+
+        # Process inputs (connections to other nodes)
+        if 'inputs' in node and isinstance(node['inputs'], list):
+            for input_item in node['inputs']:
+                input_name = input_item.get('name', '')
+                if 'link' in input_item and input_item['link'] is not None:
+                    # This input is connected to another node
+                    if input_item['link'] in link_map:
+                        # Use the resolved link reference
+                        api_node['inputs'][input_name] = link_map[input_item['link']]
+
+        # Process widget values (parameters)
+        if 'widgets_values' in node:
+            widget_values = list(node['widgets_values'])  # Make a copy
+            node_type = node.get('type', '')
+
+            # Filter out UI-only widget values (e.g., "randomize" controls)
+            # These shouldn't be sent to the API
+            filtered_widget_values = []
+            for val in widget_values:
+                # Skip "randomize" control values
+                if isinstance(val, str) and val == 'randomize':
+                    continue
+                filtered_widget_values.append(val)
+
+            # Get input names from node definition if available
+            input_names = []
+            if node_type in node_definitions:
+                node_def = node_definitions[node_type]
+                if 'input' in node_def:
+                    # Get required inputs in order
+                    required = node_def.get('input', {}).get('required', {})
+                    input_names = list(required.keys())
+
+            # Map filtered widget values to input names
+            if input_names:
+                # Build list of unset input names (those that need widget values)
+                unset_inputs = [name for name in input_names if name not in api_node['inputs']]
+
+                # Assign widget values to unset inputs in order
+                for idx, input_name in enumerate(unset_inputs):
+                    if idx < len(filtered_widget_values):
+                        api_node['inputs'][input_name] = filtered_widget_values[idx]
+            else:
+                # Fallback: no node definition, just map widget values generically
+                for idx, widget_value in enumerate(filtered_widget_values):
+                    api_node['inputs'][f'widget_{idx}'] = widget_value
+
+        api_workflow[node_id] = api_node
+
+    print(json.dumps(api_workflow))
+else:
+    # Already in API format, just return as is
+    print(json.dumps(ui_workflow))
+PYTHON_EOF
+}
+
+# =============================================================================
 # Workflow Processing
 # =============================================================================
 
@@ -251,20 +367,41 @@ envsubst < "$WORKFLOW_FILE" > "$TEMP_WORKFLOW"
 log_success "Workflow processed successfully"
 log_to_file "Workflow processed with variable substitution"
 
+# Convert from UI format to API format if needed
+TEMP_WORKFLOW_API=$(mktemp /tmp/comfyui-workflow-api-XXXXXX.json)
+convert_ui_to_api_format "$TEMP_WORKFLOW" > "$TEMP_WORKFLOW_API"
+log_info "Workflow converted to API format"
+log_to_file "Workflow converted to API format for REST API submission"
+
 # =============================================================================
 # Submit Workflow to ComfyUI
 # =============================================================================
 
 log_info "Submitting workflow to ComfyUI..."
 
-# Generate unique client ID
-CLIENT_ID="claude-code-${START_TIMESTAMP}-$(date +%N)"
+# Client ID already generated at initialization
 log_to_file "Submitting workflow with Client ID: ${CLIENT_ID}"
+
+# Build the payload using the API-format workflow
+PAYLOAD="{\"prompt\": $(cat "$TEMP_WORKFLOW_API"), \"client_id\": \"$CLIENT_ID\"}"
+
+# Print the curl command for debugging
+log_info "Curl command being executed:"
+echo "curl -X POST \\"
+echo "  -H \"Content-Type: application/json\" \\"
+echo "  -d '${PAYLOAD:0:200}...' \\"
+echo "  \"${COMFYUI_URL}/prompt\""
+echo ""
+
+# Save full payload to file for debugging
+PAYLOAD_FILE="/tmp/comfyui-payload-${START_TIMESTAMP}.json"
+echo "$PAYLOAD" > "$PAYLOAD_FILE"
+log_info "Full payload saved to: $PAYLOAD_FILE"
 
 # Submit with HTTP status check
 HTTP_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
     -H "Content-Type: application/json" \
-    -d "{\"prompt\": $(cat "$TEMP_WORKFLOW"), \"client_id\": \"$CLIENT_ID\"}" \
+    -d "$PAYLOAD" \
     "${COMFYUI_URL}/prompt")
 
 # Extract response body and status code
@@ -275,12 +412,13 @@ STATUS_CODE=$(echo "$HTTP_RESPONSE" | tail -n 1)
 if [[ "$STATUS_CODE" != "200" ]]; then
     echo "[✗] Failed to submit workflow (HTTP $STATUS_CODE): $RESPONSE"
     log_to_file "ERROR: Failed to submit workflow (HTTP $STATUS_CODE): $RESPONSE"
+    log_to_file "Full payload was: $PAYLOAD_FILE"
     finalize_generation_log "Failed" ""
     exit 1
 fi
 
-# Extract prompt_id
-PROMPT_ID=$(echo "$RESPONSE" | jq -r '.prompt_id' 2>/dev/null)
+# Extract prompt_id - set to empty string if not found
+PROMPT_ID=$(echo "$RESPONSE" | jq -r '.prompt_id' 2>/dev/null || echo "")
 
 if [[ -z "$PROMPT_ID" || "$PROMPT_ID" == "null" ]]; then
     echo "[✗] Failed to get prompt_id from response: $RESPONSE"

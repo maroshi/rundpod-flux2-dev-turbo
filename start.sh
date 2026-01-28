@@ -121,6 +121,20 @@ else
   echo "⚠️ Python not found – assuming no CUDA"
 fi
 
+# Export generation configuration before starting ComfyUI
+export OUTPUT_FOLDER="/workspace/output/"
+export GENERATION_LOG_DIR="/workspace/logs/generations/"
+export PROMPT_DEFAULT_TEXT="kong fu panda, dancing and playing concert flute, in circus arean, crowd cheering, music notes emrge from the flute"
+export IMAGE_DEFAULT_ID="UNDEFINED_ID_"
+
+# Persist custom env variables for SSH sessions
+cat >> /etc/rp_environment << 'EOF'
+export OUTPUT_FOLDER="/workspace/output/"
+export GENERATION_LOG_DIR="/workspace/logs/generations/"
+export PROMPT_DEFAULT_TEXT="kong fu panda, dancing and playing concert flute, in circus arean, crowd cheering, music notes emrge from the flute"
+export IMAGE_DEFAULT_ID="UNDEFINED_ID_"
+EOF
+
 # Start ComfyUI (HTTP port 8188)
 HAS_COMFYUI=0
 

@@ -46,12 +46,14 @@ RUN chmod 644 /README.md && chmod -R 644 /test /docs
 # ============================================================================
 # SECTION 4: Workflows Installation
 # ============================================================================
-# Copy FLUX.2 workflows to workspace and ComfyUI default directory
-COPY workflows/ /workspace/workflows/
+# Copy FLUX.2 workflows to a non-volume location and ComfyUI default directory
+# Store in /root/workflows-backup for pod startup to copy to persistent /workspace/workflows
+COPY workflows/ /root/workflows-backup/
 
 # Also copy workflows to ComfyUI default workflows directory for immediate loading
 RUN mkdir -p /ComfyUI/user/default/workflows && \
-    cp /workspace/workflows/*.json /ComfyUI/user/default/workflows/ 2>/dev/null || true && \
+    cp /root/workflows-backup/*.json /ComfyUI/user/default/workflows/ 2>/dev/null || true && \
+    chmod -R 755 /root/workflows-backup && \
     ls -la /ComfyUI/user/default/workflows/ 2>/dev/null || true
 
 # ============================================================================
