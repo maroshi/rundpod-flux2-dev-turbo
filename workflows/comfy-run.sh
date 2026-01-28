@@ -103,6 +103,7 @@ WORKFLOW_FILE="${SCRIPT_DIR}/flux2_turbo_default_api.json"
 PROMPT=""
 IMAGE_ID="UNDEFINED_ID_"
 OUTPUT_FOLDER="/workspace/output/"
+SEED=""  # Initialize empty, will generate if not provided
 GENERATION_LOG_DIR="/workspace/logs/generations/"
 PROMPT_ID=""  # Initialize early to avoid unbound variable errors
 
@@ -135,9 +136,13 @@ while [[ $# -gt 0 ]]; do
             OUTPUT_FOLDER="$2"
             shift 2
             ;;
+        --seed)
+            SEED="$2"
+            shift 2
+            ;;
         *)
             log_error "Unknown option: $1"
-            echo "Usage: $0 --prompt \"text\" [--image-id \"id\"] [--output-folder \"path\"] [--workflow file.json]"
+            echo "Usage: $0 --prompt \"text\" [--image-id \"id\"] [--output-folder \"path\"] [--seed seed] [--workflow file.json]"
             exit 1
             ;;
     esac
@@ -155,9 +160,22 @@ if [[ -z "$PROMPT" ]]; then
 fi
 
 # AFTER validation succeeds, export environment variables for envsubst
+# Append IMAGE_ID to PROMPT to prevent caching (dirty the cache)
+if [[ -n "$IMAGE_ID" && "$IMAGE_ID" != "UNDEFINED_ID_" ]]; then
+    PROMPT="${PROMPT} (id: ${IMAGE_ID})"
+fi
+
+# Generate seed if not provided: large random integer + epoch time
+if [[ -z "$SEED" ]]; then
+    EPOCH_TIME=$(date +%s)
+    RANDOM_INT=$((RANDOM * 32768 + RANDOM))
+    SEED=$((RANDOM_INT + EPOCH_TIME))
+fi
+
 export PROMPT
 export IMAGE_ID
 export OUTPUT_FOLDER
+export SEED
 
 # Verify workflow file exists
 if [[ ! -f "$WORKFLOW_FILE" ]]; then
