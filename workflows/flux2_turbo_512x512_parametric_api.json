@@ -296,7 +296,7 @@
       "properties": {
         "Node name for S&R": "SaveImage"
       },
-      "widgets_values": ["${IMAGE_ID}_"],
+      "widgets_values": ["${FILENAME_PREFIX}"],
       "title": "Save Image with ID Suffix"
     },
     {

@@ -172,10 +172,17 @@ if [[ -z "$SEED" ]]; then
     SEED=$((RANDOM_INT + EPOCH_TIME))
 fi
 
+# Compute filename prefix from IMAGE_ID + hour:minute:second
+HOUR=$(date '+%H')
+MINUTE=$(date '+%M')
+SECOND=$(date '+%S')
+FILENAME_PREFIX="${IMAGE_ID}_${HOUR}${MINUTE}${SECOND}"
+
 export PROMPT
 export IMAGE_ID
 export OUTPUT_FOLDER
 export SEED
+export FILENAME_PREFIX
 
 # Verify workflow file exists
 if [[ ! -f "$WORKFLOW_FILE" ]]; then
@@ -188,6 +195,7 @@ log_info "Using prompt: $PROMPT"
 log_info "Using image-id: $IMAGE_ID"
 log_info "Using output-folder: $OUTPUT_FOLDER"
 log_info "Using seed: $SEED"
+log_info "Using filename prefix: $FILENAME_PREFIX"
 
 # Initialize generation log
 init_generation_log
