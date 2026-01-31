@@ -516,6 +516,39 @@ while [[ $POLL_COUNT -lt $MAX_POLLS ]]; do
             OUTPUTS=$(echo "$HISTORY" | jq ".\"$PROMPT_ID\".outputs" 2>/dev/null)
             echo "$OUTPUTS"
 
+            # Rename files from 5-digit to 2-digit suffix if FILENAME_PREFIX is set
+            if [[ -n "$FILENAME_PREFIX" ]]; then
+                python3 << PYTHON_EOF
+import os
+import re
+import glob
+
+output_folder = "$OUTPUT_FOLDER"
+filename_pattern = "${FILENAME_PREFIX}_[0-9]{5}_"
+
+# Find all files matching the pattern
+for filepath in glob.glob(os.path.join(output_folder, "${FILENAME_PREFIX}_*.png")):
+    basename = os.path.basename(filepath)
+    # Match: PREFIX_XXXXX_.png and extract the number
+    match = re.match(r'^(.+?)_(\d{5})_(.*)$', basename)
+    if match:
+        prefix = match.group(1)
+        old_num = match.group(2)
+        suffix = match.group(3)
+        # Convert 5-digit to 2-digit
+        new_num = str(int(old_num)).zfill(2)
+        new_basename = f"{prefix}_{new_num}_{suffix}"
+        new_filepath = os.path.join(output_folder, new_basename)
+
+        # Rename only if the new file doesn't exist
+        if not os.path.exists(new_filepath):
+            os.rename(filepath, new_filepath)
+            print(f"Renamed: {basename} -> {new_basename}", file=__import__('sys').stderr)
+PYTHON_EOF
+                log_success "Files renamed from 5-digit to 2-digit suffix"
+                log_to_file "Files renamed from 5-digit to 2-digit suffix"
+            fi
+
             # Finalize log with successful completion
             finalize_generation_log "Success" "$OUTPUTS"
             exit 0
