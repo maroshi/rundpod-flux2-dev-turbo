@@ -69,7 +69,7 @@ REQUIRED ARGUMENTS:
                            Example: --prompt "A beautiful sunset over mountains"
 
 OPTIONS:
-    --workflow FILE         Workflow JSON file (default: flux2_turbo_default_api.json)
+    --workflow FILE         Workflow JSON file (default: flux2_turbo_512x512_parametric_api.json)
                            Supports both ComfyUI UI format and API format
                            Example: --workflow flux2_turbo_512x512_api.json
 
@@ -314,7 +314,7 @@ COMFYUI_URL="http://${COMFYUI_HOST}:${COMFYUI_PORT}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Default configuration values
-WORKFLOW_FILE="${SCRIPT_DIR}/flux2_turbo_default_api.json"
+WORKFLOW_FILE="${SCRIPT_DIR}/flux2_turbo_512x512_parametric_api.json"
 PROMPT=""
 IMAGE_ID="UNDEFINED_ID_"
 OUTPUT_FOLDER="/workspace/output/"
@@ -436,7 +436,7 @@ print_startup_info() {
     log_info ""
     log_info "Configuration:"
     log_info "  Workflow:       $(basename "$WORKFLOW_FILE")"
-    log_info "  Prompt:         ${PROMPT:0:60}${PROMPT:60:+...}"
+    log_info "  Prompt:         ${PROMPT:0:60}$( (( ${#PROMPT} > 60 )) && echo "..." || echo "" )"
     log_info "  Image ID:       ${IMAGE_ID}"
     log_info "  Seed:           ${SEED}"
     log_info "  Output:         ${OUTPUT_FOLDER}"
