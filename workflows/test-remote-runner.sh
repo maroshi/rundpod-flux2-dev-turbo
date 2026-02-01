@@ -21,8 +21,33 @@ LOCAL_SCRIPT="${SCRIPT_DIR}/comfy-run.sh"
 TEST_OUTPUT_DIR="${SCRIPT_DIR}/test-output"
 TEST_LOG_FILE="${SCRIPT_DIR}/test-results.log"
 
-# Default pod URL (can be overridden via environment)
-POD_URL="${RUNPOD_POD_URL:-http://104.255.9.187:8188}"
+# Detect pod URL with 4-step priority (same as main comfy-run-remote.sh script)
+detect_pod_url_from_runpodctl() {
+    # Try to get pod ID from runpodctl
+    if ! command -v runpodctl &> /dev/null; then
+        return 1
+    fi
+
+    local pod_id=$(runpodctl get pod 2>/dev/null | grep "RUNNING" | head -1 | awk '{print $1}')
+    if [[ -n "$pod_id" ]]; then
+        echo "https://${pod_id}-8188.proxy.runpod.net"
+        return 0
+    fi
+
+    return 1
+}
+
+# Priority 1: Command-line argument (not applicable for test suite)
+POD_URL=""
+
+# Priority 2: Environment variable
+if [[ -n "${RUNPOD_POD_URL:-}" ]]; then
+    POD_URL="${RUNPOD_POD_URL}"
+# Priority 3: Auto-detect using runpodctl
+elif POD_URL=$(detect_pod_url_from_runpodctl); then
+    :  # Pod URL detected from runpodctl
+fi
+# Priority 4: Will fail in setup if POD_URL is still empty
 
 # Test counters
 TESTS_PASSED=0
@@ -119,6 +144,16 @@ setup() {
     log_test "Test output directory: $TEST_OUTPUT_DIR"
     log_test "Pod URL: $POD_URL"
     log_test "Remote script: $REMOTE_SCRIPT"
+
+    # Check if pod URL was detected
+    if [[ -z "$POD_URL" ]]; then
+        log_fail "Pod URL could not be detected"
+        log_test "Please either:"
+        log_test "  1. Set RUNPOD_POD_URL environment variable"
+        log_test "  2. Ensure runpodctl is installed and pod is RUNNING"
+        return 1
+    fi
+    log_pass "Pod URL detected: $POD_URL"
 
     # Check if remote script exists
     if [[ ! -f "$REMOTE_SCRIPT" ]]; then
