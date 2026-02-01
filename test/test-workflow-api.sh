@@ -15,11 +15,55 @@ BLUE='\033[0;36m'
 NC='\033[0m'
 
 # Configuration
-POD_URL="${RUNPOD_POD_URL:-http://104.255.9.187:8188}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TEST_DIR="${SCRIPT_DIR}/test-output/api-tests"
 PROMPT_ID=""
 CLIENT_ID="test-client-$(date +%s)-$$"
+
+# Detect pod URL with priority order
+detect_pod_url_from_runpodctl() {
+    # Try to get pod ID from runpodctl
+    if ! command -v runpodctl &> /dev/null; then
+        return 1
+    fi
+
+    local pod_id=$(runpodctl get pod 2>/dev/null | grep "RUNNING" | head -1 | awk '{print $1}')
+    if [[ -n "$pod_id" ]]; then
+        echo "https://${pod_id}-8188.proxy.runpod.net"
+        return 0
+    fi
+
+    return 1
+}
+
+# Priority 1: Environment variable
+POD_URL="${RUNPOD_POD_URL:-}"
+
+# Priority 2: Auto-detect using runpodctl
+if [[ -z "$POD_URL" ]]; then
+    POD_URL=$(detect_pod_url_from_runpodctl) || POD_URL=""
+fi
+
+# Priority 3: Fall back to environment-based detection
+if [[ -z "$POD_URL" ]]; then
+    # Try to detect from parent directory comfy-run-remote.sh
+    if [[ -f "${SCRIPT_DIR}/../comfy-run-remote.sh" ]]; then
+        POD_URL=$(grep -o "https://[^ ]*-8188.proxy.runpod.net" "${SCRIPT_DIR}/../comfy-run-remote.sh" 2>/dev/null | head -1) || POD_URL=""
+    fi
+fi
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --pod-url)
+            POD_URL="$2"
+            shift 2
+            ;;
+        *)
+            shift
+            ;;
+    esac
+done
 
 ################################################################################
 # UTILITY FUNCTIONS
@@ -303,7 +347,7 @@ test_response_parsing() {
 test_workflow_json() {
     print_header "Workflow JSON Tests"
 
-    local workflow_file="${SCRIPT_DIR}/flux2_turbo_512x512_parametric_api.json"
+    local workflow_file="${SCRIPT_DIR}/../workflows/flux2_turbo_512x512_parametric_api.json"
 
     if [[ ! -f "$workflow_file" ]]; then
         log_fail "Workflow file not found: $workflow_file"
