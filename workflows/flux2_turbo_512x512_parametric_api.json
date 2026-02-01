@@ -1,371 +1,118 @@
 {
-  "last_node_id": 13,
-  "last_link_id": 11,
-  "nodes": [
-    {
-      "id": 1,
-      "type": "UNETLoader",
-      "pos": [275, 25],
-      "size": [315, 82],
-      "flags": {},
-      "order": 0,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "MODEL",
-          "type": "MODEL",
-          "links": [1],
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "UNETLoader",
-        "models": [
-          {
-            "name": "flux2_dev_fp8mixed.safetensors",
-            "url": "https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/split_files/diffusion_models/flux2_dev_fp8mixed.safetensors",
-            "directory": "diffusion_models"
-          }
+  "prompt": {
+    "1": {
+      "class_type": "UNETLoader",
+      "inputs": {
+        "unet_name": "flux2_dev_fp8mixed.safetensors",
+        "weight_dtype": "default"
+      }
+    },
+    "2": {
+      "class_type": "CLIPLoader",
+      "inputs": {
+        "clip_name": "mistral_3_small_flux2_fp8.safetensors",
+        "type": "flux2"
+      }
+    },
+    "3": {
+      "class_type": "LoraLoader",
+      "inputs": {
+        "model": [
+          "1",
+          0
+        ],
+        "clip": [
+          "2",
+          0
+        ],
+        "lora_name": "Flux2TurboComfyv2.safetensors",
+        "strength_model": 1,
+        "strength_clip": 0.9
+      }
+    },
+    "4": {
+      "class_type": "CLIPTextEncode",
+      "inputs": {
+        "text": "${PROMPT}",
+        "clip": [
+          "3",
+          1
         ]
-      },
-      "widgets_values": ["flux2_dev_fp8mixed.safetensors", "default"],
-      "title": "Load FLUX.2 Dev Diffusion Model"
+      }
     },
-    {
-      "id": 2,
-      "type": "CLIPLoader",
-      "pos": [275, 150],
-      "size": [315, 82],
-      "flags": {},
-      "order": 1,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "CLIP",
-          "type": "CLIP",
-          "links": [2],
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "CLIPLoader"
-      },
-      "widgets_values": ["mistral_3_small_flux2_fp8.safetensors", "flux2", "default"],
-      "title": "Load FLUX.2 Text Encoder"
+    "5": {
+      "class_type": "CLIPTextEncode",
+      "inputs": {
+        "text": "",
+        "clip": [
+          "3",
+          1
+        ]
+      }
     },
-    {
-      "id": 3,
-      "type": "LoraLoader",
-      "pos": [650, 80],
-      "size": [315, 126],
-      "flags": {},
-      "order": 2,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 1
-        },
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 2
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MODEL",
-          "type": "MODEL",
-          "links": [3],
-          "slot_index": 0
-        },
-        {
-          "name": "CLIP",
-          "type": "CLIP",
-          "links": [4, 5],
-          "slot_index": 1
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "LoraLoader"
-      },
-      "widgets_values": ["Flux2TurboComfyv2.safetensors", 1.0, 0.9],
-      "title": "Load Flux.2 Turbo LoRA"
+    "9": {
+      "class_type": "EmptyFlux2LatentImage",
+      "inputs": {
+        "width": 512,
+        "height": 512,
+        "batch_size": 1
+      }
     },
-    {
-      "id": 4,
-      "type": "CLIPTextEncode",
-      "pos": [1030, 50],
-      "size": [422.84503173828125, 164.6060791015625],
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 4
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "links": [6],
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "CLIPTextEncode"
-      },
-      "widgets_values": ["${PROMPT}"],
-      "title": "Positive Prompt"
+    "6": {
+      "class_type": "KSampler",
+      "inputs": {
+        "model": [
+          "3",
+          0
+        ],
+        "positive": [
+          "4",
+          0
+        ],
+        "negative": [
+          "5",
+          0
+        ],
+        "latent_image": [
+          "9",
+          0
+        ],
+        "seed": "${SEED}",
+        "steps": 4,
+        "cfg": 1,
+        "sampler_name": "euler",
+        "scheduler": "simple",
+        "denoise": 1
+      }
     },
-    {
-      "id": 5,
-      "type": "CLIPTextEncode",
-      "pos": [1030, 260],
-      "size": [422.84503173828125, 164.6060791015625],
-      "flags": {},
-      "order": 4,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 5
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "links": [7],
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "CLIPTextEncode"
-      },
-      "widgets_values": [""],
-      "title": "Negative Prompt"
+    "8": {
+      "class_type": "VAELoader",
+      "inputs": {
+        "vae_name": "flux2-vae.safetensors"
+      }
     },
-    {
-      "id": 9,
-      "type": "EmptyFlux2LatentImage",
-      "pos": [1030, 480],
-      "size": [315, 106],
-      "flags": {},
-      "order": 5,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [8],
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "EmptyFlux2LatentImage"
-      },
-      "widgets_values": [512, 512, 1],
-      "title": "FLUX.2 Latent Image (512×512)"
+    "7": {
+      "class_type": "VAEDecode",
+      "inputs": {
+        "samples": [
+          "6",
+          0
+        ],
+        "vae": [
+          "8",
+          0
+        ]
+      }
     },
-    {
-      "id": 6,
-      "type": "KSampler",
-      "pos": [1520, 100],
-      "size": [315, 262],
-      "flags": {},
-      "order": 6,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 3
-        },
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 6
-        },
-        {
-          "name": "negative",
-          "type": "CONDITIONING",
-          "link": 7
-        },
-        {
-          "name": "latent_image",
-          "type": "LATENT",
-          "link": 8
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [9],
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "KSampler"
-      },
-      "widgets_values": [0, "randomize", 4, 1.0, "euler", "simple", 1.0],
-      "title": "KSampler (Turbo - 4 steps)"
-    },
-    {
-      "id": 8,
-      "type": "VAELoader",
-      "pos": [275, 300],
-      "size": [315, 58],
-      "flags": {},
-      "order": 7,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "VAE",
-          "type": "VAE",
-          "links": [10],
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "VAELoader"
-      },
-      "widgets_values": ["flux2-vae.safetensors"],
-      "title": "Load VAE"
-    },
-    {
-      "id": 7,
-      "type": "VAEDecode",
-      "pos": [1900, 200],
-      "size": [210, 46],
-      "flags": {},
-      "order": 8,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "samples",
-          "type": "LATENT",
-          "link": 9
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 10
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [11],
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "VAEDecode"
-      },
-      "widgets_values": [],
-      "title": "VAE Decode"
-    },
-    {
-      "id": 10,
-      "type": "SaveImage",
-      "pos": [2180, 50],
-      "size": [315, 270],
-      "flags": {},
-      "order": 9,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 11
-        }
-      ],
-      "outputs": [],
-      "properties": {
-        "Node name for S&R": "SaveImage"
-      },
-      "widgets_values": ["${FILENAME_PREFIX}"],
-      "title": "Save Image with ID Suffix"
-    },
-    {
-      "id": 11,
-      "type": "Note",
-      "pos": [-350, 25],
-      "size": [580, 550],
-      "flags": {},
-      "order": 10,
-      "mode": 0,
-      "properties": {
-        "text": ""
-      },
-      "widgets_values": [
-        "# FLUX.2 Dev Turbo - 512×512 Workflow with Environment Variables\n\n## 📋 About\nThis is a simple, fast workflow for FLUX.2 Dev with Turbo acceleration at 512×512 resolution.\n- **Speed**: ~3 seconds per image (4 steps)\n- **Resolution**: 512×512 (half-size)\n- **Quality**: Good (optimized for speed)\n- **Dynamic Parameters**: Uses environment variables for prompt, image ID, and output folder\n\n## 🔧 Required Models\nAll models are auto-downloaded to /workspace on first run:\n\n**Diffusion Model** (~34GB)\nflux2_dev_fp8mixed.safetensors\nLocation: ComfyUI/models/unet/\n\n**Text Encoder** (~34GB)\nmistral_3_small_flux2_fp8.safetensors\nLocation: ComfyUI/models/clip/\n\n**VAE** (~321MB)\nflux2-vae.safetensors\nLocation: ComfyUI/models/vae/\n\n**Turbo LoRA** (~2.6GB)\nFlux2TurboComfyv2.safetensors\nLocation: ComfyUI/models/loras/\n\n## 🔗 Model Sources\n- Models from: Comfy-Org/flux2-dev (HuggingFace)\n- Turbo LoRA: ByteZSzn/Flux.2-Turbo-ComfyUI\n- No authentication required (public repos)\n\n## 🆔 Environment Variables\n**PROMPT**: The text prompt for image generation\n- Example: `export PROMPT=\"a beautiful sunset over mountains\"`\n- Injected into Node 4 (CLIPTextEncode)\n\n**IMAGE_ID**: Customize the image filename suffix\n- Example: `export IMAGE_ID=test_001`\n- Saves as: `Flux2_Turbo_test_001_<timestamp>.png`\n- Default: `UNDEFINED_ID_` if not set\n\n**OUTPUT_FOLDER**: Specify output directory for generated images\n- Example: `export OUTPUT_FOLDER=/workspace/output/`\n- Controls where images are saved\n- Default: `/workspace/output/`"
-      ],
-      "color": "#432",
-      "bgcolor": "#653"
-    },
-    {
-      "id": 12,
-      "type": "Note",
-      "pos": [-350, 620],
-      "size": [580, 280],
-      "flags": {},
-      "order": 11,
-      "mode": 0,
-      "properties": {
-        "text": ""
-      },
-      "widgets_values": [
-        "## 🎨 Workflow Architecture\n\n**Model Loading**\n1. UNETLoader → Load diffusion model (FP8 quantized)\n2. CLIPLoader → Load Mistral-3-Small text encoder\n3. LoraLoader → Apply Turbo LoRA for 4-step generation\n\n**Generation Pipeline**\n4. CLIPTextEncode (Positive) → Process your prompt\n5. CLIPTextEncode (Negative) → Process negative prompt (usually empty)\n6. EmptyFlux2LatentImage → Create FLUX.2-native 512×512 latent\n7. KSampler → Generate image in 4 steps (Turbo mode)\n   - CFG: 1.0 (low guidance for Turbo)\n   - Sampler: euler\n   - Scheduler: simple\n8. VAEDecode → Convert latent to pixel image\n9. SaveImage → Save with IMAGE_ID suffix for unique identification\n\n**Performance Tips**\n- 4 steps = ~3s generation time (512×512)\n- For higher quality, use flux2_turbo_2-8steps workflow (8 steps)\n- For reference images, use flux2_turbo_kombitz_6ref workflow"
-      ],
-      "color": "#432",
-      "bgcolor": "#653"
-    },
-    {
-      "id": 13,
-      "type": "Note",
-      "pos": [1520, 420],
-      "size": [315, 180],
-      "flags": {},
-      "order": 12,
-      "mode": 0,
-      "properties": {
-        "text": ""
-      },
-      "widgets_values": [
-        "💡 Turbo Settings\n\nThe Turbo LoRA enables 4-step generation:\n- Steps: 4 (optimized)\n- CFG: 1.0 (minimal guidance)\n- Sampler: euler (recommended)\n- Denoise: 1.0 (full)\n\nDo NOT increase steps beyond 4-8 with Turbo LoRA - it's optimized for speed, not traditional multi-step sampling.\n\nFor traditional sampling (20-25 steps), disable the Turbo LoRA."
-      ],
-      "color": "#323",
-      "bgcolor": "#535"
+    "10": {
+      "class_type": "SaveImage",
+      "inputs": {
+        "images": [
+          "7",
+          0
+        ],
+        "filename_prefix": "${FILENAME_PREFIX}"
+      }
     }
-  ],
-  "links": [
-    [1, 1, 0, 3, 0, "MODEL"],
-    [2, 2, 0, 3, 1, "CLIP"],
-    [3, 3, 0, 6, 0, "MODEL"],
-    [4, 3, 1, 4, 0, "CLIP"],
-    [5, 3, 1, 5, 0, "CLIP"],
-    [6, 4, 0, 6, 1, "CONDITIONING"],
-    [7, 5, 0, 6, 2, "CONDITIONING"],
-    [8, 9, 0, 6, 3, "LATENT"],
-    [9, 6, 0, 7, 0, "LATENT"],
-    [10, 8, 0, 7, 1, "VAE"],
-    [11, 7, 0, 10, 0, "IMAGE"]
-  ],
-  "groups": [],
-  "config": {},
-  "extra": {},
-  "version": 0.4
+  }
 }
