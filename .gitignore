@@ -1,2 +1,17 @@
 build-test.log
 build_logs/
+
+# Log files
+*.log
+logs/
+workflows/logs/
+test/test-output/
+
+# Generated outputs
+output/
+workflows/output/
+workflows/test-output/
+
+# Test artifacts
+test/*.log
+test-results.log
