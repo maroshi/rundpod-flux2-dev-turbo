@@ -407,8 +407,14 @@ validate_arguments() {
 
     # Pod URL is required
     if [[ -z "$POD_URL" ]]; then
-        log_error "Pod URL is required (--pod-url or RUNPOD_POD_URL env var)"
+        log_error "Pod URL could not be determined"
         echo ""
+        echo "Provide pod URL using one of these methods:"
+        echo "  1. --pod-url parameter: --pod-url https://{POD_ID}-8188.proxy.runpod.net"
+        echo "  2. RUNPOD_POD_URL env var: export RUNPOD_POD_URL='https://...'"
+        echo "  3. Auto-detect (requires runpodctl): make sure pod is RUNNING"
+        echo ""
+        echo "Get current pod ID: runpodctl get pod"
         echo "Use --help for usage information"
         exit 1
     fi
@@ -481,9 +487,30 @@ print_startup_info() {
 # Parse arguments
 parse_arguments "$@"
 
-# Detect pod URL from environment if not provided
+# Detect pod URL with priority: argument → env var → runpodctl → error
+detect_pod_url_from_runpodctl() {
+    # Try to get pod ID from runpodctl
+    if ! command -v runpodctl &> /dev/null; then
+        return 1
+    fi
+
+    local pod_id=$(runpodctl get pod 2>/dev/null | grep "RUNNING" | head -1 | awk '{print $1}')
+    if [[ -n "$pod_id" ]]; then
+        echo "https://${pod_id}-8188.proxy.runpod.net"
+        return 0
+    fi
+
+    return 1
+}
+
 if [[ -z "$POD_URL" ]]; then
-    POD_URL="${RUNPOD_POD_URL:-}"
+    # Priority 2: Check environment variable
+    if [[ -n "${RUNPOD_POD_URL:-}" ]]; then
+        POD_URL="${RUNPOD_POD_URL}"
+    # Priority 3: Auto-detect using runpodctl
+    elif POD_URL=$(detect_pod_url_from_runpodctl); then
+        log_debug "Auto-detected pod URL from runpodctl: $POD_URL"
+    fi
 fi
 
 # Validate arguments
@@ -660,18 +687,25 @@ process_workflow_template() {
 }
 
 # Convert UI format to API format using Python
-# Input: JSON workflow via stdin
+# Input: JSON workflow as string (argument)
 # Output: Converted workflow to stdout
 convert_ui_to_api_format() {
+    local workflow_json="$1"
+    local temp_workflow=$(mktemp)
+
     log_debug "Converting workflow to API format..."
     log_to_file "Converting workflow from UI to API format"
 
-    python3 << 'PYTHON_EOF'
+    # Write workflow to temp file
+    echo "$workflow_json" > "$temp_workflow"
+
+    python3 << PYTHON_EOF
 import json
 import sys
 
 try:
-    workflow = json.load(sys.stdin)
+    with open("$temp_workflow", 'r') as f:
+        workflow = json.load(f)
 
     # Check if already in API format (has numbered keys with class_type)
     is_api_format = any(
@@ -743,6 +777,9 @@ except Exception as e:
     print(f'{{"error": "Conversion failed: {str(e)}"}}', file=sys.stderr)
     sys.exit(1)
 PYTHON_EOF
+
+    # Clean up temp file
+    rm -f "$temp_workflow"
 }
 
 # Validate workflow structure (works with multiple formats)
@@ -771,7 +808,7 @@ validate_workflow_structure() {
     fi
 
     # Format 3: API format with numbered string keys ("1", "2", etc.)
-    if echo "$workflow" | jq -e 'to_entries | map(select(.key | test("^[0-9]+$") and (.value | type == "object" and has("class_type")))) | length > 0' > /dev/null 2>&1; then
+    if echo "$workflow" | jq -e 'to_entries | map(select((.key | test("^[0-9]+$")) and (.value | type == "object" and has("class_type")))) | length > 0' > /dev/null 2>&1; then
         is_valid=true
     fi
 
@@ -1138,8 +1175,11 @@ main() {
 
     # Check if UI format
     if is_ui_format "$WORKFLOW_FILE"; then
-        processed_workflow=$(echo "$processed_workflow" | convert_ui_to_api_format)
+        processed_workflow=$(convert_ui_to_api_format "$processed_workflow")
+        log_debug "Converted workflow length: ${#processed_workflow}"
     fi
+
+    log_debug "Workflow to validate: ${processed_workflow:0:100}"
 
     # Validate workflow
     if ! validate_workflow_structure "$processed_workflow"; then

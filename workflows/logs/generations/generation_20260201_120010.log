@@ -1,0 +1,50 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 12:00:10
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 12:00:10
+  Client ID:        claude-code-remote-20260201_120010-351678776
+  Log File:         ./logs/generations/generation_20260201_120010.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          https://x08qt40klp2ls4-8188.proxy.runpod.net
+  Timeout:          3600s
+
+INPUT PARAMETERS:
+  Prompt:           A red car (id: test_001)
+  Image ID:         test_001
+  Seed:             42
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     ./output/
+  Download Images:  false
+  Filename Prefix:  test_001_120011
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[12:00:11] Remote generation started with parameters
+[12:00:11] ═══════════════════════════════════════════════════════════════
+[12:00:11] REMOTE EXECUTION START
+[12:00:11] ═══════════════════════════════════════════════════════════════
+[12:00:11] Dependencies verified: curl, jq, python3
+[12:00:11] Pod URL: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[12:00:11] Checking pod connectivity to: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[12:00:11] Pod connectivity check successful: HTTP 200
+[12:00:11] Processing workflow: flux2_turbo_512x512_parametric_api.json
+[12:00:11] Converting workflow from UI to API format
+[12:00:12] ERROR: Workflow validation failed
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLETION STATUS:
+  Status:           Failed
+  Prompt ID:        
+  Start Time:       2026-02-01 12:00:10
+  End Time:         2026-02-01 12:00:12
+  Local Output:     ./output/
+
+DOWNLOADED OUTPUTS:
+  Workflow validation error
+
+████████████████████████████████████████████████████████████████████████████████

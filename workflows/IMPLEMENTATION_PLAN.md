@@ -50,7 +50,8 @@ LOCAL_LOG_DIR="./logs/generations/"
 #### B. Connection Management (~200 lines) **NEW**
 Functions to implement:
 ```bash
-detect_pod_url()               # Auto-discover from env var or parameter
+detect_pod_url()               # Auto-discover pod URL (4-step priority)
+detect_pod_url_from_runpodctl() # Extract pod ID from runpodctl list
 normalize_pod_url()            # Parse and validate URL format
 check_remote_connectivity()    # Test HTTP connectivity to pod
 get_pod_info()                 # Fetch /system_stats for validation
@@ -58,9 +59,10 @@ retry_with_backoff()           # Exponential backoff for network errors
 ```
 
 **Connection Detection Priority**:
-1. `--pod-url` parameter
+1. `--pod-url` parameter (highest priority)
 2. `RUNPOD_POD_URL` environment variable
-3. Fail with helpful error message
+3. Auto-detect using `runpodctl pod list` (extracts pod ID and constructs proxy URL)
+4. Fail with helpful error message (lowest priority)
 
 #### C. Workflow Processing (~200 lines)
 **Reuse 100% from comfy-run.sh**:
@@ -110,6 +112,50 @@ verify_download()              # Verify image completeness
 ---
 
 ### 3. Core Implementation Details
+
+### Pod URL Detection Implementation
+
+**4-Step Priority Logic**:
+```bash
+# Priority 1: Command-line argument (highest priority)
+if [[ -n "$POD_URL" ]]; then
+    use $POD_URL
+# Priority 2: Environment variable
+elif [[ -n "${RUNPOD_POD_URL:-}" ]]; then
+    POD_URL="${RUNPOD_POD_URL}"
+# Priority 3: Auto-detect from runpodctl
+elif POD_URL=$(detect_pod_url_from_runpodctl); then
+    log_debug "Auto-detected pod URL from runpodctl: $POD_URL"
+# Priority 4: Error
+else
+    log_error "Pod URL could not be determined"
+    show helpful error message with all options
+    exit 1
+fi
+```
+
+**Auto-detection Function**:
+```bash
+detect_pod_url_from_runpodctl() {
+    # Check if runpodctl is available
+    if ! command -v runpodctl &> /dev/null; then
+        return 1
+    fi
+
+    # Get first RUNNING pod ID
+    local pod_id=$(runpodctl get pod 2>/dev/null | grep "RUNNING" | head -1 | awk '{print $1}')
+
+    # Construct proxy URL if pod found
+    if [[ -n "$pod_id" ]]; then
+        echo "https://${pod_id}-8188.proxy.runpod.net"
+        return 0
+    fi
+
+    return 1
+}
+```
+
+---
 
 ### HTTP API Interaction
 

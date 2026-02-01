@@ -1,0 +1,49 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 11:38:17
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 11:38:17
+  Client ID:        claude-code-remote-20260201_113817-157824982
+  Log File:         ./logs/generations/generation_20260201_113817.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          https://x08qt40klp2ls4-8188.proxy.runpod.net
+  Timeout:          30s
+
+INPUT PARAMETERS:
+  Prompt:           A red car (id: test_001)
+  Image ID:         test_001
+  Seed:             2046673771
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     ./output/
+  Download Images:  true
+  Filename Prefix:  test_001_113817
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[11:38:17] Remote generation started with parameters
+[11:38:17] ═══════════════════════════════════════════════════════════════
+[11:38:17] REMOTE EXECUTION START
+[11:38:17] ═══════════════════════════════════════════════════════════════
+[11:38:17] Dependencies verified: curl, jq, python3
+[11:38:17] Pod URL: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[11:38:17] Checking pod connectivity to: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[11:38:17] Pod connectivity check successful: HTTP 200
+[11:38:17] Processing workflow: flux2_turbo_512x512_parametric_api.json
+[11:38:17] ERROR: Workflow validation failed
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLETION STATUS:
+  Status:           Failed
+  Prompt ID:        
+  Start Time:       2026-02-01 11:38:17
+  End Time:         2026-02-01 11:38:17
+  Local Output:     ./output/
+
+DOWNLOADED OUTPUTS:
+  Workflow validation error
+
+████████████████████████████████████████████████████████████████████████████████

@@ -1,0 +1,60 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 12:01:09
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 12:01:09
+  Client ID:        claude-code-remote-20260201_120109-862812165
+  Log File:         ./logs/generations/generation_20260201_120109.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          https://x08qt40klp2ls4-8188.proxy.runpod.net
+  Timeout:          3600s
+
+INPUT PARAMETERS:
+  Prompt:           A red car (id: test_001)
+  Image ID:         test_001
+  Seed:             42
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     ./output/
+  Download Images:  false
+  Filename Prefix:  test_001_120110
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[12:01:10] Remote generation started with parameters
+[12:01:10] ═══════════════════════════════════════════════════════════════
+[12:01:10] REMOTE EXECUTION START
+[12:01:10] ═══════════════════════════════════════════════════════════════
+[12:01:10] Dependencies verified: curl, jq, python3
+[12:01:10] Pod URL: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[12:01:10] Checking pod connectivity to: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[12:01:11] Pod connectivity check successful: HTTP 200
+[12:01:11] Processing workflow: flux2_turbo_512x512_parametric_api.json
+[12:01:11] Converting workflow from UI to API format
+[12:01:11] Submitting workflow to pod at https://x08qt40klp2ls4-8188.proxy.runpod.net
+[12:01:12] ERROR: Workflow submission failed: HTTP 400
+[12:01:13] Submitting workflow to pod at https://x08qt40klp2ls4-8188.proxy.runpod.net
+[12:01:13] ERROR: Workflow submission failed: HTTP 400
+[12:01:15] Submitting workflow to pod at https://x08qt40klp2ls4-8188.proxy.runpod.net
+[12:01:16] ERROR: Workflow submission failed: HTTP 400
+[12:01:20] Submitting workflow to pod at https://x08qt40klp2ls4-8188.proxy.runpod.net
+[12:01:21] ERROR: Workflow submission failed: HTTP 400
+[12:01:29] Submitting workflow to pod at https://x08qt40klp2ls4-8188.proxy.runpod.net
+[12:01:29] ERROR: Workflow submission failed: HTTP 400
+[12:01:29] ERROR: Workflow submission failed
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLETION STATUS:
+  Status:           Failed
+  Prompt ID:        
+  Start Time:       2026-02-01 12:01:09
+  End Time:         2026-02-01 12:01:29
+  Local Output:     ./output/
+
+DOWNLOADED OUTPUTS:
+  Workflow submission error
+
+████████████████████████████████████████████████████████████████████████████████

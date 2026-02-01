@@ -1,0 +1,19 @@
+[0;36m[TEST][0m Test output directory: /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/test-output
+[0;36m[TEST][0m Pod URL: http://104.255.9.187:8188
+[0;36m[TEST][0m Remote script: /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/comfy-run-remote.sh
+[0;32m[PASS][0m Remote script found
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 1: Help and Validation
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 1.1: Display help message
+[0;32m[PASS][0m Help command executed successfully
+[0;32m[PASS][0m Help contains script description
+[0;36m[TEST][0m Test 1.2: Missing required prompt argument
+[0;32m[PASS][0m Script correctly fails without prompt
+[0;32m[PASS][0m Error message mentions prompt
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 2: Pod Connectivity
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 2.1: Valid pod URL format

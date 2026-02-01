@@ -1,0 +1,36 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 11:57:54
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 11:57:54
+  Client ID:        claude-code-remote-20260201_115754-459889219
+  Log File:         ./logs/generations/generation_20260201_115754.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          https://x08qt40klp2ls4-8188.proxy.runpod.net
+  Timeout:          3600s
+
+INPUT PARAMETERS:
+  Prompt:           A red car (id: test_001)
+  Image ID:         test_001
+  Seed:             2626297923
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     ./output/
+  Download Images:  false
+  Filename Prefix:  test_001_115755
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[11:57:55] Remote generation started with parameters
+[11:57:55] ═══════════════════════════════════════════════════════════════
+[11:57:55] REMOTE EXECUTION START
+[11:57:55] ═══════════════════════════════════════════════════════════════
+[11:57:55] Dependencies verified: curl, jq, python3
+[11:57:55] Pod URL: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[11:57:55] Checking pod connectivity to: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[11:57:55] Pod connectivity check successful: HTTP 200
+[11:57:55] Processing workflow: flux2_turbo_512x512_parametric_api.json
+[11:57:56] Converting workflow from UI to API format
