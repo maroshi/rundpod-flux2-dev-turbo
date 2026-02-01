@@ -1,0 +1,56 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 13:29:15
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 13:29:15
+  Client ID:        claude-code-remote-20260201_132915-738314657
+  Log File:         ./logs/generations/generation_20260201_132915.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          https://invalid-pod-id-12345-8188.proxy.runpod.net
+  Timeout:          3600s
+
+INPUT PARAMETERS:
+  Prompt:           Test
+  Image ID:         UNDEFINED_ID_
+  Seed:             2373094545
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     /tmp/test_error_output_93554/test_3_1
+  Download Images:  true
+  Filename Prefix:  UNDEFINED_ID__132915
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[13:29:15] Remote generation started with parameters
+[13:29:15] ═══════════════════════════════════════════════════════════════
+[13:29:15] REMOTE EXECUTION START
+[13:29:15] ═══════════════════════════════════════════════════════════════
+[13:29:15] Dependencies verified: curl, jq, python3
+[13:29:15] Pod URL: https://invalid-pod-id-12345-8188.proxy.runpod.net
+[13:29:15] Checking pod connectivity to: https://invalid-pod-id-12345-8188.proxy.runpod.net
+[13:29:15] ERROR: Pod connectivity check failed: HTTP 404
+[13:29:16] Checking pod connectivity to: https://invalid-pod-id-12345-8188.proxy.runpod.net
+[13:29:17] ERROR: Pod connectivity check failed: HTTP 404
+[13:29:19] Checking pod connectivity to: https://invalid-pod-id-12345-8188.proxy.runpod.net
+[13:29:19] ERROR: Pod connectivity check failed: HTTP 404
+[13:29:23] Checking pod connectivity to: https://invalid-pod-id-12345-8188.proxy.runpod.net
+[13:29:23] ERROR: Pod connectivity check failed: HTTP 404
+[13:29:31] Checking pod connectivity to: https://invalid-pod-id-12345-8188.proxy.runpod.net
+[13:29:32] ERROR: Pod connectivity check failed: HTTP 404
+[13:29:32] ERROR: Pod unreachable after retries
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLETION STATUS:
+  Status:           Failed
+  Prompt ID:        
+  Start Time:       2026-02-01 13:29:15
+  End Time:         2026-02-01 13:29:32
+  Local Output:     /tmp/test_error_output_93554/test_3_1
+
+DOWNLOADED OUTPUTS:
+  Pod unreachable
+
+████████████████████████████████████████████████████████████████████████████████

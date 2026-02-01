@@ -1,0 +1,56 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 12:06:24
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 12:06:24
+  Client ID:        claude-code-remote-20260201_120624-428058585
+  Log File:         ./logs/generations/generation_20260201_120624.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          https://x08qt40klp2ls4-8188.proxy.runpod.net
+  Timeout:          3600s
+
+INPUT PARAMETERS:
+  Prompt:           A stunning sunset over ocean waves, photorealistic (id: test_parametric)
+  Image ID:         test_parametric
+  Seed:             999
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     ./output/
+  Download Images:  true
+  Filename Prefix:  test_parametric_120625
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[12:06:25] Remote generation started with parameters
+[12:06:25] ═══════════════════════════════════════════════════════════════
+[12:06:25] REMOTE EXECUTION START
+[12:06:25] ═══════════════════════════════════════════════════════════════
+[12:06:25] Dependencies verified: curl, jq, python3
+[12:06:25] Pod URL: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[12:06:25] Checking pod connectivity to: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[12:06:25] Pod connectivity check successful: HTTP 200
+[12:06:25] Processing workflow: flux2_turbo_512x512_parametric_api.json
+[12:06:25] Submitting workflow to pod at https://x08qt40klp2ls4-8188.proxy.runpod.net
+[12:06:26] Workflow submitted successfully. Prompt ID: c5872ddf-1422-4aa7-8358-6087562c07cd
+[12:06:26] Starting to poll pod for completion (max 3600s)
+[12:06:27] Workflow completed successfully
+[12:06:27] Starting image download from pod
+[12:06:27] Downloading image: test_parametric_120625_00001_.png
+[12:06:28] Successfully downloaded: test_parametric_120625_00001_.png
+[12:06:28] Successfully downloaded 1 image(s)
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLETION STATUS:
+  Status:           Success
+  Prompt ID:        c5872ddf-1422-4aa7-8358-6087562c07cd
+  Start Time:       2026-02-01 12:06:24
+  End Time:         2026-02-01 12:06:28
+  Local Output:     ./output/
+
+DOWNLOADED OUTPUTS:
+  test_parametric_120625_00001_.png
+
+████████████████████████████████████████████████████████████████████████████████

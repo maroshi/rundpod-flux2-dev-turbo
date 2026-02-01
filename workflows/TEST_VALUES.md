@@ -366,6 +366,169 @@ Expected behavior:
 
 ---
 
+### Scenario 9: Execution Error Handling (Enhanced)
+```bash
+#!/bin/bash
+POD_URL="https://zu9sxe2gu0lswm-8188.proxy.runpod.net"
+
+# Submit workflow with missing model file (intentional error)
+./comfy-run-remote.sh \
+  --pod-url "$POD_URL" \
+  --prompt "test" \
+  --workflow "broken_workflow.json"
+```
+
+Expected behavior:
+- Workflow submitted successfully
+- Poll detects error status
+- Script extracts and displays error details:
+  - Status message
+  - Node-level errors
+  - Full error context
+- Log file contains full error stack
+- Exit code: 1
+- Log shows: "WORKFLOW EXECUTION ERROR" section with details
+
+---
+
+### Scenario 10: Download Retry on Failure (Enhanced)
+```bash
+#!/bin/bash
+POD_URL="https://zu9sxe2gu0lswm-8188.proxy.runpod.net"
+
+# Simulate flaky network during download
+DEBUG=1 ./comfy-run-remote.sh \
+  --pod-url "$POD_URL" \
+  --prompt "test" \
+  --local-output "./retry_test/"
+```
+
+Expected behavior:
+- If download fails (network error):
+  - Retry attempt 1 (after 1s)
+  - Retry attempt 2 (after 2s)
+  - Retry attempt 3 (final)
+- If PNG verification fails (incomplete):
+  - Delete incomplete file
+  - Retry with backoff
+- Log shows: "Retrying download (attempt N/3)"
+- If all retries fail: error logged, other images still downloaded
+- Exit code: 0 if at least one image downloaded
+
+---
+
+### Scenario 11: File Conflict Resolution (Enhanced)
+```bash
+#!/bin/bash
+POD_URL="https://zu9sxe2gu0lswm-8188.proxy.runpod.net"
+
+# First run
+./comfy-run-remote.sh \
+  --pod-url "$POD_URL" \
+  --prompt "test" \
+  --image-id "test_001" \
+  --local-output "./conflict_test/"
+
+# Second run (same settings, will produce same filename)
+./comfy-run-remote.sh \
+  --pod-url "$POD_URL" \
+  --prompt "test" \
+  --image-id "test_001" \
+  --local-output "./conflict_test/"
+```
+
+Expected behavior:
+- First run: Downloads `ComfyUI_00001.png`
+- Second run: Detects file exists
+- Renames second to: `ComfyUI_00001_1.png`
+- Both files preserved (no overwrite)
+- Log shows: "File conflict resolved: renamed to ComfyUI_00001_1.png"
+- Exit code: 0
+
+---
+
+### Scenario 12: Timeout and Recovery (Enhanced)
+```bash
+#!/bin/bash
+POD_URL="https://zu9sxe2gu0lswm-8188.proxy.runpod.net"
+
+# Use very short timeout to trigger
+./comfy-run-remote.sh \
+  --pod-url "$POD_URL" \
+  --prompt "A complex image with many details" \
+  --image-id "timeout_test" \
+  --timeout 10  # 10 seconds (will likely timeout)
+```
+
+Expected behavior:
+- Workflow submitted successfully
+- Polling starts for 10 seconds
+- Timeout reached
+- Recovery file created: `./logs/recovery/prompt_YYYYMMDD_HHMMSS.recovery`
+- Recovery file contains:
+  - PROMPT_ID (for later status check)
+  - POD_URL
+  - IMAGE_ID, SEED, LOCAL_OUTPUT_FOLDER
+  - Instructions for manual status check
+- Console displays:
+  - "WORKFLOW TIMEOUT - RECOVERY INFORMATION"
+  - Prompt ID and pod URL
+  - Commands to check status
+  - Recovery file location
+- Exit code: 2
+
+### How to Use Recovery File
+```bash
+# After workflow times out, recovery file is at:
+cat ./logs/recovery/prompt_YYYYMMDD_HHMMSS.recovery
+
+# Source it to get variables
+source ./logs/recovery/prompt_YYYYMMDD_HHMMSS.recovery
+
+# Check if workflow is done:
+curl -s "$POD_URL/history/$PROMPT_ID" | jq ".\"$PROMPT_ID\".outputs"
+
+# If complete, download images manually
+```
+
+---
+
+### Scenario 13: Error Extraction Details (Enhanced)
+```bash
+POD_URL="https://zu9sxe2gu0lswm-8188.proxy.runpod.net"
+
+# Check what error information is extracted
+PROMPT_ID="abc123def456"
+
+# Get full history response
+curl -s "$POD_URL/history/$PROMPT_ID" | jq .
+
+# Extract error status
+curl -s "$POD_URL/history/$PROMPT_ID" | jq ".\"$PROMPT_ID\".status"
+
+# Extract node errors
+curl -s "$POD_URL/history/$PROMPT_ID" | jq ".\"$PROMPT_ID\".status.nodes"
+
+# Extract messages
+curl -s "$POD_URL/history/$PROMPT_ID" | jq ".\"$PROMPT_ID\".status.messages"
+```
+
+Expected response format:
+```json
+{
+  "status": {
+    "status_str": "error",
+    "messages": ["Error message 1", "Error message 2"],
+    "nodes": {
+      "1": "CheckpointLoader: Model not found",
+      "3": "KSampler: Invalid seed value"
+    }
+  }
+}
+```
+
+---
+
 ## Test File Locations
 
 ```

@@ -87,6 +87,18 @@ OPTIONS:
     --download / --no-download Enable/disable image download (default: --download)
                               Example: --no-download (skip downloading images)
 
+    --steps NUM               Number of inference steps (default: 4)
+                              Example: --steps 20
+
+    --width NUM               Image width in pixels (default: 512)
+                              Example: --width 768
+
+    --height NUM              Image height in pixels (default: 512)
+                              Example: --height 768
+
+    --batch-size NUM          Number of images per batch (default: 1)
+                              Example: --batch-size 4
+
     --help, -h               Display this help message and exit
 
 EXAMPLES:
@@ -263,6 +275,10 @@ INPUT PARAMETERS:
   Prompt:           ${PROMPT}
   Image ID:         ${IMAGE_ID}
   Seed:             ${SEED}
+  Steps:            ${STEPS}
+  Width:            ${WIDTH}
+  Height:           ${HEIGHT}
+  Batch Size:       ${BATCH_SIZE}
   Workflow:         ${WORKFLOW_FILE}
   Output Folder:    ${OUTPUT_FOLDER}
   Local Output:     ${LOCAL_OUTPUT_FOLDER}
@@ -325,8 +341,16 @@ POD_URL=""
 DOWNLOAD_IMAGES="true"
 TIMEOUT_SECONDS=3600
 GENERATION_LOG_DIR="${GENERATION_LOG_DIR:-./logs/generations/}"
+RECOVERY_DIR="${RECOVERY_DIR:-./logs/recovery/}"
 PROMPT_ID=""
 LOG_FILE=""
+RECOVERY_FILE=""
+
+# Workflow parameters (optional, with defaults)
+STEPS=4
+WIDTH=512
+HEIGHT=512
+BATCH_SIZE=1
 
 # Timestamp and identification
 START_TIME=$(date '+%Y-%m-%d %H:%M:%S')
@@ -380,6 +404,22 @@ parse_arguments() {
             --no-download)
                 DOWNLOAD_IMAGES="false"
                 shift 1
+                ;;
+            --steps)
+                STEPS="$2"
+                shift 2
+                ;;
+            --width)
+                WIDTH="$2"
+                shift 2
+                ;;
+            --height)
+                HEIGHT="$2"
+                shift 2
+                ;;
+            --batch-size)
+                BATCH_SIZE="$2"
+                shift 2
                 ;;
             --help|-h)
                 show_help
@@ -457,6 +497,10 @@ export_variables() {
     export OUTPUT_FOLDER
     export SEED
     export FILENAME_PREFIX
+    export STEPS
+    export WIDTH
+    export HEIGHT
+    export BATCH_SIZE
 }
 
 # Print startup information
@@ -475,6 +519,9 @@ print_startup_info() {
     log_info "  Prompt:         ${PROMPT:0:60}$( (( ${#PROMPT} > 60 )) && echo "..." || echo "" )"
     log_info "  Image ID:       ${IMAGE_ID}"
     log_info "  Seed:           ${SEED}"
+    log_info "  Steps:          ${STEPS}"
+    log_info "  Size:           ${WIDTH}x${HEIGHT}"
+    log_info "  Batch Size:     ${BATCH_SIZE}"
     log_info "  Local Output:   ${LOCAL_OUTPUT_FOLDER}"
     log_info "  Download:       ${DOWNLOAD_IMAGES}"
     log_info ""
@@ -577,6 +624,69 @@ verify_dependencies() {
 }
 
 ################################################################################
+# RECOVERY & PERSISTENCE FUNCTIONS
+################################################################################
+
+# Save prompt_id for recovery after timeout
+save_prompt_for_recovery() {
+    local prompt_id="$1"
+    local pod_url="$2"
+
+    mkdir -p "$RECOVERY_DIR" || return 1
+
+    RECOVERY_FILE="${RECOVERY_DIR}/prompt_${START_TIMESTAMP}.recovery"
+
+    cat > "$RECOVERY_FILE" << EOF
+# Workflow Recovery File
+# Generated: $(date '+%Y-%m-%d %H:%M:%S')
+# Use this file to check the status of a timed-out workflow
+
+PROMPT_ID=$prompt_id
+POD_URL=$pod_url
+IMAGE_ID=$IMAGE_ID
+SEED=$SEED
+LOCAL_OUTPUT_FOLDER=$LOCAL_OUTPUT_FOLDER
+
+# To check the status of this workflow, run:
+# curl -s "\${POD_URL}/history/\${PROMPT_ID}" | jq .
+
+# To download images if they're ready, run:
+# curl -s "\${POD_URL}/history/\${PROMPT_ID}" | jq ".[\"\${PROMPT_ID}\"].outputs"
+EOF
+
+    log_info "Recovery file saved: $RECOVERY_FILE"
+    log_to_file "Recovery file saved: $RECOVERY_FILE"
+    return 0
+}
+
+# Display recovery instructions
+show_recovery_instructions() {
+    local prompt_id="$1"
+    local pod_url="$2"
+    local recovery_file="$3"
+
+    log_error "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    log_error "WORKFLOW TIMEOUT - RECOVERY INFORMATION"
+    log_error "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    log_error ""
+    log_error "The workflow timed out but may still be processing on the pod."
+    log_error ""
+    log_error "Prompt ID: $prompt_id"
+    log_error "Pod URL: $pod_url"
+    log_error ""
+    log_error "To check status, run:"
+    log_error "  curl -s '$pod_url/history/$prompt_id' | jq ."
+    log_error ""
+    log_error "Recovery file: $recovery_file"
+    log_error ""
+    log_error "To continue checking, you can:"
+    log_error "  • Wait for pod to finish: curl -s '$pod_url/history/$prompt_id' | jq .\"$prompt_id\".outputs"
+    log_error "  • Check a different timeout: ./comfy-run-remote.sh --prompt \"...\" --timeout 7200"
+    log_error ""
+    log_error "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+}
+
+################################################################################
 # CONNECTION MANAGEMENT FUNCTIONS
 ################################################################################
 
@@ -674,15 +784,11 @@ process_workflow_template() {
     log_debug "Processing workflow template..."
     log_to_file "Processing workflow: $(basename "$workflow_file")"
 
-    # First, validate the file is valid JSON before processing
-    if ! jq empty "$workflow_file" 2>/dev/null; then
-        log_error "Workflow file is not valid JSON"
-        return 1
-    fi
-
     # Use envsubst to substitute variables in the workflow file
-    # This allows for ${PROMPT}, ${SEED}, etc. substitution
-    # Wrap in subshell to avoid issues with special characters
+    # This allows for ${PROMPT}, ${SEED}, ${WIDTH}, ${HEIGHT}, etc. substitution
+    # Note: We skip JSON validation before substitution because the template
+    # may contain unquoted variable references like: "width": ${WIDTH}
+    # which are invalid JSON syntax but become valid after substitution
     (envsubst < "$workflow_file") 2>/dev/null || cat "$workflow_file"
 }
 
@@ -919,7 +1025,16 @@ submit_remote_workflow() {
     if [[ "$http_code" != "200" ]]; then
         log_error "Pod returned HTTP $http_code"
         log_to_file "ERROR: Workflow submission failed: HTTP ${http_code}"
-        log_error "Response: $body"
+
+        # Try to extract error details from response
+        local error_detail=$(echo "$body" | jq -r '.error // .errors // empty' 2>/dev/null)
+        if [[ -n "$error_detail" ]]; then
+            log_error "Error detail: $error_detail"
+            log_to_file "Error detail: $error_detail"
+        else
+            log_error "Response: $body"
+            log_to_file "Response: $body"
+        fi
         return 1
     fi
 
@@ -929,7 +1044,16 @@ submit_remote_workflow() {
     if [[ -z "$PROMPT_ID" ]]; then
         log_error "Failed to get prompt_id from response"
         log_to_file "ERROR: Could not extract prompt_id from pod response"
-        log_error "Response: $body"
+
+        # Try to extract error message
+        local error_msg=$(echo "$body" | jq -r '.error // .errors[0] // empty' 2>/dev/null)
+        if [[ -n "$error_msg" ]]; then
+            log_error "Error: $error_msg"
+            log_to_file "Error: $error_msg"
+        else
+            log_error "Response: $body"
+            log_to_file "Response: $body"
+        fi
         return 1
     fi
 
@@ -967,7 +1091,20 @@ poll_remote_completion() {
         local http_code=$(echo "$response" | tail -n 1)
         local body=$(echo "$response" | head -n -1)
 
-        # Check if complete
+        # Check for execution errors in the response
+        if [[ "$http_code" == "200" ]] && echo "$body" | jq -e ".\"$PROMPT_ID\".status" > /dev/null 2>&1; then
+            # Check if there's an error status
+            local status_str=$(echo "$body" | jq -r ".\"$PROMPT_ID\".status.status_str // empty" 2>/dev/null)
+
+            if [[ "$status_str" == "error" ]]; then
+                log_error "Workflow execution failed"
+                log_to_file "ERROR: Workflow execution failed"
+                extract_execution_errors "$body"
+                return 1
+            fi
+        fi
+
+        # Check if complete (has outputs and no errors)
         if [[ "$http_code" == "200" ]] && echo "$body" | jq -e ".\"$PROMPT_ID\".outputs" > /dev/null 2>&1; then
             log_success "Workflow completed!"
             log_to_file "Workflow completed successfully"
@@ -988,8 +1125,76 @@ poll_remote_completion() {
 
     log_error "Timeout after ${TIMEOUT_SECONDS}s"
     log_to_file "ERROR: Workflow timeout after ${TIMEOUT_SECONDS}s"
-    log_info "Prompt ID: $PROMPT_ID (save this for later recovery)"
+
+    # Save recovery file for later use
+    if save_prompt_for_recovery "$PROMPT_ID" "$POD_URL"; then
+        show_recovery_instructions "$PROMPT_ID" "$POD_URL" "$RECOVERY_FILE"
+    fi
+
     return 2
+}
+
+# Extract and display execution errors from workflow history
+extract_execution_errors() {
+    local history="$1"
+
+    log_error "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    log_error "WORKFLOW EXECUTION ERROR"
+    log_error "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    log_to_file "WORKFLOW EXECUTION ERROR:"
+
+    # Extract overall error message if present
+    local error_msg=$(echo "$history" | jq -r ".\"$PROMPT_ID\".status.status_str // empty" 2>/dev/null)
+    if [[ -n "$error_msg" ]]; then
+        log_error "Status: $error_msg"
+        log_to_file "Status: $error_msg"
+    fi
+
+    # Extract node-level errors
+    local node_errors=$(echo "$history" | jq ".\"$PROMPT_ID\" | select(has(\"status\")) | .status.messages // empty" 2>/dev/null)
+    if [[ -n "$node_errors" && "$node_errors" != "null" ]]; then
+        log_error "Status Messages:"
+        log_to_file "Status Messages:"
+        echo "$node_errors" | jq -r '.[] // empty' 2>/dev/null | while read -r msg; do
+            [[ -n "$msg" ]] && {
+                log_error "  • $msg"
+                log_to_file "  • $msg"
+            }
+        done
+    fi
+
+    # Extract node errors if available
+    local node_errors=$(echo "$history" | jq ".\"$PROMPT_ID\" | select(has(\"status\")) | .status | select(has(\"nodes\")) | .nodes // empty" 2>/dev/null)
+    if [[ -n "$node_errors" && "$node_errors" != "null" ]]; then
+        log_error "Node Errors:"
+        log_to_file "Node Errors:"
+        echo "$node_errors" | jq -r 'to_entries[] | select(.value != null) | "\(.key): \(.value // "Unknown error")"' 2>/dev/null | while read -r node_error; do
+            [[ -n "$node_error" ]] && {
+                log_error "  • $node_error"
+                log_to_file "  • $node_error"
+            }
+        done
+    fi
+
+    # If no detailed errors found, show the raw status
+    if [[ -z "$node_errors" ]]; then
+        local full_status=$(echo "$history" | jq ".\"$PROMPT_ID\".status // empty" 2>/dev/null)
+        if [[ -n "$full_status" && "$full_status" != "null" ]]; then
+            log_error "Full Status:"
+            log_to_file "Full Status:"
+            echo "$full_status" | jq -r '.' 2>/dev/null | while read -r line; do
+                [[ -n "$line" ]] && {
+                    log_error "  $line"
+                    log_to_file "  $line"
+                }
+            done
+        fi
+    fi
+
+    log_error "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    log_to_file "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+    return 1
 }
 
 # Handle remote workflow response
@@ -1015,6 +1220,32 @@ handle_remote_response() {
 # IMAGE DOWNLOAD FUNCTIONS
 ################################################################################
 
+# Get unique output path with conflict resolution
+get_unique_output_path() {
+    local base_path="$1"
+    local output_path="$base_path"
+    local counter=1
+
+    # If file exists, append counter to filename before extension
+    if [[ -f "$output_path" ]]; then
+        local dir=$(dirname "$base_path")
+        local filename=$(basename "$base_path")
+        local ext="${filename##*.}"
+        local name="${filename%.*}"
+
+        # Try numbered versions
+        while [[ -f "${dir}/${name}_${counter}.${ext}" ]]; do
+            ((counter++))
+        done
+
+        output_path="${dir}/${name}_${counter}.${ext}"
+        log_debug "File conflict detected, using: $output_path"
+        log_to_file "File conflict resolved: renamed to $(basename "$output_path")"
+    fi
+
+    echo "$output_path"
+}
+
 # Download remote images to localhost
 download_remote_images() {
     local outputs_json="$1"
@@ -1037,6 +1268,7 @@ download_remote_images() {
     # Use a temporary file to avoid subshell issues with while loop
     local temp_file=$(mktemp)
     local download_count=0
+    local failed_count=0
 
     python3 << PYTHON_EOF > "$temp_file"
 import json
@@ -1065,6 +1297,8 @@ PYTHON_EOF
 
         if download_single_image "$filename" "$subfolder" "$img_type"; then
             ((download_count++))
+        else
+            ((failed_count++))
         fi
     done < "$temp_file"
 
@@ -1074,6 +1308,10 @@ PYTHON_EOF
     if (( download_count > 0 )); then
         log_success "Downloaded $download_count image(s)"
         log_to_file "Successfully downloaded $download_count image(s)"
+        if (( failed_count > 0 )); then
+            log_warn "Note: $failed_count image(s) failed to download"
+            log_to_file "WARNING: $failed_count image(s) failed to download"
+        fi
         return 0
     else
         log_warn "No images found in outputs"
@@ -1082,11 +1320,13 @@ PYTHON_EOF
     fi
 }
 
-# Download a single image from pod
+# Download a single image from pod with retry
 download_single_image() {
     local filename="$1"
     local subfolder="${2:-}"
     local img_type="${3:-output}"
+    local max_retries=3
+    local retry_count=0
 
     # URL encode the filename and subfolder
     local url="${POD_URL}/view?filename=$(printf '%s' "$filename" | jq -sRr @uri)&type=$(printf '%s' "$img_type" | jq -sRr @uri)"
@@ -1097,31 +1337,55 @@ download_single_image() {
 
     local output_path="${LOCAL_OUTPUT_FOLDER}${filename}"
 
+    # Check for file conflicts and resolve
+    output_path=$(get_unique_output_path "$output_path")
+
     log_debug "Downloading: $filename from $url"
-    log_to_file "Downloading image: $filename"
+    log_to_file "Downloading image: $filename -> $(basename "$output_path")"
 
     # Create parent directory if needed
     mkdir -p "$(dirname "$output_path")" 2>/dev/null || true
 
-    if curl -s -f -o "$output_path" \
-        --connect-timeout 10 \
-        --max-time 300 \
-        "$url" 2>/dev/null; then
-
-        if verify_download "$output_path"; then
-            log_success "Downloaded: $filename"
-            log_to_file "Successfully downloaded: $filename"
-            return 0
-        else
-            log_warn "Downloaded file may be incomplete: $filename"
-            log_to_file "WARNING: Downloaded file may be incomplete: $filename"
-            return 0
+    # Retry logic for downloads
+    while (( retry_count < max_retries )); do
+        # Remove incomplete file before retry
+        if (( retry_count > 0 )); then
+            rm -f "$output_path" 2>/dev/null || true
+            local backoff=$((retry_count))
+            log_warn "Retrying download (attempt $((retry_count + 1))/$max_retries) after ${backoff}s..."
+            sleep "$backoff"
         fi
-    else
-        log_error "Download failed: $filename (curl exit code: $?)"
-        log_to_file "ERROR: Failed to download $filename"
-        return 1
-    fi
+
+        local curl_exit=0
+        if curl -s -f -o "$output_path" \
+            --connect-timeout 10 \
+            --max-time 300 \
+            "$url" 2>/dev/null; then
+            curl_exit=0
+        else
+            curl_exit=$?
+        fi
+
+        if [[ $curl_exit -eq 0 ]]; then
+            if verify_download "$output_path"; then
+                log_success "Downloaded: $filename"
+                log_to_file "Successfully downloaded: $filename"
+                return 0
+            else
+                log_warn "Downloaded file may be incomplete: $filename (will retry)"
+                log_to_file "WARNING: Downloaded file may be incomplete: $filename (will retry)"
+            fi
+        else
+            log_warn "Download failed for $filename (curl exit: $curl_exit)"
+            log_to_file "WARNING: Download attempt $((retry_count + 1))/$max_retries failed for $filename"
+        fi
+
+        ((retry_count++))
+    done
+
+    log_error "Download failed permanently after $max_retries attempts: $filename"
+    log_to_file "ERROR: Failed to download $filename after $max_retries attempts"
+    return 1
 }
 
 # Verify downloaded image is valid

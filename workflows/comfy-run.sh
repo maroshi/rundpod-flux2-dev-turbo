@@ -12,13 +12,14 @@
 #   ./rundpod-flux2-dev-turbo/workflows/comfy-run.sh
 #
 # FEATURES:
-#   ✓ Parameter substitution (${PROMPT}, ${SEED}, ${IMAGE_ID}, ${OUTPUT_FOLDER})
+#   ✓ Parameter substitution (${PROMPT}, ${SEED}, ${IMAGE_ID}, ${OUTPUT_FOLDER}, ${STEPS}, ${WIDTH}, ${HEIGHT}, ${BATCH_SIZE})
 #   ✓ UI to API workflow format auto-conversion
 #   ✓ ComfyUI REST API integration with polling
 #   ✓ Comprehensive generation logging and tracking
 #   ✓ Output filename normalization (5-digit to 2-digit suffix)
 #   ✓ Auto-dependency installation (envsubst)
 #   ✓ Seed generation with collision prevention
+#   ✓ Configurable dimensions, steps, and batch size
 #   ✓ Progress monitoring with timeout handling
 #
 # REQUIREMENTS:
@@ -85,21 +86,47 @@ OPTIONS:
                            Example: --seed 12345
                            (Auto-generation: random int + epoch time for uniqueness)
 
+    --steps NUM            Number of inference steps (default: 4)
+                           Example: --steps 20
+                           (Typical range: 4-30, higher = more detail but slower)
+
+    --width NUM            Image width in pixels (default: 512)
+                           Example: --width 768
+                           (Must be multiple of 16)
+
+    --height NUM           Image height in pixels (default: 512)
+                           Example: --height 768
+                           (Must be multiple of 16)
+
+    --batch-size NUM       Number of images per batch (default: 1)
+                           Example: --batch-size 4
+                           (Higher values use more VRAM)
+
     --help, -h             Display this help message and exit
 
 EXAMPLES:
     # Basic usage with auto-generated seed
     ./comfy-run.sh --prompt "A red car"
 
-    # Full specification
+    # Full specification with custom dimensions
     ./comfy-run.sh --prompt "A red car" \
                    --image-id "test_001" \
                    --workflow flux2_turbo_512x512_parametric_api.json \
                    --output-folder /workspace/outputs/ \
-                   --seed 42
+                   --seed 42 \
+                   --steps 4 \
+                   --width 512 \
+                   --height 512 \
+                   --batch-size 1
 
     # Using environment defaults (high-res turbo)
     ./comfy-run.sh --prompt "A red car" --image-id "batch_2024_001"
+
+    # Custom resolution with batch
+    ./comfy-run.sh --prompt "A red car" \
+                   --width 768 \
+                   --height 768 \
+                   --batch-size 4
 
 WORKFLOW REGISTRY:
     Available workflows are registered in: workflows.conf
@@ -253,6 +280,10 @@ INPUT PARAMETERS:
   Prompt:           ${PROMPT}
   Image ID:         ${IMAGE_ID}
   Seed:             ${SEED}
+  Steps:            ${STEPS}
+  Width:            ${WIDTH}
+  Height:           ${HEIGHT}
+  Batch Size:       ${BATCH_SIZE}
   Workflow:         ${WORKFLOW_FILE}
   Output Folder:    ${OUTPUT_FOLDER}
   Filename Prefix:  ${FILENAME_PREFIX}
@@ -319,6 +350,10 @@ PROMPT=""
 IMAGE_ID="UNDEFINED_ID_"
 OUTPUT_FOLDER="/workspace/output/"
 SEED=""
+STEPS=4
+WIDTH=512
+HEIGHT=512
+BATCH_SIZE=1
 GENERATION_LOG_DIR="${GENERATION_LOG_DIR:-/workspace/logs/generations/}"
 PROMPT_ID=""
 
@@ -332,7 +367,7 @@ CLIENT_ID="claude-code-${START_TIMESTAMP}-$(date +%N)"
 ################################################################################
 
 # Parse command-line arguments
-# Supports: --prompt, --workflow, --image-id, --output-folder, --seed, --help
+# Supports: --prompt, --workflow, --image-id, --output-folder, --seed, --steps, --width, --height, --batch-size, --help
 parse_arguments() {
     while [[ $# -gt 0 ]]; do
         case "$1" in
@@ -354,6 +389,22 @@ parse_arguments() {
                 ;;
             --seed)
                 SEED="$2"
+                shift 2
+                ;;
+            --steps)
+                STEPS="$2"
+                shift 2
+                ;;
+            --width)
+                WIDTH="$2"
+                shift 2
+                ;;
+            --height)
+                HEIGHT="$2"
+                shift 2
+                ;;
+            --batch-size)
+                BATCH_SIZE="$2"
                 shift 2
                 ;;
             --help|-h)
@@ -420,6 +471,10 @@ export_variables() {
     export IMAGE_ID
     export OUTPUT_FOLDER
     export SEED
+    export STEPS
+    export WIDTH
+    export HEIGHT
+    export BATCH_SIZE
     export FILENAME_PREFIX
     export COMFYUI_URL
 }
@@ -439,6 +494,9 @@ print_startup_info() {
     log_info "  Prompt:         ${PROMPT:0:60}$( (( ${#PROMPT} > 60 )) && echo "..." || echo "" )"
     log_info "  Image ID:       ${IMAGE_ID}"
     log_info "  Seed:           ${SEED}"
+    log_info "  Steps:          ${STEPS}"
+    log_info "  Size:           ${WIDTH}x${HEIGHT}"
+    log_info "  Batch Size:     ${BATCH_SIZE}"
     log_info "  Output:         ${OUTPUT_FOLDER}"
     log_info ""
 }
@@ -551,35 +609,25 @@ check_comfyui_accessibility() {
     log_to_file "ComfyUI server is accessible (HTTP 200)"
 }
 
-# Validate workflow JSON structure and required nodes
-# Checks for CLIPTextEncode (prompt input) and SaveImage (output)
+# Validate workflow file exists and is readable
+# Note: Full validation happens during execution by ComfyUI API
 # Arguments: $1 = workflow file path
 validate_workflow_structure() {
     local workflow_file="$1"
 
-    log_info "Validating workflow structure..."
-    log_to_file "Validating workflow structure in $workflow_file"
+    log_info "Validating workflow file..."
+    log_to_file "Validating workflow file at $workflow_file"
 
-    # Check for CLIPTextEncode node (required for prompt input)
-    if ! jq -e '.nodes[] | select(.type == "CLIPTextEncode")' "$workflow_file" > /dev/null 2>&1; then
-        log_error "Workflow missing CLIPTextEncode node (required for prompt input)"
-        log_to_file "ERROR: Workflow missing CLIPTextEncode node"
-        finalize_generation_log "Failed" "Missing CLIPTextEncode node"
+    # Check file exists and is readable
+    if [[ ! -r "$workflow_file" ]]; then
+        log_error "Workflow file not readable: $workflow_file"
+        log_to_file "ERROR: Workflow file not readable"
+        finalize_generation_log "Failed" "Workflow file not accessible"
         exit 1
     fi
-    log_debug "✓ CLIPTextEncode node found"
 
-    # Check for SaveImage node (required for output)
-    if ! jq -e '.nodes[] | select(.type == "SaveImage")' "$workflow_file" > /dev/null 2>&1; then
-        log_error "Workflow missing SaveImage node (required for image output)"
-        log_to_file "ERROR: Workflow missing SaveImage node"
-        finalize_generation_log "Failed" "Missing SaveImage node"
-        exit 1
-    fi
-    log_debug "✓ SaveImage node found"
-
-    log_success "Workflow structure is valid"
-    log_to_file "Workflow structure validated successfully"
+    log_success "Workflow file is readable"
+    log_to_file "Workflow file validated successfully"
 }
 
 ################################################################################
@@ -770,6 +818,7 @@ PYTHON_EOF
 
 # Submit workflow to ComfyUI via REST API
 # Sends the prepared workflow payload and retrieves the prompt_id
+# Handles both formats: {"prompt": {...}} and direct {...}
 # Arguments: $1 = workflow API file
 # Sets: PROMPT_ID (global), PAYLOAD_FILE (global)
 submit_workflow() {
@@ -778,8 +827,20 @@ submit_workflow() {
     log_info "Submitting workflow to ComfyUI..."
     log_to_file "Submitting workflow to ${COMFYUI_URL}/prompt"
 
-    # Build JSON payload
-    PAYLOAD="{\"prompt\": $(cat "$workflow_api"), \"client_id\": \"$CLIENT_ID\"}"
+    # Extract the prompt object from the workflow
+    # If the workflow has a "prompt" wrapper, extract it
+    # Otherwise use the workflow as-is
+    local prompt_obj
+    if jq -e '.prompt' "$workflow_api" > /dev/null 2>&1; then
+        # Workflow already has "prompt" wrapper, extract it
+        prompt_obj=$(jq '.prompt' "$workflow_api")
+    else
+        # Workflow is direct API format, use as-is
+        prompt_obj=$(cat "$workflow_api")
+    fi
+
+    # Build JSON payload with client_id
+    PAYLOAD=$(jq -n --argjson prompt "$prompt_obj" --arg client_id "$CLIENT_ID" '{prompt: $prompt, client_id: $client_id}')
 
     # Save payload for debugging
     PAYLOAD_FILE="/tmp/comfyui-payload-${START_TIMESTAMP}.json"

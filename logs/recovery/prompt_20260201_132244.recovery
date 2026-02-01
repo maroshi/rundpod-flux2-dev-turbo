@@ -1,0 +1,15 @@
+# Workflow Recovery File
+# Generated: 2026-02-01 13:22:51
+# Use this file to check the status of a timed-out workflow
+
+PROMPT_ID=440043c5-6f9f-4745-8226-f15fbd08d58e
+POD_URL=https://x08qt40klp2ls4-8188.proxy.runpod.net
+IMAGE_ID=UNDEFINED_ID_
+SEED=1857103366
+LOCAL_OUTPUT_FOLDER=/tmp/test_error_output_89457/test_3_2
+
+# To check the status of this workflow, run:
+# curl -s "${POD_URL}/history/${PROMPT_ID}" | jq .
+
+# To download images if they're ready, run:
+# curl -s "${POD_URL}/history/${PROMPT_ID}" | jq ".[\"${PROMPT_ID}\"].outputs"

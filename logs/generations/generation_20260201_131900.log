@@ -1,0 +1,57 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 13:19:00
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 13:19:00
+  Client ID:        claude-code-remote-20260201_131900-117158905
+  Log File:         ./logs/generations/generation_20260201_131900.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          https://x08qt40klp2ls4-8188.proxy.runpod.net
+  Timeout:          3600s
+
+INPUT PARAMETERS:
+  Prompt:           A red car
+  Image ID:         UNDEFINED_ID_
+  Seed:             222
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/test_regression_output/test_4_4_seed222
+  Download Images:  true
+  Filename Prefix:  UNDEFINED_ID__131900
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[13:19:00] Remote generation started with parameters
+[13:19:00] ═══════════════════════════════════════════════════════════════
+[13:19:00] REMOTE EXECUTION START
+[13:19:00] ═══════════════════════════════════════════════════════════════
+[13:19:00] Dependencies verified: curl, jq, python3
+[13:19:00] Pod URL: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:19:00] Checking pod connectivity to: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:19:00] Pod connectivity check successful: HTTP 200
+[13:19:00] Processing workflow: flux2_turbo_512x512_parametric_api.json
+[13:19:00] Submitting workflow to pod at https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:19:01] Workflow submitted successfully. Prompt ID: 5527ed1e-9876-43ca-aa13-ad9bc18d3c58
+[13:19:01] Starting to poll pod for completion (max 3600s)
+[13:19:02] Still polling... (1s elapsed)
+[13:19:07] Workflow completed successfully
+[13:19:07] Starting image download from pod
+[13:19:07] Downloading image: UNDEFINED_ID__131900_00001_.png -> test_4_4_seed222UNDEFINED_ID__131900_00001_.png
+[13:19:08] Successfully downloaded: UNDEFINED_ID__131900_00001_.png
+[13:19:08] Successfully downloaded 1 image(s)
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLETION STATUS:
+  Status:           Success
+  Prompt ID:        5527ed1e-9876-43ca-aa13-ad9bc18d3c58
+  Start Time:       2026-02-01 13:19:00
+  End Time:         2026-02-01 13:19:08
+  Local Output:     /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/test_regression_output/test_4_4_seed222
+
+DOWNLOADED OUTPUTS:
+  (No output captured)
+
+████████████████████████████████████████████████████████████████████████████████

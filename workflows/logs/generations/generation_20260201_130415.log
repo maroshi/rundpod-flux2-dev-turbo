@@ -1,0 +1,56 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 13:04:15
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 13:04:15
+  Client ID:        claude-code-remote-20260201_130415-157868033
+  Log File:         ./logs/generations/generation_20260201_130415.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          http://invalid-host.local:8188
+  Timeout:          3600s
+
+INPUT PARAMETERS:
+  Prompt:           test
+  Image ID:         UNDEFINED_ID_
+  Seed:             2417825397
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     ./output/
+  Download Images:  true
+  Filename Prefix:  UNDEFINED_ID__130415
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[13:04:15] Remote generation started with parameters
+[13:04:15] ═══════════════════════════════════════════════════════════════
+[13:04:15] REMOTE EXECUTION START
+[13:04:15] ═══════════════════════════════════════════════════════════════
+[13:04:15] Dependencies verified: curl, jq, python3
+[13:04:15] Pod URL: http://invalid-host.local:8188
+[13:04:15] Checking pod connectivity to: http://invalid-host.local:8188
+[13:04:20] ERROR: Pod connectivity check failed: HTTP 000
+[13:04:21] Checking pod connectivity to: http://invalid-host.local:8188
+[13:04:26] ERROR: Pod connectivity check failed: HTTP 000
+[13:04:28] Checking pod connectivity to: http://invalid-host.local:8188
+[13:04:33] ERROR: Pod connectivity check failed: HTTP 000
+[13:04:37] Checking pod connectivity to: http://invalid-host.local:8188
+[13:04:42] ERROR: Pod connectivity check failed: HTTP 000
+[13:04:50] Checking pod connectivity to: http://invalid-host.local:8188
+[13:04:55] ERROR: Pod connectivity check failed: HTTP 000
+[13:04:55] ERROR: Pod unreachable after retries
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLETION STATUS:
+  Status:           Failed
+  Prompt ID:        
+  Start Time:       2026-02-01 13:04:15
+  End Time:         2026-02-01 13:04:55
+  Local Output:     ./output/
+
+DOWNLOADED OUTPUTS:
+  Pod unreachable
+
+████████████████████████████████████████████████████████████████████████████████

@@ -1,0 +1,15 @@
+# Workflow Recovery File
+# Generated: 2026-02-01 13:15:37
+# Use this file to check the status of a timed-out workflow
+
+PROMPT_ID=04a24e1f-0558-422b-a990-5f948cf5d014
+POD_URL=https://x08qt40klp2ls4-8188.proxy.runpod.net
+IMAGE_ID=UNDEFINED_ID_
+SEED=2084286450
+LOCAL_OUTPUT_FOLDER=/home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/test_error_output/test_3_2
+
+# To check the status of this workflow, run:
+# curl -s "${POD_URL}/history/${PROMPT_ID}" | jq .
+
+# To download images if they're ready, run:
+# curl -s "${POD_URL}/history/${PROMPT_ID}" | jq ".[\"${PROMPT_ID}\"].outputs"

@@ -1,0 +1,39 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 12:26:34
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 12:26:34
+  Client ID:        claude-code-remote-20260201_122634-198459736
+  Log File:         ./logs/generations/generation_20260201_122634.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          http://invalid-host.local:8188
+  Timeout:          3600s
+
+INPUT PARAMETERS:
+  Prompt:           test
+  Image ID:         UNDEFINED_ID_
+  Seed:             2505284201
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     ./output/
+  Download Images:  true
+  Filename Prefix:  UNDEFINED_ID__122634
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[12:26:34] Remote generation started with parameters
+[12:26:34] ═══════════════════════════════════════════════════════════════
+[12:26:34] REMOTE EXECUTION START
+[12:26:34] ═══════════════════════════════════════════════════════════════
+[12:26:34] Dependencies verified: curl, jq, python3
+[12:26:34] Pod URL: http://invalid-host.local:8188
+[12:26:34] Checking pod connectivity to: http://invalid-host.local:8188
+[12:26:39] ERROR: Pod connectivity check failed: HTTP 000
+[12:26:40] Checking pod connectivity to: http://invalid-host.local:8188
+[12:26:45] ERROR: Pod connectivity check failed: HTTP 000
+[12:26:47] Checking pod connectivity to: http://invalid-host.local:8188
+[12:26:52] ERROR: Pod connectivity check failed: HTTP 000
+[12:26:56] Checking pod connectivity to: http://invalid-host.local:8188

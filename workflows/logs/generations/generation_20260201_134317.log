@@ -1,0 +1,61 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 13:43:17
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 13:43:17
+  Client ID:        claude-code-remote-20260201_134317-594191990
+  Log File:         ./logs/generations/generation_20260201_134317.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          https://x08qt40klp2ls4-8188.proxy.runpod.net
+  Timeout:          3600s
+
+INPUT PARAMETERS:
+  Prompt:           A red car
+  Image ID:         UNDEFINED_ID_
+  Seed:             111
+  Steps:            4
+  Width:            512
+  Height:           512
+  Batch Size:       1
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     /tmp/test_regression_output_103766/test_4_4_seed111
+  Download Images:  true
+  Filename Prefix:  UNDEFINED_ID__134317
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[13:43:17] Remote generation started with parameters
+[13:43:17] ═══════════════════════════════════════════════════════════════
+[13:43:17] REMOTE EXECUTION START
+[13:43:17] ═══════════════════════════════════════════════════════════════
+[13:43:17] Dependencies verified: curl, jq, python3
+[13:43:17] Pod URL: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:43:17] Checking pod connectivity to: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:43:18] Pod connectivity check successful: HTTP 200
+[13:43:18] Processing workflow: flux2_turbo_512x512_parametric_api.json
+[13:43:18] Submitting workflow to pod at https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:43:18] Workflow submitted successfully. Prompt ID: 3c4dd052-6b2b-4634-ae0c-b747d73088f8
+[13:43:18] Starting to poll pod for completion (max 3600s)
+[13:43:19] Still polling... (1s elapsed)
+[13:43:24] Workflow completed successfully
+[13:43:24] Starting image download from pod
+[13:43:24] Downloading image: UNDEFINED_ID__134317_00001_.png -> test_4_4_seed111UNDEFINED_ID__134317_00001_.png
+[13:43:25] Successfully downloaded: UNDEFINED_ID__134317_00001_.png
+[13:43:25] Successfully downloaded 1 image(s)
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLETION STATUS:
+  Status:           Success
+  Prompt ID:        3c4dd052-6b2b-4634-ae0c-b747d73088f8
+  Start Time:       2026-02-01 13:43:17
+  End Time:         2026-02-01 13:43:25
+  Local Output:     /tmp/test_regression_output_103766/test_4_4_seed111
+
+DOWNLOADED OUTPUTS:
+  (No output captured)
+
+████████████████████████████████████████████████████████████████████████████████

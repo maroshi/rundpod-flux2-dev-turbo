@@ -1,0 +1,57 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 13:10:50
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 13:10:50
+  Client ID:        claude-code-remote-20260201_131050-972501155
+  Log File:         ./logs/generations/generation_20260201_131050.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          https://x08qt40klp2ls4-8188.proxy.runpod.net
+  Timeout:          3600s
+
+INPUT PARAMETERS:
+  Prompt:           Download verification test (id: verify_001)
+  Image ID:         verify_001
+  Seed:             2091386235
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/test_integration_output/test_2_3
+  Download Images:  true
+  Filename Prefix:  verify_001_131050
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[13:10:50] Remote generation started with parameters
+[13:10:50] ═══════════════════════════════════════════════════════════════
+[13:10:50] REMOTE EXECUTION START
+[13:10:50] ═══════════════════════════════════════════════════════════════
+[13:10:50] Dependencies verified: curl, jq, python3
+[13:10:50] Pod URL: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:10:50] Checking pod connectivity to: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:10:51] Pod connectivity check successful: HTTP 200
+[13:10:51] Processing workflow: flux2_turbo_512x512_parametric_api.json
+[13:10:51] Submitting workflow to pod at https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:10:52] Workflow submitted successfully. Prompt ID: 97b48fc8-62b3-4571-8745-e422eb77d33b
+[13:10:52] Starting to poll pod for completion (max 3600s)
+[13:10:52] Still polling... (0s elapsed)
+[13:10:58] Workflow completed successfully
+[13:10:58] Starting image download from pod
+[13:10:58] Downloading image: verify_001_131050_00001_.png -> test_2_3verify_001_131050_00001_.png
+[13:10:59] Successfully downloaded: verify_001_131050_00001_.png
+[13:10:59] Successfully downloaded 1 image(s)
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLETION STATUS:
+  Status:           Success
+  Prompt ID:        97b48fc8-62b3-4571-8745-e422eb77d33b
+  Start Time:       2026-02-01 13:10:50
+  End Time:         2026-02-01 13:10:59
+  Local Output:     /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/test_integration_output/test_2_3
+
+DOWNLOADED OUTPUTS:
+  (No output captured)
+
+████████████████████████████████████████████████████████████████████████████████

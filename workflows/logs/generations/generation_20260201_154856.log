@@ -1,0 +1,63 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 15:48:56
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 15:48:56
+  Client ID:        claude-code-remote-20260201_154856-114457033
+  Log File:         ./logs/generations/generation_20260201_154856.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          https://x08qt40klp2ls4-8188.proxy.runpod.net
+  Timeout:          3600s
+
+INPUT PARAMETERS:
+  Prompt:           A desert planet with giant sand dunes and twin sunsets (id: batch_003)
+  Image ID:         batch_003
+  Seed:             1939314809
+  Steps:            4
+  Width:            512
+  Height:           512
+  Batch Size:       1
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     /tmp/comfy_batch/
+  Download Images:  true
+  Filename Prefix:  batch_003_154856
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[15:48:56] Remote generation started with parameters
+[15:48:56] ═══════════════════════════════════════════════════════════════
+[15:48:56] REMOTE EXECUTION START
+[15:48:56] ═══════════════════════════════════════════════════════════════
+[15:48:56] Dependencies verified: curl, jq, python3
+[15:48:56] Pod URL: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[15:48:56] Checking pod connectivity to: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[15:48:57] Pod connectivity check successful: HTTP 200
+[15:48:57] Processing workflow: flux2_turbo_512x512_parametric_api.json
+[15:48:57] Submitting workflow to pod at https://x08qt40klp2ls4-8188.proxy.runpod.net
+[15:48:58] Workflow submitted successfully. Prompt ID: d319434c-8cf3-400b-b4b5-c2d1b8107377
+[15:48:58] Starting to poll pod for completion (max 3600s)
+[15:48:59] Still polling... (1s elapsed)
+[15:49:04] Workflow completed successfully
+[15:49:04] Starting image download from pod
+[15:49:04] Downloading image: batch_003_154856_00001_.png -> batch_003_154856_00001_.png
+[15:49:05] Successfully downloaded: batch_003_154856_00001_.png
+[15:49:05] Successfully downloaded 1 image(s)
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLETION STATUS:
+  Status:           Success
+  Prompt ID:        d319434c-8cf3-400b-b4b5-c2d1b8107377
+  Start Time:       2026-02-01 15:48:56
+  End Time:         2026-02-01 15:49:05
+  Local Output:     /tmp/comfy_batch/
+
+DOWNLOADED OUTPUTS:
+  batch_001_154837_00001_.png
+  batch_002_154847_00001_.png
+  batch_003_154856_00001_.png
+
+████████████████████████████████████████████████████████████████████████████████

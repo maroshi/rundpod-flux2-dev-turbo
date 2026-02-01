@@ -1,0 +1,33 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 12:18:44
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 12:18:44
+  Client ID:        claude-code-remote-20260201_121844-004181133
+  Log File:         ./logs/generations/generation_20260201_121844.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          http://invalid-host.local:8188
+  Timeout:          3600s
+
+INPUT PARAMETERS:
+  Prompt:           test
+  Image ID:         UNDEFINED_ID_
+  Seed:             1790951061
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     ./output/
+  Download Images:  true
+  Filename Prefix:  UNDEFINED_ID__121844
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[12:18:44] Remote generation started with parameters
+[12:18:44] ═══════════════════════════════════════════════════════════════
+[12:18:44] REMOTE EXECUTION START
+[12:18:44] ═══════════════════════════════════════════════════════════════
+[12:18:44] Dependencies verified: curl, jq, python3
+[12:18:44] Pod URL: http://invalid-host.local:8188
+[12:18:44] Checking pod connectivity to: http://invalid-host.local:8188

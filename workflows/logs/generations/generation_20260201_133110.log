@@ -1,0 +1,56 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 13:31:10
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 13:31:10
+  Client ID:        claude-code-remote-20260201_133110-720207225
+  Log File:         ./logs/generations/generation_20260201_133110.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          https://x08qt40klp2ls4-8188.proxy.runpod.net
+  Timeout:          3600s
+
+INPUT PARAMETERS:
+  Prompt:           A red car
+  Image ID:         UNDEFINED_ID_
+  Seed:             12345
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     /tmp/test_regression_output_95923/test_4_2_run2
+  Download Images:  true
+  Filename Prefix:  UNDEFINED_ID__133110
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[13:31:10] Remote generation started with parameters
+[13:31:10] ═══════════════════════════════════════════════════════════════
+[13:31:10] REMOTE EXECUTION START
+[13:31:10] ═══════════════════════════════════════════════════════════════
+[13:31:10] Dependencies verified: curl, jq, python3
+[13:31:10] Pod URL: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:31:10] Checking pod connectivity to: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:31:11] Pod connectivity check successful: HTTP 200
+[13:31:11] Processing workflow: flux2_turbo_512x512_parametric_api.json
+[13:31:11] Submitting workflow to pod at https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:31:12] Workflow submitted successfully. Prompt ID: 0a9bd24d-ed5b-4a50-918b-c1ede435ecfe
+[13:31:12] Starting to poll pod for completion (max 3600s)
+[13:31:12] Workflow completed successfully
+[13:31:12] Starting image download from pod
+[13:31:12] Downloading image: UNDEFINED_ID__133110_00001_.png -> test_4_2_run2UNDEFINED_ID__133110_00001_.png
+[13:31:13] Successfully downloaded: UNDEFINED_ID__133110_00001_.png
+[13:31:13] Successfully downloaded 1 image(s)
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLETION STATUS:
+  Status:           Success
+  Prompt ID:        0a9bd24d-ed5b-4a50-918b-c1ede435ecfe
+  Start Time:       2026-02-01 13:31:10
+  End Time:         2026-02-01 13:31:13
+  Local Output:     /tmp/test_regression_output_95923/test_4_2_run2
+
+DOWNLOADED OUTPUTS:
+  (No output captured)
+
+████████████████████████████████████████████████████████████████████████████████

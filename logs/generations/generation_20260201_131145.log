@@ -1,0 +1,117 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 13:11:45
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 13:11:45
+  Client ID:        claude-code-remote-20260201_131145-840351272
+  Log File:         ./logs/generations/generation_20260201_131145.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          https://x08qt40klp2ls4-8188.proxy.runpod.net
+  Timeout:          3600s
+
+INPUT PARAMETERS:
+  Prompt:           Test image 1 (id: concurrent_1)
+  Image ID:         concurrent_1
+  Seed:             1001
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/test_integration_output/test_2_2
+  Download Images:  true
+  Filename Prefix:  concurrent_1_131145
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[13:11:45] Remote generation started with parameters
+[13:11:45] ═══════════════════════════════════════════════════════════════
+[13:11:45] ═══════════════════════════════════════════════════════════════
+[13:11:45] REMOTE EXECUTION START
+[13:11:45] REMOTE EXECUTION START
+[13:11:45] ═══════════════════════════════════════════════════════════════
+[13:11:45] ═══════════════════════════════════════════════════════════════
+[13:11:45] ═══════════════════════════════════════════════════════════════
+[13:11:45] REMOTE EXECUTION START
+[13:11:45] Dependencies verified: curl, jq, python3
+[13:11:45] Dependencies verified: curl, jq, python3
+[13:11:45] ═══════════════════════════════════════════════════════════════
+[13:11:45] Dependencies verified: curl, jq, python3
+[13:11:45] Pod URL: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:11:45] Pod URL: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:11:45] Checking pod connectivity to: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:11:45] Checking pod connectivity to: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:11:45] Pod URL: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:11:45] Checking pod connectivity to: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:11:46] Pod connectivity check successful: HTTP 200
+[13:11:46] Processing workflow: flux2_turbo_512x512_parametric_api.json
+[13:11:46] Pod connectivity check successful: HTTP 200
+[13:11:46] Pod connectivity check successful: HTTP 200
+[13:11:46] Processing workflow: flux2_turbo_512x512_parametric_api.json
+[13:11:46] Processing workflow: flux2_turbo_512x512_parametric_api.json
+[13:11:46] Submitting workflow to pod at https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:11:46] Submitting workflow to pod at https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:11:46] Submitting workflow to pod at https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:11:47] Workflow submitted successfully. Prompt ID: 73e9929d-2166-41da-8b31-bc9505cf58b7
+[13:11:47] Starting to poll pod for completion (max 3600s)
+[13:11:47] Workflow submitted successfully. Prompt ID: c20250be-5907-42fb-b7cb-a6f6df3924fd
+[13:11:47] Starting to poll pod for completion (max 3600s)
+[13:11:47] Workflow submitted successfully. Prompt ID: 214cfb42-d4b2-4b20-a9e1-79bdc7101b8c
+[13:11:47] Starting to poll pod for completion (max 3600s)
+[13:11:47] Still polling... (0s elapsed)
+[13:11:47] Still polling... (0s elapsed)
+[13:11:48] Still polling... (1s elapsed)
+[13:11:52] Workflow completed successfully
+[13:11:52] Starting image download from pod
+[13:11:53] Downloading image: concurrent_1_131145_00001_.png -> test_2_2concurrent_1_131145_00001_.png
+[13:11:54] Successfully downloaded: concurrent_1_131145_00001_.png
+[13:11:54] Successfully downloaded 1 image(s)
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLETION STATUS:
+  Status:           Success
+  Prompt ID:        73e9929d-2166-41da-8b31-bc9505cf58b7
+  Start Time:       2026-02-01 13:11:45
+  End Time:         2026-02-01 13:11:54
+  Local Output:     /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/test_integration_output/test_2_2
+
+DOWNLOADED OUTPUTS:
+  (No output captured)
+
+████████████████████████████████████████████████████████████████████████████████
+[13:11:58] Workflow completed successfully
+[13:11:58] Starting image download from pod
+[13:11:58] Downloading image: concurrent_3_131145_00001_.png -> test_2_2concurrent_3_131145_00001_.png
+[13:11:59] Successfully downloaded: concurrent_3_131145_00001_.png
+[13:11:59] Successfully downloaded 1 image(s)
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLETION STATUS:
+  Status:           Success
+  Prompt ID:        c20250be-5907-42fb-b7cb-a6f6df3924fd
+  Start Time:       2026-02-01 13:11:45
+  End Time:         2026-02-01 13:11:59
+  Local Output:     /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/test_integration_output/test_2_2
+
+DOWNLOADED OUTPUTS:
+  (No output captured)
+
+████████████████████████████████████████████████████████████████████████████████
+[13:12:03] Workflow completed successfully
+[13:12:03] Starting image download from pod
+[13:12:03] Downloading image: concurrent_2_131145_00001_.png -> test_2_2concurrent_2_131145_00001_.png
+[13:12:04] Successfully downloaded: concurrent_2_131145_00001_.png
+[13:12:04] Successfully downloaded 1 image(s)
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLETION STATUS:
+  Status:           Success
+  Prompt ID:        214cfb42-d4b2-4b20-a9e1-79bdc7101b8c
+  Start Time:       2026-02-01 13:11:45
+  End Time:         2026-02-01 13:12:04
+  Local Output:     /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/test_integration_output/test_2_2
+
+DOWNLOADED OUTPUTS:
+  (No output captured)
+
+████████████████████████████████████████████████████████████████████████████████

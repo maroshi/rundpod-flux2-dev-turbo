@@ -1,0 +1,63 @@
+████████████████████████████████████████████████████████████████████████████████
+ REMOTE GENERATION LOG - 2026-02-01 13:48:31
+████████████████████████████████████████████████████████████████████████████████
+
+GENERATION METADATA:
+  Timestamp:        2026-02-01 13:48:31
+  Client ID:        claude-code-remote-20260201_134831-226006339
+  Log File:         ./logs/generations/generation_20260201_134831.log
+  Execution Mode:   REMOTE (via RunPod proxy)
+
+POD CONNECTION:
+  Pod URL:          https://x08qt40klp2ls4-8188.proxy.runpod.net
+  Timeout:          180s
+
+INPUT PARAMETERS:
+  Prompt:           A serene blue lake at sunset (id: test_256x300_001)
+  Image ID:         test_256x300_001
+  Seed:             2266546976
+  Steps:            4
+  Width:            256
+  Height:           300
+  Batch Size:       1
+  Workflow:         /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+  Output Folder:    /workspace/output/
+  Local Output:     ./output/
+  Download Images:  true
+  Filename Prefix:  test_256x300_001_134831
+
+EXECUTION LOG:
+─────────────────────────────────────────────────────────────────────────────
+[13:48:31] Remote generation started with parameters
+[13:48:31] ═══════════════════════════════════════════════════════════════
+[13:48:31] REMOTE EXECUTION START
+[13:48:31] ═══════════════════════════════════════════════════════════════
+[13:48:31] Dependencies verified: curl, jq, python3
+[13:48:31] Pod URL: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:48:31] Checking pod connectivity to: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:48:31] Pod connectivity check successful: HTTP 200
+[13:48:31] Processing workflow: flux2_turbo_512x512_parametric_api.json
+[13:48:32] Submitting workflow to pod at https://x08qt40klp2ls4-8188.proxy.runpod.net
+[13:48:32] Workflow submitted successfully. Prompt ID: 0533ee95-d04e-436b-8750-4bc43747a169
+[13:48:32] Starting to poll pod for completion (max 180s)
+[13:48:33] Still polling... (1s elapsed)
+[13:48:49] Workflow completed successfully
+[13:48:49] Starting image download from pod
+[13:48:49] Downloading image: test_256x300_001_134831_00001_.png -> test_256x300_001_134831_00001_.png
+[13:48:50] Successfully downloaded: test_256x300_001_134831_00001_.png
+[13:48:50] Successfully downloaded 1 image(s)
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLETION STATUS:
+  Status:           Success
+  Prompt ID:        0533ee95-d04e-436b-8750-4bc43747a169
+  Start Time:       2026-02-01 13:48:31
+  End Time:         2026-02-01 13:48:50
+  Local Output:     ./output/
+
+DOWNLOADED OUTPUTS:
+  test_256x256_001_134723_00001_.png
+  test_256x300_001_134831_00001_.png
+  test_parametric_120625_00001_.png
+
+████████████████████████████████████████████████████████████████████████████████

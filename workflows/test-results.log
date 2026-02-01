@@ -1,6 +1,7 @@
 [0;36m[TEST][0m Test output directory: /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/test-output
-[0;36m[TEST][0m Pod URL: http://104.255.9.187:8188
+[0;36m[TEST][0m Pod URL: https://x08qt40klp2ls4-8188.proxy.runpod.net
 [0;36m[TEST][0m Remote script: /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/comfy-run-remote.sh
+[0;32m[PASS][0m Pod URL detected: https://x08qt40klp2ls4-8188.proxy.runpod.net
 [0;32m[PASS][0m Remote script found
 
 ════════════════════════════════════════════════════════════════
@@ -17,3 +18,173 @@
   TEST SUITE 2: Pod Connectivity
 ════════════════════════════════════════════════════════════════
 [0;36m[TEST][0m Test 2.1: Valid pod URL format
+[0;32m[PASS][0m Script accepts valid pod URL
+[0;36m[TEST][0m Test 2.2: Pod server accessibility
+[0;32m[PASS][0m Pod responds to /system_stats
+[0;32m[PASS][0m Response is valid JSON
+[0;36m[TEST][0m Test 2.3: Invalid pod URL handling
+[0;32m[PASS][0m Script handles invalid pod URL gracefully
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 3: Workflow Validation
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 3.1: Valid workflow file detection
+[0;32m[PASS][0m Workflow file exists: /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/flux2_turbo_512x512_parametric_api.json
+[0;32m[PASS][0m Workflow is valid JSON
+[0;36m[TEST][0m Test 3.2: Missing workflow file handling
+[0;32m[PASS][0m Script fails with missing workflow
+[0;36m[TEST][0m Test 3.3: Workflow node validation
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 4: Parameter Parsing
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 4.1: Required prompt parameter
+[0;32m[PASS][0m Script requires prompt
+[0;36m[TEST][0m Test 4.2: Optional parameters
+[0;32m[PASS][0m Script accepts image-id parameter
+[0;36m[TEST][0m Test 4.3: Pod URL detection order
+[0;32m[PASS][0m Environment variable RUNPOD_POD_URL set: https://x08qt40klp2ls4-8188.proxy.runpod.net
+[0;36m[TEST][0m Test 4.4: URL format normalization
+[0;36m[TEST][0m Testing URL format: http://104.255.9.187:8188
+[0;36m[TEST][0m Testing URL format: 104.255.9.187:8188
+[0;36m[TEST][0m Testing URL format: http://104.255.9.187:8188/
+[0;36m[TEST][0m Testing URL format: pod-test.runpod.io:8188
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 6: Output Directory Handling
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 6.1: Create output directory
+[0;32m[PASS][0m Output directory created: /home/dudi/dev/image-generation-prompt/rundpod-flux2-dev-turbo/workflows/test-output/output
+[0;36m[TEST][0m Test 6.2: Handle file conflicts
+[0;32m[PASS][0m File conflict detection works
+[0;36m[TEST][0m Test 6.3: Verify directory permissions
+[0;32m[PASS][0m Output directory is writable
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 7: Seed Generation
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 7.1: Auto-generated seed uniqueness
+[0;32m[PASS][0m Auto-generated seeds are unique
+[0;36m[TEST][0m Test 7.2: Custom seed acceptance
+[0;32m[PASS][0m Custom seed value accepted: 42
+[0;36m[TEST][0m Test 7.3: Seed value range
+[0;32m[PASS][0m Seed is valid integer
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 8: Logging
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 8.1: Log file creation
+[0;32m[PASS][0m Log file created
+[0;36m[TEST][0m Test 8.2: Log content validation
+[0;32m[PASS][0m Log contains header
+[0;32m[PASS][0m Log contains metadata
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 9: JSON Parsing
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 9.1: Workflow JSON parsing
+[0;32m[PASS][0m Workflow JSON is valid
+[0;36m[TEST][0m Test 9.2: API response parsing
+[0;32m[PASS][0m Can extract prompt_id from response
+[0;36m[TEST][0m Test 9.3: Error response parsing
+[0;32m[PASS][0m Can extract errors from response
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 10: Network Timeout
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 10.1: Connection timeout detection
+[0;36m[TEST][0m Testing unreachable host (should timeout quickly)
+[0;32m[PASS][0m Connection timeout detected correctly
+[0;36m[TEST][0m Test 10.2: Retry logic
+[0;32m[PASS][0m Retry with backoff logic structure validated
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 11: Dependencies
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 11.1: curl availability
+[0;32m[PASS][0m curl is installed
+[0;36m[TEST][0m Test 11.2: jq availability
+[0;32m[PASS][0m jq is installed
+[0;36m[TEST][0m Test 11.3: python3 availability
+[0;32m[PASS][0m python3 is installed
+[0;36m[TEST][0m Test 11.4: envsubst availability
+[0;32m[PASS][0m envsubst is installed
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 12: Workflow Format Conversion
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 12.1: UI to API format conversion
+[0;32m[PASS][0m Workflow conversion logic works
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 13: Image Download
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 13.1: Create test image
+[0;32m[PASS][0m Test image created
+[0;36m[TEST][0m Test 13.2: Verify image file
+[0;32m[PASS][0m Test image has content
+[0;36m[TEST][0m Test 13.3: Image filename handling
+[0;32m[PASS][0m Image filename matches pattern
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 14: Prompt ID Extraction
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 14.1: Extract UUID from response
+[0;32m[PASS][0m Prompt ID format is valid UUID
+[0;36m[TEST][0m Test 14.2: Queue number extraction
+[0;32m[PASS][0m Queue number is valid: 1
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 15: Error Extraction
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 15.1: Extract workflow errors
+[0;32m[PASS][0m Can extract top-level errors
+[0;36m[TEST][0m Test 15.2: Extract node-specific errors
+[0;32m[PASS][0m Can extract node-specific errors
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 16: Full Integration Simulation
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 16.1: Prepare workflow for remote execution
+[0;32m[PASS][0m Parameters prepared for submission: prompt='A beautiful sunset', seed=42
+[0;36m[TEST][0m Test 16.2: Simulate workflow submission
+[0;32m[PASS][0m Workflow submission payload prepared
+[0;36m[TEST][0m Test 16.3: Simulate polling cycle
+[0;32m[PASS][0m Polling cycle simulation: 2s intervals, max 1800 polls
+[0;36m[TEST][0m Test 16.4: Simulate result retrieval
+[0;32m[PASS][0m Result retrieval logic validated
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 17: Execution Error Extraction
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 17.1: Extract execution error from history
+[0;32m[PASS][0m Error status extracted successfully
+[0;36m[TEST][0m Test 17.2: Parse error messages array
+[0;32m[PASS][0m Error messages array parsed correctly
+[0;36m[TEST][0m Test 17.3: Extract node-level errors
+[0;32m[PASS][0m Node errors extracted successfully
+[0;36m[TEST][0m Test 17.4: Handle missing error fields gracefully
+[0;32m[PASS][0m Gracefully handles missing error fields
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 18: Download Retry Logic
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 18.1: Validate retry count (3 retries)
+[0;32m[PASS][0m Retry count set to 3 as specified
+[0;36m[TEST][0m Test 18.2: Validate backoff timing
+[0;32m[PASS][0m Backoff timing validated (1s, 2s)
+[0;36m[TEST][0m Test 18.3: Simulate failed download recovery
+[0;32m[PASS][0m PNG verification can distinguish valid/invalid headers
+[0;36m[TEST][0m Test 18.4: Validate incomplete file cleanup
+[0;32m[PASS][0m File cleanup mechanism works
+
+════════════════════════════════════════════════════════════════
+  TEST SUITE 19: File Conflict Resolution
+════════════════════════════════════════════════════════════════
+[0;36m[TEST][0m Test 19.1: Detect file conflict
+[0;32m[PASS][0m File existence detection works
+[0;36m[TEST][0m Test 19.2: Generate alternate filename
+[0;32m[PASS][0m Alternate filename generation works
+[0;36m[TEST][0m Test 19.3: Increment counter for multiple conflicts
+[0;32m[PASS][0m Counter increment for conflicts works
+[0;36m[TEST][0m Test 19.4: Preserve both original and renamed files
