@@ -53,16 +53,18 @@ show_help() {
 ╚════════════════════════════════════════════════════════════════════════════╝
 
 USAGE:
-    ./comfy-run-remote.sh --prompt "Your prompt" --pod-url URL [OPTIONS]
+    ./comfy-run-remote.sh --prompt "Your prompt" [OPTIONS]
 
 REQUIRED ARGUMENTS:
     --prompt TEXT              The prompt text to pass to the workflow
                               Example: --prompt "A beautiful sunset over mountains"
 
-    --pod-url URL              RunPod proxy URL for ComfyUI instance
+OPTIONAL POD CONFIGURATION:
+    --pod-url URL              RunPod proxy URL for ComfyUI instance (auto-detected if not provided)
                               Format: https://{POD_ID}-8188.proxy.runpod.net
                               Example: --pod-url https://zu9sxe2gu0lswm-8188.proxy.runpod.net
                               OR set via RUNPOD_POD_URL environment variable
+                              OR auto-detected from runpodctl
 
 OPTIONS:
     --workflow FILE            Workflow JSON file (default: flux2_turbo_512x512_parametric_api.json)
@@ -102,31 +104,31 @@ OPTIONS:
     --help, -h               Display this help message and exit
 
 EXAMPLES:
-    # Basic remote execution with auto-download to ./output/
-    ./comfy-run-remote.sh --prompt "A red car" \
-                          --pod-url https://zu9sxe2gu0lswm-8188.proxy.runpod.net
+    # Basic remote execution with auto-detection and auto-download to ./output/
+    ./comfy-run-remote.sh --prompt "A red car"
 
-    # Full specification
+    # Full specification with explicit pod URL
     ./comfy-run-remote.sh --prompt "A red car" \
                           --pod-url https://zu9sxe2gu0lswm-8188.proxy.runpod.net \
                           --image-id "test_001" \
                           --seed 42 \
                           --local-output ./remote_outputs/
 
-    # Using environment variable for pod URL
+    # Using environment variable for pod URL (overrides auto-detection)
     export RUNPOD_POD_URL="https://zu9sxe2gu0lswm-8188.proxy.runpod.net"
     ./comfy-run-remote.sh --prompt "A test image" --image-id "test_001"
 
     # Submit workflow without downloading images
-    ./comfy-run-remote.sh --prompt "A test" \
-                          --pod-url https://zu9sxe2gu0lswm-8188.proxy.runpod.net \
-                          --no-download
+    ./comfy-run-remote.sh --prompt "A test" --no-download
 
 ENVIRONMENT CONFIGURATION:
-    RUNPOD_POD_URL           Pod proxy URL (required if --pod-url not provided)
+    RUNPOD_POD_URL           Pod proxy URL (optional, auto-detected if not set)
     GENERATION_LOG_DIR       Logging directory (default: ./logs/generations/)
 
-    Example:
+    Example (auto-detection):
+    ./comfy-run-remote.sh --prompt "Test"
+
+    Example (with explicit pod URL):
     export RUNPOD_POD_URL="https://zu9sxe2gu0lswm-8188.proxy.runpod.net"
     ./comfy-run-remote.sh --prompt "Test"
 
@@ -152,20 +154,16 @@ RETURN VALUES:
 
 COMMON ISSUES:
 
-    1. "Pod URL not provided"
-       → Provide --pod-url parameter or set RUNPOD_POD_URL environment variable
-       → Format: https://{POD_ID}-8188.proxy.runpod.net
+    1. "Pod unreachable"
+       → Check pod is running: runpodctl get pod
+       → Auto-detection will fail if no pod is RUNNING
+       → Ensure pod ID format is correct in RUNPOD_POD_URL if set manually
 
-    2. "Pod unreachable"
-       → Check pod is running: runpodctl pod list
-       → Get fresh pod ID (changes daily): runpodctl pod list
-       → Verify URL format is correct
-
-    3. "Pod URL format invalid"
+    2. "Pod URL format invalid"
        → Ensure format: https://{POD_ID}-8188.proxy.runpod.net
        → Remove trailing slashes if present
 
-    4. "Connection timeout"
+    3. "Connection timeout"
        → Check your network connection
        → Increase --timeout if pod is busy: --timeout 7200
 
@@ -331,7 +329,7 @@ EOF
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Default configuration values
-WORKFLOW_FILE="${SCRIPT_DIR}/flux2_turbo_512x512_parametric_api.json"
+WORKFLOW_FILE="${SCRIPT_DIR}/workflows/flux2_turbo_512x512_parametric_api.json"
 PROMPT=""
 IMAGE_ID="UNDEFINED_ID_"
 OUTPUT_FOLDER="/workspace/output/"
@@ -383,6 +381,8 @@ parse_arguments() {
                 ;;
             --local-output)
                 LOCAL_OUTPUT_FOLDER="$2"
+                # Ensure trailing slash
+                [[ "$LOCAL_OUTPUT_FOLDER" != */ ]] && LOCAL_OUTPUT_FOLDER="${LOCAL_OUTPUT_FOLDER}/"
                 shift 2
                 ;;
             --pod-url)
@@ -445,19 +445,6 @@ validate_arguments() {
         exit 1
     fi
 
-    # Pod URL is required
-    if [[ -z "$POD_URL" ]]; then
-        log_error "Pod URL could not be determined"
-        echo ""
-        echo "Provide pod URL using one of these methods:"
-        echo "  1. --pod-url parameter: --pod-url https://{POD_ID}-8188.proxy.runpod.net"
-        echo "  2. RUNPOD_POD_URL env var: export RUNPOD_POD_URL='https://...'"
-        echo "  3. Auto-detect (requires runpodctl): make sure pod is RUNNING"
-        echo ""
-        echo "Get current pod ID: runpodctl get pod"
-        echo "Use --help for usage information"
-        exit 1
-    fi
 
     # Workflow file must exist
     if [[ ! -f "$WORKFLOW_FILE" ]]; then

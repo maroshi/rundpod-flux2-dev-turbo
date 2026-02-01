@@ -16,8 +16,8 @@ NC='\033[0m' # No Color
 
 # Test configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REMOTE_SCRIPT="${SCRIPT_DIR}/comfy-run-remote.sh"
-LOCAL_SCRIPT="${SCRIPT_DIR}/comfy-run.sh"
+REMOTE_SCRIPT="${SCRIPT_DIR}/../comfy-run-remote.sh"
+LOCAL_SCRIPT="${SCRIPT_DIR}/../workflows/comfy-run.sh"
 TEST_OUTPUT_DIR="${SCRIPT_DIR}/test-output"
 TEST_LOG_FILE="${SCRIPT_DIR}/test-results.log"
 

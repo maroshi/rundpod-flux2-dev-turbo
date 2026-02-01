@@ -126,7 +126,7 @@ show_environment() {
         log_skip "comfy-run-remote.sh not yet created (will be created later)"
     fi
 
-    if [[ -f "${SCRIPT_DIR}/test-remote-runner.sh" ]]; then
+    if [[ -f "${SCRIPT_DIR}/test/test-remote-runner.sh" ]]; then
         log_pass "test-remote-runner.sh found"
     else
         log_fail "test-remote-runner.sh not found"
@@ -142,20 +142,20 @@ run_all_tests() {
     local start_time=$(date +%s)
 
     # Test 1: Remote Runner (Comprehensive)
-    if [[ -f "${SCRIPT_DIR}/test-remote-runner.sh" ]]; then
-        run_test_script "test-remote-runner" "Comprehensive Test Suite" || true
+    if [[ -f "${SCRIPT_DIR}/test/test-remote-runner.sh" ]]; then
+        run_test_script "test/test-remote-runner" "Comprehensive Test Suite" || true
         ((test_count++))
     fi
 
     # Test 2: Pod Connectivity
-    if [[ -f "${SCRIPT_DIR}/test-pod-connectivity.sh" ]]; then
-        run_test_script "test-pod-connectivity" "Pod Connectivity Tests" || true
+    if [[ -f "${SCRIPT_DIR}/test/test-pod-connectivity.sh" ]]; then
+        run_test_script "test/test-pod-connectivity" "Pod Connectivity Tests" || true
         ((test_count++))
     fi
 
     # Test 3: Workflow API
-    if [[ -f "${SCRIPT_DIR}/test-workflow-api.sh" ]]; then
-        run_test_script "test-workflow-api" "Workflow API Tests" || true
+    if [[ -f "${SCRIPT_DIR}/test/test-workflow-api.sh" ]]; then
+        run_test_script "test/test-workflow-api" "Workflow API Tests" || true
         ((test_count++))
     fi
 

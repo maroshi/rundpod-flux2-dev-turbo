@@ -32,7 +32,7 @@ TESTS_SKIPPED=0
 
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REMOTE_SCRIPT="${SCRIPT_DIR}/comfy-run-remote.sh"
+REMOTE_SCRIPT="${SCRIPT_DIR}/../comfy-run-remote.sh"
 OUTPUT_DIR="${TMPDIR:-/tmp}/test_integration_output_$$"
 LOG_FILE="${TMPDIR:-/tmp}/test-integration-results_$$.log"
 DEBUG="${DEBUG:-0}"
@@ -188,9 +188,9 @@ test_full_execution() {
         fi
     fi
 
-    # Check for output files
-    if ls "$test_output"/*.png > /dev/null 2>&1; then
-        local file_count=$(ls "$test_output"/*.png | wc -l)
+    # Check for output files (including in subdirectories)
+    if find "$test_output" -name "*.png" -type f | grep -q .; then
+        local file_count=$(find "$test_output" -name "*.png" -type f | wc -l)
         log_pass "Images downloaded: $file_count file(s)"
 
         # Check file sizes
@@ -205,7 +205,7 @@ test_full_execution() {
                 log_fail "File too small: $(basename "$file") ($size bytes)"
                 all_valid=false
             fi
-        done < <(ls "$test_output"/*.png)
+        done < <(find "$test_output" -name "*.png" -type f)
 
         if [[ "$all_valid" == "true" ]]; then
             return 0
@@ -257,16 +257,14 @@ test_concurrent_submissions() {
         return 1
     fi
 
-    # Check for output files
-    if ls "$test_output"/*.png > /dev/null 2>&1; then
-        local file_count=$(ls "$test_output"/*.png | wc -l)
-        if [[ $file_count -ge 3 ]]; then
-            log_pass "Generated $file_count images (expected ≥3)"
-            return 0
-        else
-            log_fail "Generated only $file_count images (expected ≥3)"
-            return 1
-        fi
+    # Check for output files (including in subdirectories)
+    local file_count=$(find "$test_output" -name "*.png" -type f | wc -l)
+    if [[ $file_count -ge 3 ]]; then
+        log_pass "Generated $file_count images (expected ≥3)"
+        return 0
+    elif [[ $file_count -gt 0 ]]; then
+        log_fail "Generated only $file_count images (expected ≥3)"
+        return 1
     else
         log_fail "No PNG files found in output directory"
         return 1

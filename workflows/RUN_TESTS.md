@@ -26,16 +26,16 @@ Make sure you have the following installed:
 
 ### 1. Run Unit Tests (No Pod Required)
 ```bash
-cd rundpod-flux2-dev-turbo/workflows/
+cd rundpod-flux2-dev-turbo/
 
 # Make scripts executable
-chmod +x test-*.sh comfy-run-remote.sh
+chmod +x test/*.sh comfy-run-remote.sh
 
 # Run help, validation, and dependency tests
-bash test-remote-runner.sh
+bash test/test-remote-runner.sh
 
 # View results
-cat test-results.log
+cat test/test-results.log
 ```
 
 ### 2. Run Connectivity Tests (Requires Pod)
@@ -53,7 +53,7 @@ This will:
 
 ### 3. Run API Tests (Requires Pod)
 ```bash
-bash test-workflow-api.sh
+bash test/test-workflow-api.sh
 ```
 
 This will:
@@ -65,26 +65,28 @@ This will:
 
 ### 4. Run Full Test Suite (All Phases - Requires Pod)
 ```bash
+cd rundpod-flux2-dev-turbo/
+
 # Phase 1: Unit Tests (no pod)
-bash test-remote-runner.sh
+bash test/test-remote-runner.sh
 
 # Phase 2: Integration Tests (requires pod)
-bash test-integration.sh
+bash test/test-integration.sh
 
 # Phase 3: Error Handling Tests (requires pod)
-bash test-error-handling.sh
+bash test/test-error-handling.sh
 
 # Phase 4: Regression Tests (requires pod + comfy-run.sh)
-bash test-regression.sh
+bash test/test-regression.sh
 ```
 
 ### 5. Run Specific Test Suite
 ```bash
 # Only help and validation tests
-bash test-remote-runner.sh --suite test_help_and_validation
+bash test/test-remote-runner.sh --suite test_help_and_validation
 
 # Only dependency tests
-bash test-remote-runner.sh --suite test_dependencies
+bash test/test-remote-runner.sh --suite test_dependencies
 ```
 
 ## Test Configuration
@@ -123,7 +125,7 @@ bash test-pod-connectivity.sh
 
 ### Enable Debug Output
 ```bash
-DEBUG=1 bash test-remote-runner.sh
+DEBUG=1 bash test/test-remote-runner.sh
 ```
 
 ## Expected Output
@@ -259,12 +261,14 @@ Run full workflow execution with image downloads to verify end-to-end functional
 
 ### Running Phase 2 Tests
 ```bash
-cd rundpod-flux2-dev-turbo/workflows/
-bash test-integration.sh
+cd rundpod-flux2-dev-turbo/
+bash test/test-integration.sh
 ```
 
 ### Test 2.1: Full Workflow Execution
 ```bash
+cd rundpod-flux2-dev-turbo/
+
 ./comfy-run-remote.sh \
     --pod-url "https://zu9sxe2gu0lswm-8188.proxy.runpod.net" \
     --prompt "A red car on a sunny street" \
@@ -285,6 +289,8 @@ ls -lh ./test_output/
 
 ### Test 2.2: Multiple Concurrent Submissions
 ```bash
+cd rundpod-flux2-dev-turbo/
+
 for i in {1..3}; do
     ./comfy-run-remote.sh \
         --pod-url "https://zu9sxe2gu0lswm-8188.proxy.runpod.net" \
@@ -307,6 +313,8 @@ ls -lh ./test_output/ | wc -l
 
 ### Test 2.3: Download Verification
 ```bash
+cd rundpod-flux2-dev-turbo/
+
 ./comfy-run-remote.sh \
     --pod-url "https://zu9sxe2gu0lswm-8188.proxy.runpod.net" \
     --prompt "Download verification test" \
@@ -327,6 +335,8 @@ done
 
 ### Test 2.4: Progress Polling Verification
 ```bash
+cd rundpod-flux2-dev-turbo/
+
 DEBUG=1 ./comfy-run-remote.sh \
     --pod-url "https://zu9sxe2gu0lswm-8188.proxy.runpod.net" \
     --prompt "Progress test" \
@@ -356,8 +366,8 @@ Verify that remote execution produces identical results to local execution (with
 
 ### Running Phase 4 Tests
 ```bash
-cd rundpod-flux2-dev-turbo/workflows/
-bash test-regression.sh
+cd rundpod-flux2-dev-turbo/
+bash test/test-regression.sh
 ```
 
 ### Test 4.1: Seed Reproducibility (Local)
@@ -506,10 +516,10 @@ watch -n 5 'tail test-results.log'
 #!/bin/bash
 # In your CI pipeline
 
-cd rundpod-flux2-dev-turbo/workflows/
+cd rundpod-flux2-dev-turbo/
 
 # Run all tests
-bash test-remote-runner.sh
+bash test/test-remote-runner.sh
 
 # Check results
 if [[ $? -ne 0 ]]; then
@@ -530,12 +540,14 @@ Test error detection, reporting, and recovery mechanisms.
 
 ### Running Phase 3 Tests
 ```bash
-cd rundpod-flux2-dev-turbo/workflows/
-bash test-error-handling.sh
+cd rundpod-flux2-dev-turbo/
+bash test/test-error-handling.sh
 ```
 
 ### Test 3.1: Pod Unreachable Error
 ```bash
+cd rundpod-flux2-dev-turbo/
+
 ./comfy-run-remote.sh \
     --pod-url "https://invalid-pod-id-8188.proxy.runpod.net" \
     --prompt "Test" \
@@ -550,6 +562,8 @@ bash test-error-handling.sh
 
 ### Test 3.2: Timeout Handling
 ```bash
+cd rundpod-flux2-dev-turbo/
+
 ./comfy-run-remote.sh \
     --pod-url "https://zu9sxe2gu0lswm-8188.proxy.runpod.net" \
     --prompt "Test" \
@@ -566,6 +580,8 @@ bash test-error-handling.sh
 
 ### Test 3.3: Invalid Workflow File
 ```bash
+cd rundpod-flux2-dev-turbo/
+
 ./comfy-run-remote.sh \
     --pod-url "https://zu9sxe2gu0lswm-8188.proxy.runpod.net" \
     --prompt "Test" \
@@ -581,6 +597,8 @@ bash test-error-handling.sh
 
 ### Test 3.4: Missing Required Parameters
 ```bash
+cd rundpod-flux2-dev-turbo/
+
 # Missing prompt
 ./comfy-run-remote.sh \
     --pod-url "https://zu9sxe2gu0lswm-8188.proxy.runpod.net" \
@@ -600,6 +618,8 @@ bash test-error-handling.sh
 
 ### Test 3.5: Network Interruption During Polling
 ```bash
+cd rundpod-flux2-dev-turbo/
+
 # Start workflow
 DEBUG=1 ./comfy-run-remote.sh \
     --pod-url "https://zu9sxe2gu0lswm-8188.proxy.runpod.net" \

@@ -31,7 +31,7 @@ TESTS_SKIPPED=0
 
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REMOTE_SCRIPT="${SCRIPT_DIR}/comfy-run-remote.sh"
+REMOTE_SCRIPT="${SCRIPT_DIR}/../comfy-run-remote.sh"
 OUTPUT_DIR="${TMPDIR:-/tmp}/test_error_output_$$"
 LOG_FILE="${TMPDIR:-/tmp}/test-error-handling-results_$$.log"
 DEBUG="${DEBUG:-0}"
