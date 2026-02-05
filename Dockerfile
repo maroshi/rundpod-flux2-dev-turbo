@@ -7,7 +7,7 @@
 # - HuggingFace model auto-download configuration
 ################################################################################
 
-FROM ls250824/run-comfyui-image:04022026
+FROM ls250824/run-comfyui-image:11012026
 
 WORKDIR /ComfyUI
 
