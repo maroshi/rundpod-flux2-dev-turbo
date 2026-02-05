@@ -429,11 +429,11 @@ if [[ "$HAS_COMFYUI" -eq 1 ]]; then
                 # Build HuggingFace direct download URL
                 local hf_url="https://huggingface.co/$repo_id/resolve/main/$filename"
 
-                # Download directly to destination file
-                if wget -q -O "$dest_file" "$hf_url"; then
+                # Download directly to destination file (with timeout and retry)
+                if wget --timeout=300 --tries=3 -O "$dest_file" "$hf_url" > /tmp/${model_name// /_}.log 2>&1; then
                     echo "✅ $model_name"
                 else
-                    echo "⚠️  $model_name: Download failed"
+                    echo "⚠️  $model_name: Download failed (see /tmp/${model_name// /_}.log)"
                     rm -f "$dest_file"
                 fi
             else
