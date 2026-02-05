@@ -440,14 +440,21 @@ try:
     )
 
     # Move from split_files structure if needed
-    source = '$dest_dir/split_files/${filename#split_files/}'
+    # The filename may contain "split_files/" prefix, so we need to extract just the model filename
+    model_filename = os.path.basename('$filename')
+    source = '$dest_dir/split_files/$filename'
     dest = '$dest_file'
+
+    # If file is in split_files subdirectory, move it to correct location
     if os.path.exists(source) and not os.path.exists(dest):
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
         shutil.move(source, dest)
+        # Clean up empty split_files directory
         split_dir = '$dest_dir/split_files'
-        if os.path.exists(split_dir):
+        if os.path.exists(split_dir) and not any(os.scandir(split_dir)):
             shutil.rmtree(split_dir)
     elif not os.path.exists(dest) and os.path.exists(file_path):
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
         shutil.move(file_path, dest)
 
     print(f"✅ $model_name")
