@@ -410,160 +410,85 @@ if [[ "$HAS_COMFYUI" -eq 1 ]]; then
     # Create model directories
     mkdir -p /workspace/ComfyUI/models/{vae,text_encoders,diffusion_models,loras}
 
-    # Check and download VAE if missing (check only root directory, not subdirectories)
-    if ! find /workspace/ComfyUI/models/vae -maxdepth 1 -type f \( -name "*.safetensors" -o -name "*.pt" \) 2>/dev/null | grep -q .; then
-        echo "  ▶️  Downloading FLUX.2 VAE (~200MB)..."
-        python3 << 'EOF'
+    # Parallel model downloads with progress tracking
+    MODELS_LOG="/tmp/model_downloads.log"
+    > "$MODELS_LOG"
+
+    # Function to download model in background
+    download_model_bg() {
+        local model_name="$1"
+        local repo_id="$2"
+        local filename="$3"
+        local dest_dir="$4"
+        local dest_file="$5"
+
+        (
+            if ! find "$dest_dir" -maxdepth 1 -type f -name "$(basename "$dest_file")" 2>/dev/null | grep -q .; then
+                python3 << EOF
 from huggingface_hub import hf_hub_download
 import shutil
 import os
 
 try:
-    # Set cache to workspace to avoid disk space issues
     os.environ['HF_HUB_CACHE'] = '/workspace/.cache/huggingface'
-
-    # Download directly to destination
-    dest = '/workspace/ComfyUI/models/vae/flux2-vae.safetensors'
-    os.makedirs(os.path.dirname(dest), exist_ok=True)
+    os.makedirs("$dest_dir", exist_ok=True)
 
     file_path = hf_hub_download(
-        repo_id='Comfy-Org/flux2-dev',
-        filename='split_files/vae/flux2-vae.safetensors',
-        local_dir='/workspace/ComfyUI/models/vae'
+        repo_id='$repo_id',
+        filename='$filename',
+        local_dir='$dest_dir'
     )
 
-    # Move from split_files structure to flat structure
-    source = '/workspace/ComfyUI/models/vae/split_files/vae/flux2-vae.safetensors'
+    # Move from split_files structure if needed
+    source = '$dest_dir/split_files/${filename#split_files/}'
+    dest = '$dest_file'
     if os.path.exists(source) and not os.path.exists(dest):
         shutil.move(source, dest)
-        # Clean up split_files directory
-        import shutil as sh
-        split_dir = '/workspace/ComfyUI/models/vae/split_files'
+        split_dir = '$dest_dir/split_files'
         if os.path.exists(split_dir):
-            sh.rmtree(split_dir)
+            shutil.rmtree(split_dir)
+    elif not os.path.exists(dest) and os.path.exists(file_path):
+        shutil.move(file_path, dest)
 
-    print(f"✅ VAE downloaded to {dest}")
+    print(f"✅ $model_name")
 except Exception as e:
-    print(f"⚠️  VAE download failed: {e}")
+    print(f"⚠️  $model_name: {e}")
 EOF
-    else
-        echo "  ✅ VAE already exists"
-    fi
+            else
+                echo "✅ $model_name (already exists)"
+            fi
+            echo "$model_name" >> "$MODELS_LOG"
+        ) &
+    }
 
-    # Check and download Text Encoder if missing (check only root directory, not subdirectories)
-    if ! find /workspace/ComfyUI/models/text_encoders -maxdepth 1 -type f -name "*.safetensors" 2>/dev/null | grep -q .; then
-        echo "  ▶️  Downloading FLUX.2 Text Encoder FP8 (~2.8GB)..."
-        python3 << 'EOF'
-from huggingface_hub import hf_hub_download
-import shutil
-import os
+    echo "📥 Starting parallel model downloads..."
 
-try:
-    # Set cache to workspace
-    os.environ['HF_HUB_CACHE'] = '/workspace/.cache/huggingface'
+    # Start all 7 model downloads in parallel
+    download_model_bg "VAE (FLUX.2 Dev)" "Comfy-Org/flux2-dev" "split_files/vae/flux2-vae.safetensors" "/workspace/ComfyUI/models/vae" "/workspace/ComfyUI/models/vae/flux2-vae.safetensors"
+    download_model_bg "Text Encoder (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors" "/workspace/ComfyUI/models/text_encoders" "/workspace/ComfyUI/models/text_encoders/mistral_3_small_flux2_fp8.safetensors"
+    download_model_bg "Diffusion Model (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/diffusion_models/flux2_dev_fp8mixed.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux2_dev_fp8mixed.safetensors"
+    download_model_bg "Turbo LoRA (FLUX.2)" "ByteZSzn/Flux.2-Turbo-ComfyUI" "Flux2TurboComfyv2.safetensors" "/workspace/ComfyUI/models/loras" "/workspace/ComfyUI/models/loras/Flux2TurboComfyv2.safetensors"
+    download_model_bg "Text Encoder (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/text_encoders/qwen_3_4b.safetensors" "/workspace/ComfyUI/models/text_encoders" "/workspace/ComfyUI/models/text_encoders/qwen_3_4b.safetensors"
+    download_model_bg "Diffusion Model Base (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/diffusion_models/flux-2-klein-base-4b.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-base-4b.safetensors"
+    download_model_bg "Diffusion Model Distilled (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/diffusion_models/flux-2-klein-4b.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-4b.safetensors"
 
-    dest = '/workspace/ComfyUI/models/text_encoders/mistral_3_small_flux2_fp8.safetensors'
-    os.makedirs(os.path.dirname(dest), exist_ok=True)
+    # Wait for all downloads and show progress
+    TOTAL_MODELS=7
+    COMPLETED=0
+    while [[ $COMPLETED -lt $TOTAL_MODELS ]]; do
+        COMPLETED=$(wc -l < "$MODELS_LOG" 2>/dev/null || echo 0)
+        if [[ $COMPLETED -lt $TOTAL_MODELS ]]; then
+            echo -ne "  ⏳ Model downloads: $COMPLETED/$TOTAL_MODELS completed\r"
+            sleep 2
+        fi
+    done
 
-    file_path = hf_hub_download(
-        repo_id='Comfy-Org/flux2-dev',
-        filename='split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors',
-        local_dir='/workspace/ComfyUI/models/text_encoders'
-    )
+    # Wait for background jobs to finish
+    wait
 
-    # Move from split_files structure to flat structure
-    source = '/workspace/ComfyUI/models/text_encoders/split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors'
-    if os.path.exists(source) and not os.path.exists(dest):
-        shutil.move(source, dest)
-        # Clean up split_files directory
-        import shutil as sh
-        split_dir = '/workspace/ComfyUI/models/text_encoders/split_files'
-        if os.path.exists(split_dir):
-            sh.rmtree(split_dir)
-
-    print(f"✅ Text Encoder downloaded to {dest}")
-except Exception as e:
-    print(f"⚠️  Text Encoder download failed: {e}")
-EOF
-    else
-        echo "  ✅ Text Encoder already exists"
-    fi
-
-    # Check and download Diffusion Model if missing (check diffusion_models root directory only)
-    if ! find /workspace/ComfyUI/models/diffusion_models -maxdepth 1 -type f -name "*.safetensors" 2>/dev/null | grep -q .; then
-        echo "  ▶️  Downloading FLUX.2 Dev FP8 Diffusion Model (~34GB - this will take a while)..."
-        python3 << 'EOF'
-from huggingface_hub import hf_hub_download
-import shutil
-import os
-
-try:
-    # Set cache to workspace
-    os.environ['HF_HUB_CACHE'] = '/workspace/.cache/huggingface'
-
-    dest_diffusion = '/workspace/ComfyUI/models/diffusion_models/flux2_dev_fp8mixed.safetensors'
-    os.makedirs(os.path.dirname(dest_diffusion), exist_ok=True)
-
-    file_path = hf_hub_download(
-        repo_id='Comfy-Org/flux2-dev',
-        filename='split_files/diffusion_models/flux2_dev_fp8mixed.safetensors',
-        local_dir='/workspace/ComfyUI/models/diffusion_models'
-    )
-
-    # Move from split_files structure to flat structure
-    source = '/workspace/ComfyUI/models/diffusion_models/split_files/diffusion_models/flux2_dev_fp8mixed.safetensors'
-    if os.path.exists(source) and not os.path.exists(dest_diffusion):
-        shutil.move(source, dest_diffusion)
-        # Clean up split_files directory
-        import shutil as sh
-        split_dir = '/workspace/ComfyUI/models/diffusion_models/split_files'
-        if os.path.exists(split_dir):
-            sh.rmtree(split_dir)
-
-    print(f"✅ Diffusion Model downloaded to {dest_diffusion}")
-except Exception as e:
-    print(f"⚠️  Diffusion model download failed: {e}")
-EOF
-    else
-        echo "  ✅ Diffusion Model already exists"
-    fi
-
-    # Check and download Turbo LoRA if missing (check only root directory, not subdirectories)
-    if ! find /workspace/ComfyUI/models/loras -maxdepth 1 -type f \( -name "*Flux2Turbo*" -o -name "*flux2turbo*" \) 2>/dev/null | grep -q .; then
-        echo "  ▶️  Downloading FLUX.2 Turbo LoRA (~35MB)..."
-        python3 << 'EOF'
-from huggingface_hub import hf_hub_download
-import shutil
-import os
-
-try:
-    # Set cache to workspace
-    os.environ['HF_HUB_CACHE'] = '/workspace/.cache/huggingface'
-
-    dest = '/workspace/ComfyUI/models/loras/Flux2TurboComfyv2.safetensors'
-    os.makedirs(os.path.dirname(dest), exist_ok=True)
-
-    file_path = hf_hub_download(
-        repo_id='ByteZSzn/Flux.2-Turbo-ComfyUI',
-        filename='Flux2TurboComfyv2.safetensors',
-        local_dir='/workspace/ComfyUI/models/loras'
-    )
-
-    # Ensure correct location
-    downloaded = '/workspace/ComfyUI/models/loras/Flux2TurboComfyv2.safetensors'
-    if os.path.exists(downloaded):
-        print(f"✅ Turbo LoRA downloaded to {dest}")
-    else:
-        print(f"⚠️  File not found at expected location")
-except Exception as e:
-    print(f"⚠️  LoRA download failed: {e}")
-EOF
-    else
-        echo "  ✅ Turbo LoRA already exists"
-    fi
-
+    # Show completion status
     echo "✅ FLUX.2 models provisioning complete"
-    echo "📊 Storage used for FLUX.2 models: ~37GB (VAE: 0.2GB, Text Encoder FP8: 2.8GB, Diffusion: 34GB, LoRA: 0.035GB)"
+    echo "📊 Storage used for FLUX.2 models: ~50GB (VAE: 0.2GB, Text Encoder FP8: 2.8GB, Diffusion Dev: 34GB, Klein Encoder: 3.2GB, Klein Base: 8.5GB, Klein Distilled: 8.5GB, LoRA: 0.035GB)"
 
     # provisioning workflows
     echo "📥 Provisioning workflows"
