@@ -214,8 +214,23 @@ download_model_HF() {
         fi
 
         echo "ℹ️ [DOWNLOAD] Fetching ${!model_var}/${!file_var} → $target"
-        hf download "${!model_var}" "${!file_var}" --local-dir "$target" || \
-            echo "⚠️ Failed to download ${!model_var}/${!file_var}"
+        python3 - <<PYTHON_HF 2>/dev/null
+import os
+from huggingface_hub import hf_hub_download
+
+try:
+    token = os.environ.get('HF_TOKEN')
+    hf_hub_download(
+        repo_id="${!model_var}",
+        filename="${!file_var}",
+        local_dir="$target",
+        repo_type="model",
+        token=token,
+        cache_dir=os.environ.get('HF_HUB_CACHE', '/workspace/.cache/huggingface')
+    )
+except Exception as e:
+    print(f"⚠️ Failed to download ${!model_var}/${!file_var}: {e}")
+PYTHON_HF
         sleep 1
     fi
 
@@ -246,12 +261,41 @@ download_generic_HF() {
 
     if [[ -n "$file" ]]; then
         echo "ℹ️ [DOWNLOAD] Fetching $model/$file → $target"
-        hf download "$model" "$file" --local-dir "$target" || \
-            echo "⚠️ Failed to download $model/$file"
+        python3 - <<PYTHON_HF 2>/dev/null
+import os
+from huggingface_hub import hf_hub_download
+
+try:
+    token = os.environ.get('HF_TOKEN')
+    hf_hub_download(
+        repo_id="$model",
+        filename="$file",
+        local_dir="$target",
+        repo_type="model",
+        token=token,
+        cache_dir=os.environ.get('HF_HUB_CACHE', '/workspace/.cache/huggingface')
+    )
+except Exception as e:
+    print(f"⚠️ Failed to download $model/$file: {e}")
+PYTHON_HF
     else
         echo "ℹ️ [DOWNLOAD] Fetching $model → $target"
-        hf download "$model" --local-dir "$target" || \
-            echo "⚠️ Failed to download $model"
+        python3 - <<PYTHON_HF 2>/dev/null
+import os
+from huggingface_hub import snapshot_download
+
+try:
+    token = os.environ.get('HF_TOKEN')
+    snapshot_download(
+        repo_id="$model",
+        repo_type="model",
+        local_dir="$target",
+        token=token,
+        cache_dir=os.environ.get('HF_HUB_CACHE', '/workspace/.cache/huggingface')
+    )
+except Exception as e:
+    print(f"⚠️ Failed to download $model: {e}")
+PYTHON_HF
     fi
 
     sleep 1
@@ -410,11 +454,15 @@ if [[ "$HAS_COMFYUI" -eq 1 ]]; then
     # Create model directories
     mkdir -p /workspace/ComfyUI/models/{vae,text_encoders,diffusion_models,loras}
 
+    # Set up Hugging Face cache directory (use workspace storage, not root filesystem)
+    export HF_HUB_CACHE="/workspace/.cache/huggingface"
+    mkdir -p "$HF_HUB_CACHE"
+
     # Parallel model downloads with progress tracking
     MODELS_LOG="/tmp/model_downloads.log"
     > "$MODELS_LOG"
 
-    # Function to download model in background
+    # Function to download model in background using huggingface_hub with token support
     download_model_bg() {
         local model_name="$1"
         local repo_id="$2"
@@ -426,15 +474,36 @@ if [[ "$HAS_COMFYUI" -eq 1 ]]; then
             if [[ ! -f "$dest_file" ]]; then
                 mkdir -p "$dest_dir"
 
-                # Build HuggingFace direct download URL
-                local hf_url="https://huggingface.co/$repo_id/resolve/main/$filename"
+                # Download using huggingface_hub Python library with token support
+                python3 - <<PYTHON_DOWNLOAD 2>/tmp/${model_name// /_}.log
+import sys
+import os
+from huggingface_hub import hf_hub_download
 
-                # Download directly to destination file (with timeout and retry)
-                if wget --timeout=300 --tries=3 -O "$dest_file" "$hf_url" > /tmp/${model_name// /_}.log 2>&1; then
+try:
+    # Set up token if provided
+    token = os.environ.get('HF_TOKEN')
+
+    # Download using huggingface_hub library (handles authentication and resume)
+    local_file = hf_hub_download(
+        repo_id="$repo_id",
+        filename="$filename",
+        local_dir="$dest_dir",
+        repo_type="model",
+        token=token,
+        cache_dir=os.environ.get('HF_HUB_CACHE', '/workspace/.cache/huggingface')
+    )
+    print(f"✅ Downloaded to: {local_file}", file=sys.stderr)
+    sys.exit(0)
+except Exception as e:
+    print(f"⚠️ Download failed: {e}", file=sys.stderr)
+    sys.exit(1)
+PYTHON_DOWNLOAD
+
+                if [[ $? -eq 0 ]]; then
                     echo "✅ $model_name"
                 else
-                    echo "⚠️  $model_name: Download failed (see /tmp/${model_name// /_}.log)"
-                    rm -f "$dest_file"
+                    echo "⚠️ $model_name: Download failed (see /tmp/${model_name// /_}.log)"
                 fi
             else
                 echo "✅ $model_name (already exists)"
@@ -443,7 +512,14 @@ if [[ "$HAS_COMFYUI" -eq 1 ]]; then
         ) &
     }
 
-    echo "📥 Starting parallel model downloads..."
+    echo "📥 Starting parallel model downloads from Hugging Face..."
+
+    # Validate HF_TOKEN is available for private/gated models
+    if [[ -z "$HF_TOKEN" ]]; then
+        echo "⚠️ HF_TOKEN not set - downloads may fail for private/gated models"
+    else
+        echo "✅ HF_TOKEN detected - authenticated downloads enabled"
+    fi
 
     # Start all 7 model downloads in parallel
     download_model_bg "VAE (FLUX.2 Dev)" "Comfy-Org/flux2-dev" "split_files/vae/flux2-vae.safetensors" "/workspace/ComfyUI/models/vae" "/workspace/ComfyUI/models/vae/flux2-vae.safetensors"
