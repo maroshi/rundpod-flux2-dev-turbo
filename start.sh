@@ -423,44 +423,19 @@ if [[ "$HAS_COMFYUI" -eq 1 ]]; then
         local dest_file="$5"
 
         (
-            if ! find "$dest_dir" -maxdepth 1 -type f -name "$(basename "$dest_file")" 2>/dev/null | grep -q .; then
-                python3 << EOF
-from huggingface_hub import hf_hub_download
-import shutil
-import os
+            if [[ ! -f "$dest_file" ]]; then
+                mkdir -p "$dest_dir"
 
-try:
-    os.environ['HF_HUB_CACHE'] = '/workspace/.cache/huggingface'
-    os.makedirs("$dest_dir", exist_ok=True)
+                # Build HuggingFace direct download URL
+                local hf_url="https://huggingface.co/$repo_id/resolve/main/$filename"
 
-    file_path = hf_hub_download(
-        repo_id='$repo_id',
-        filename='$filename',
-        local_dir='$dest_dir'
-    )
-
-    # Move from split_files structure if needed
-    # The filename may contain "split_files/" prefix, so we need to extract just the model filename
-    model_filename = os.path.basename('$filename')
-    source = '$dest_dir/split_files/$filename'
-    dest = '$dest_file'
-
-    # If file is in split_files subdirectory, move it to correct location
-    if os.path.exists(source) and not os.path.exists(dest):
-        os.makedirs(os.path.dirname(dest), exist_ok=True)
-        shutil.move(source, dest)
-        # Clean up empty split_files directory
-        split_dir = '$dest_dir/split_files'
-        if os.path.exists(split_dir) and not any(os.scandir(split_dir)):
-            shutil.rmtree(split_dir)
-    elif not os.path.exists(dest) and os.path.exists(file_path):
-        os.makedirs(os.path.dirname(dest), exist_ok=True)
-        shutil.move(file_path, dest)
-
-    print(f"✅ $model_name")
-except Exception as e:
-    print(f"⚠️  $model_name: {e}")
-EOF
+                # Download directly to destination file
+                if wget -q -O "$dest_file" "$hf_url"; then
+                    echo "✅ $model_name"
+                else
+                    echo "⚠️  $model_name: Download failed"
+                    rm -f "$dest_file"
+                fi
             else
                 echo "✅ $model_name (already exists)"
             fi
