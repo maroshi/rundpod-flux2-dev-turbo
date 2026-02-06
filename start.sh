@@ -578,9 +578,38 @@ PYTHON_DOWNLOAD
         echo "✅ HF_TOKEN detected - authenticated downloads enabled"
     fi
 
+    # Model selection based on FLUX_MODEL environment variable
+    FLUX_MODEL="${FLUX_MODEL:-common}"
+    case "$FLUX_MODEL" in
+        klein)
+            echo "📦 Model selection: FLUX.2 Klein (common + klein-specific models)"
+            echo "📊 Total download size: ~27GB across 5 models"
+            LOAD_COMMON=1; LOAD_KLEIN=1; LOAD_DEV=0
+            ;;
+        dev)
+            echo "📦 Model selection: FLUX.2 Dev (common + dev-specific models)"
+            echo "📊 Total download size: ~54GB across 4 models"
+            LOAD_COMMON=1; LOAD_KLEIN=0; LOAD_DEV=1
+            ;;
+        all)
+            echo "📦 Model selection: All FLUX.2 models (common + klein + dev)"
+            echo "📊 Total download size: ~76GB across 7 models"
+            LOAD_COMMON=1; LOAD_KLEIN=1; LOAD_DEV=1
+            ;;
+        common)
+            echo "📦 Model selection: Common models only (VAE + Turbo LoRA)"
+            echo "📊 Total download size: ~3GB across 2 models"
+            LOAD_COMMON=1; LOAD_KLEIN=0; LOAD_DEV=0
+            ;;
+        *)
+            echo "⚠️ Invalid FLUX_MODEL='$FLUX_MODEL' - valid values: klein, dev, all, common"
+            echo "   Falling back to common models only"
+            LOAD_COMMON=1; LOAD_KLEIN=0; LOAD_DEV=0
+            ;;
+    esac
+
     echo "📥 Starting SERIAL model downloads (smallest first for faster availability)..."
     echo "ℹ️  Models become usable immediately after download completes"
-    echo "📊 Total download size: ~76GB across 7 models"
 
     # Download order by size (smallest to largest):
     # 1. VAE (321MB)
@@ -591,52 +620,62 @@ PYTHON_DOWNLOAD
     # 6. Text Encoder Dev FP8 (17GB)
     # 7. Diffusion Dev FP8 (34GB)
 
-    # 1. VAE (321MB)
-    echo "📥 [1/7] Downloading VAE (321MB)..."
-    download_model_bg "VAE (FLUX.2 Dev)" "Comfy-Org/flux2-dev" "split_files/vae/flux2-vae.safetensors" "/workspace/ComfyUI/models/vae" "/workspace/ComfyUI/models/vae/flux2-vae.safetensors"
-    echo "✅ [1/7] VAE ready!"
-    echo ""
+    # Common models (VAE + Turbo LoRA)
+    if [[ $LOAD_COMMON -eq 1 ]]; then
+        # 1. VAE (321MB)
+        echo "📥 [Common 1/2] Downloading VAE (321MB)..."
+        download_model_bg "VAE (FLUX.2 Dev)" "Comfy-Org/flux2-dev" "split_files/vae/flux2-vae.safetensors" "/workspace/ComfyUI/models/vae" "/workspace/ComfyUI/models/vae/flux2-vae.safetensors"
+        echo "✅ [Common 1/2] VAE ready!"
+        echo ""
 
-    # 2. Turbo LoRA (2.6GB)
-    echo "📥 [2/7] Downloading Turbo LoRA (2.6GB)..."
-    download_model_bg "Turbo LoRA (FLUX.2)" "ByteZSzn/Flux.2-Turbo-ComfyUI" "Flux2TurboComfyv2.safetensors" "/workspace/ComfyUI/models/loras" "/workspace/ComfyUI/models/loras/Flux2TurboComfyv2.safetensors"
-    echo "✅ [2/7] Turbo LoRA ready!"
-    echo ""
+        # 2. Turbo LoRA (2.6GB)
+        echo "📥 [Common 2/2] Downloading Turbo LoRA (2.6GB)..."
+        download_model_bg "Turbo LoRA (FLUX.2)" "ByteZSzn/Flux.2-Turbo-ComfyUI" "Flux2TurboComfyv2.safetensors" "/workspace/ComfyUI/models/loras" "/workspace/ComfyUI/models/loras/Flux2TurboComfyv2.safetensors"
+        echo "✅ [Common 2/2] Turbo LoRA ready!"
+        echo ""
+    fi
 
-    # 3. Text Encoder Klein (7GB)
-    echo "📥 [3/7] Downloading Text Encoder Klein (7GB)..."
-    download_model_bg "Text Encoder (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/text_encoders/qwen_3_4b.safetensors" "/workspace/ComfyUI/models/text_encoders" "/workspace/ComfyUI/models/text_encoders/qwen_3_4b.safetensors"
-    echo "✅ [3/7] Text Encoder Klein ready!"
-    echo ""
+    # Klein models
+    if [[ $LOAD_KLEIN -eq 1 ]]; then
+        # 3. Text Encoder Klein (7GB)
+        echo "📥 [Klein 1/3] Downloading Text Encoder Klein (7GB)..."
+        download_model_bg "Text Encoder (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/text_encoders/qwen_3_4b.safetensors" "/workspace/ComfyUI/models/text_encoders" "/workspace/ComfyUI/models/text_encoders/qwen_3_4b.safetensors"
+        echo "✅ [Klein 1/3] Text Encoder Klein ready!"
+        echo ""
 
-    # 4. Diffusion Klein Base (8.5GB)
-    echo "📥 [4/7] Downloading Diffusion Model Klein Base (8.5GB)..."
-    download_model_bg "Diffusion Model Base (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/diffusion_models/flux-2-klein-base-4b.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-base-4b.safetensors"
-    echo "✅ [4/7] Diffusion Klein Base ready!"
-    echo ""
+        # 4. Diffusion Klein Base (8.5GB)
+        echo "📥 [Klein 2/3] Downloading Diffusion Model Klein Base (8.5GB)..."
+        download_model_bg "Diffusion Model Base (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/diffusion_models/flux-2-klein-base-4b.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-base-4b.safetensors"
+        echo "✅ [Klein 2/3] Diffusion Klein Base ready!"
+        echo ""
 
-    # 5. Diffusion Klein Distilled (8.5GB)
-    echo "📥 [5/7] Downloading Diffusion Model Klein Distilled (8.5GB)..."
-    download_model_bg "Diffusion Model Distilled (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/diffusion_models/flux-2-klein-4b.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-4b.safetensors"
-    echo "✅ [5/7] Diffusion Klein Distilled ready!"
-    echo ""
+        # 5. Diffusion Klein Distilled (8.5GB)
+        echo "📥 [Klein 3/3] Downloading Diffusion Model Klein Distilled (8.5GB)..."
+        download_model_bg "Diffusion Model Distilled (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/diffusion_models/flux-2-klein-4b.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-4b.safetensors"
+        echo "✅ [Klein 3/3] Diffusion Klein Distilled ready!"
+        echo ""
+    fi
 
-    # 6. Text Encoder Dev FP8 (17GB)
-    echo "📥 [6/7] Downloading Text Encoder Dev FP8 (17GB)..."
-    download_model_bg "Text Encoder (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors" "/workspace/ComfyUI/models/text_encoders" "/workspace/ComfyUI/models/text_encoders/mistral_3_small_flux2_fp8.safetensors"
-    echo "✅ [6/7] Text Encoder Dev FP8 ready!"
-    echo ""
+    # Dev models
+    if [[ $LOAD_DEV -eq 1 ]]; then
+        # 6. Text Encoder Dev FP8 (17GB)
+        echo "📥 [Dev 1/2] Downloading Text Encoder Dev FP8 (17GB)..."
+        download_model_bg "Text Encoder (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors" "/workspace/ComfyUI/models/text_encoders" "/workspace/ComfyUI/models/text_encoders/mistral_3_small_flux2_fp8.safetensors"
+        echo "✅ [Dev 1/2] Text Encoder Dev FP8 ready!"
+        echo ""
 
-    # 7. Diffusion Dev FP8 (34GB)
-    echo "📥 [7/7] Downloading Diffusion Model Dev FP8 (34GB)..."
-    download_model_bg "Diffusion Model (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/diffusion_models/flux2_dev_fp8mixed.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux2_dev_fp8mixed.safetensors"
-    echo "✅ [7/7] Diffusion Dev FP8 ready!"
-    echo ""
+        # 7. Diffusion Dev FP8 (34GB)
+        echo "📥 [Dev 2/2] Downloading Diffusion Model Dev FP8 (34GB)..."
+        download_model_bg "Diffusion Model (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/diffusion_models/flux2_dev_fp8mixed.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux2_dev_fp8mixed.safetensors"
+        echo "✅ [Dev 2/2] Diffusion Dev FP8 ready!"
+        echo ""
+    fi
 
     # Show completion status
+    MODELS_LOADED=$((LOAD_COMMON * 2 + LOAD_KLEIN * 3 + LOAD_DEV * 2))
     echo ""
     echo "✅ FLUX.2 models provisioning complete!"
-    echo "📊 Downloaded: 7 models, ~76GB total"
+    echo "📊 Downloaded: $MODELS_LOADED models (FLUX_MODEL=$FLUX_MODEL)"
     echo "📂 Location: /workspace/ComfyUI/models/"
     echo "🚀 All models ready for use!"
 
