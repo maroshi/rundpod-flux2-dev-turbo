@@ -580,39 +580,65 @@ PYTHON_DOWNLOAD
 
     echo "📥 Starting SERIAL model downloads (smallest first for faster availability)..."
     echo "ℹ️  Models become usable immediately after download completes"
+    echo "📊 Total download size: ~76GB across 7 models"
 
-    # TEST MODE: Download serially, smallest file first
-    # This allows using VAE (321MB) in ~6 seconds instead of waiting for 3GB total
+    # Download order by size (smallest to largest):
+    # 1. VAE (321MB)
+    # 2. Turbo LoRA (2.6GB)
+    # 3. Text Encoder Klein (7GB)
+    # 4. Diffusion Klein Base (8.5GB)
+    # 5. Diffusion Klein Distilled (8.5GB)
+    # 6. Text Encoder Dev FP8 (17GB)
+    # 7. Diffusion Dev FP8 (34GB)
 
-    # 1. VAE (321MB) - Download first for quick testing
-    echo "📥 [1/2] Downloading VAE (321MB)..."
+    # 1. VAE (321MB)
+    echo "📥 [1/7] Downloading VAE (321MB)..."
     download_model_bg "VAE (FLUX.2 Dev)" "Comfy-Org/flux2-dev" "split_files/vae/flux2-vae.safetensors" "/workspace/ComfyUI/models/vae" "/workspace/ComfyUI/models/vae/flux2-vae.safetensors"
-    echo "✅ [1/2] VAE ready - can start using now!"
+    echo "✅ [1/7] VAE ready!"
     echo ""
 
-    # 2. Turbo LoRA (2.6GB) - Download second
-    echo "📥 [2/2] Downloading Turbo LoRA (2.6GB)..."
+    # 2. Turbo LoRA (2.6GB)
+    echo "📥 [2/7] Downloading Turbo LoRA (2.6GB)..."
     download_model_bg "Turbo LoRA (FLUX.2)" "ByteZSzn/Flux.2-Turbo-ComfyUI" "Flux2TurboComfyv2.safetensors" "/workspace/ComfyUI/models/loras" "/workspace/ComfyUI/models/loras/Flux2TurboComfyv2.safetensors"
-    echo "✅ [2/2] Turbo LoRA ready!"
+    echo "✅ [2/7] Turbo LoRA ready!"
     echo ""
 
-    # COMMENTED OUT: Large model downloads - uncomment after testing works
-    # When enabled, download order by size (smallest first):
-    # 1. VAE (321MB) - already enabled above
-    # 2. Turbo LoRA (2.6GB) - already enabled above
-    # 3. Text Encoder Klein (7GB) - qwen_3_4b.safetensors
-    # 4. Diffusion Klein Base (8.5GB) - flux-2-klein-base-4b.safetensors
-    # 5. Diffusion Klein Distilled (8.5GB) - flux-2-klein-4b.safetensors
-    # 6. Text Encoder Dev FP8 (17GB) - mistral_3_small_flux2_fp8.safetensors
-    # 7. Diffusion Dev FP8 (34GB) - flux2_dev_fp8mixed.safetensors
+    # 3. Text Encoder Klein (7GB)
+    echo "📥 [3/7] Downloading Text Encoder Klein (7GB)..."
+    download_model_bg "Text Encoder (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/text_encoders/qwen_3_4b.safetensors" "/workspace/ComfyUI/models/text_encoders" "/workspace/ComfyUI/models/text_encoders/qwen_3_4b.safetensors"
+    echo "✅ [3/7] Text Encoder Klein ready!"
+    echo ""
+
+    # 4. Diffusion Klein Base (8.5GB)
+    echo "📥 [4/7] Downloading Diffusion Model Klein Base (8.5GB)..."
+    download_model_bg "Diffusion Model Base (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/diffusion_models/flux-2-klein-base-4b.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-base-4b.safetensors"
+    echo "✅ [4/7] Diffusion Klein Base ready!"
+    echo ""
+
+    # 5. Diffusion Klein Distilled (8.5GB)
+    echo "📥 [5/7] Downloading Diffusion Model Klein Distilled (8.5GB)..."
+    download_model_bg "Diffusion Model Distilled (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/diffusion_models/flux-2-klein-4b.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-4b.safetensors"
+    echo "✅ [5/7] Diffusion Klein Distilled ready!"
+    echo ""
+
+    # 6. Text Encoder Dev FP8 (17GB)
+    echo "📥 [6/7] Downloading Text Encoder Dev FP8 (17GB)..."
+    download_model_bg "Text Encoder (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors" "/workspace/ComfyUI/models/text_encoders" "/workspace/ComfyUI/models/text_encoders/mistral_3_small_flux2_fp8.safetensors"
+    echo "✅ [6/7] Text Encoder Dev FP8 ready!"
+    echo ""
+
+    # 7. Diffusion Dev FP8 (34GB)
+    echo "📥 [7/7] Downloading Diffusion Model Dev FP8 (34GB)..."
+    download_model_bg "Diffusion Model (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/diffusion_models/flux2_dev_fp8mixed.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux2_dev_fp8mixed.safetensors"
+    echo "✅ [7/7] Diffusion Dev FP8 ready!"
+    echo ""
 
     # Show completion status
     echo ""
-    echo "✅ FLUX.2 models provisioning complete (TEST MODE: 2 files)"
-    echo "📊 Downloaded: VAE (321MB) + Turbo LoRA (2.6GB) = ~3GB total"
+    echo "✅ FLUX.2 models provisioning complete!"
+    echo "📊 Downloaded: 7 models, ~76GB total"
     echo "📂 Location: /workspace/ComfyUI/models/"
-    echo "⚠️  IMPORTANT: This is TEST MODE with only 2 files"
-    echo "    Uncomment large models in start.sh after verifying this works correctly"
+    echo "🚀 All models ready for use!"
 
     # provisioning workflows
     echo "📥 Provisioning workflows"
