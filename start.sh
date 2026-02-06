@@ -216,18 +216,37 @@ download_model_HF() {
         echo "ℹ️ [DOWNLOAD] Fetching ${!model_var}/${!file_var} → $target"
         python3 - <<PYTHON_HF 2>/dev/null
 import os
+import shutil
+import glob
 from huggingface_hub import hf_hub_download
 
 try:
     token = os.environ.get('HF_TOKEN')
-    hf_hub_download(
+    temp_dir = "/workspace/temp"
+
+    local_file = hf_hub_download(
         repo_id="${!model_var}",
         filename="${!file_var}",
-        local_dir="$target",
+        local_dir=temp_dir,
         repo_type="model",
         token=token,
         cache_dir=os.environ.get('HF_HUB_CACHE', '/workspace/.cache/huggingface')
     )
+
+    # Move to final destination, flattening path (remove any nested directories)
+    final_filename = os.path.basename("${!file_var}")
+    final_path = os.path.join("$target", final_filename)
+    os.makedirs(os.path.dirname(final_path), exist_ok=True)
+
+    if os.path.exists(local_file) and local_file != final_path:
+        shutil.move(local_file, final_path)
+
+    # Also search for the file in nested directories if not found yet
+    if not os.path.exists(final_path):
+        found_files = glob.glob(os.path.join(temp_dir, '**', final_filename), recursive=True)
+        if found_files:
+            shutil.move(found_files[0], final_path)
+
 except Exception as e:
     print(f"⚠️ Failed to download ${!model_var}/${!file_var}: {e}")
 PYTHON_HF
@@ -263,18 +282,37 @@ download_generic_HF() {
         echo "ℹ️ [DOWNLOAD] Fetching $model/$file → $target"
         python3 - <<PYTHON_HF 2>/dev/null
 import os
+import shutil
+import glob
 from huggingface_hub import hf_hub_download
 
 try:
     token = os.environ.get('HF_TOKEN')
-    hf_hub_download(
+    temp_dir = "/workspace/temp"
+
+    local_file = hf_hub_download(
         repo_id="$model",
         filename="$file",
-        local_dir="$target",
+        local_dir=temp_dir,
         repo_type="model",
         token=token,
         cache_dir=os.environ.get('HF_HUB_CACHE', '/workspace/.cache/huggingface')
     )
+
+    # Move to final destination, flattening path (remove any nested directories)
+    final_filename = os.path.basename("$file")
+    final_path = os.path.join("$target", final_filename)
+    os.makedirs(os.path.dirname(final_path), exist_ok=True)
+
+    if os.path.exists(local_file) and local_file != final_path:
+        shutil.move(local_file, final_path)
+
+    # Also search for the file in nested directories if not found yet
+    if not os.path.exists(final_path):
+        found_files = glob.glob(os.path.join(temp_dir, '**', final_filename), recursive=True)
+        if found_files:
+            shutil.move(found_files[0], final_path)
+
 except Exception as e:
     print(f"⚠️ Failed to download $model/$file: {e}")
 PYTHON_HF
@@ -460,6 +498,8 @@ if [[ "$HAS_COMFYUI" -eq 1 ]]; then
 
     # Parallel model downloads with progress tracking
     MODELS_LOG="/tmp/model_downloads.log"
+    TEMP_DOWNLOAD_DIR="/workspace/temp"
+    mkdir -p "$TEMP_DOWNLOAD_DIR"
     > "$MODELS_LOG"
 
     # Function to download model in background using huggingface_hub with token support
@@ -475,25 +515,48 @@ if [[ "$HAS_COMFYUI" -eq 1 ]]; then
                 mkdir -p "$dest_dir"
 
                 # Download using huggingface_hub Python library with token support
+                # Download to temp directory, then move to final destination (flattening path)
                 python3 - <<PYTHON_DOWNLOAD 2>/tmp/${model_name// /_}.log
 import sys
 import os
+import shutil
+import glob
 from huggingface_hub import hf_hub_download
 
 try:
     # Set up token if provided
     token = os.environ.get('HF_TOKEN')
+    temp_dir = "$TEMP_DOWNLOAD_DIR"
 
     # Download using huggingface_hub library (handles authentication and resume)
+    # This may create nested directories like split_files/vae/file.safetensors
     local_file = hf_hub_download(
         repo_id="$repo_id",
         filename="$filename",
-        local_dir="$dest_dir",
+        local_dir=temp_dir,
         repo_type="model",
         token=token,
         cache_dir=os.environ.get('HF_HUB_CACHE', '/workspace/.cache/huggingface')
     )
-    print(f"✅ Downloaded to: {local_file}", file=sys.stderr)
+
+    # Move the file to the final destination (flattening any nested paths)
+    final_dest = "$dest_file"
+    os.makedirs(os.path.dirname(final_dest), exist_ok=True)
+
+    if os.path.exists(local_file) and local_file != final_dest:
+        shutil.move(local_file, final_dest)
+
+    # Also check for the file in nested directories and move if found
+    # (in case hf_hub_download created subdirectories)
+    if not os.path.exists(final_dest):
+        target_filename = os.path.basename("$filename")
+        # Search for the file in all subdirectories of temp
+        found_files = glob.glob(os.path.join(temp_dir, '**', target_filename), recursive=True)
+        if found_files:
+            src = found_files[0]
+            shutil.move(src, final_dest)
+
+    print(f"✅ Downloaded to: {final_dest}", file=sys.stderr)
     sys.exit(0)
 except Exception as e:
     print(f"⚠️ Download failed: {e}", file=sys.stderr)
