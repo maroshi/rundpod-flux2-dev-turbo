@@ -579,26 +579,28 @@ PYTHON_DOWNLOAD
     fi
 
     # Model selection based on FLUX_MODEL environment variable
+    echo "🔍 DEBUG: FLUX_MODEL before assignment: '${FLUX_MODEL}'"
     FLUX_MODEL="${FLUX_MODEL:-common}"
+    echo "🔍 DEBUG: FLUX_MODEL after assignment: '${FLUX_MODEL}'"
     case "$FLUX_MODEL" in
         klein)
-            echo "📦 Model selection: FLUX.2 Klein (common + klein-specific models)"
-            echo "📊 Total download size: ~27GB across 5 models"
+            echo "📦 Model selection: FLUX.2 Klein (VAE + Klein models)"
+            echo "📊 Total download size: ~24GB across 4 models"
             LOAD_COMMON=1; LOAD_KLEIN=1; LOAD_DEV=0
             ;;
         dev)
-            echo "📦 Model selection: FLUX.2 Dev (common + dev-specific models)"
+            echo "📦 Model selection: FLUX.2 Dev (VAE + Dev models + Turbo LoRA)"
             echo "📊 Total download size: ~54GB across 4 models"
             LOAD_COMMON=1; LOAD_KLEIN=0; LOAD_DEV=1
             ;;
         all)
-            echo "📦 Model selection: All FLUX.2 models (common + klein + dev)"
-            echo "📊 Total download size: ~76GB across 7 models"
+            echo "📦 Model selection: All FLUX.2 models (VAE + Klein + Dev + Turbo LoRA)"
+            echo "📊 Total download size: ~78GB across 7 models"
             LOAD_COMMON=1; LOAD_KLEIN=1; LOAD_DEV=1
             ;;
         common)
-            echo "📦 Model selection: Common models only (VAE + Turbo LoRA)"
-            echo "📊 Total download size: ~3GB across 2 models"
+            echo "📦 Model selection: Common models only (VAE shared by Klein & Dev)"
+            echo "📊 Total download size: ~321MB (1 model)"
             LOAD_COMMON=1; LOAD_KLEIN=0; LOAD_DEV=0
             ;;
         *)
@@ -612,26 +614,16 @@ PYTHON_DOWNLOAD
     echo "ℹ️  Models become usable immediately after download completes"
 
     # Download order by size (smallest to largest):
-    # 1. VAE (321MB)
-    # 2. Turbo LoRA (2.6GB)
-    # 3. Text Encoder Klein (7GB)
-    # 4. Diffusion Klein Base (8.5GB)
-    # 5. Diffusion Klein Distilled (8.5GB)
-    # 6. Text Encoder Dev FP8 (17GB)
-    # 7. Diffusion Dev FP8 (34GB)
+    # Common: 1. VAE (321MB)
+    # Dev: 2. Turbo LoRA (2.6GB), 3. Text Encoder Dev FP8 (17GB), 4. Diffusion Dev FP8 (34GB)
+    # Klein: 2. Text Encoder Klein (7GB), 3. Diffusion Klein Base (8.5GB), 4. Diffusion Klein Distilled (8.5GB)
 
-    # Common models (VAE + Turbo LoRA)
+    # Common models (VAE only - shared by both Klein and Dev)
     if [[ $LOAD_COMMON -eq 1 ]]; then
         # 1. VAE (321MB)
-        echo "📥 [Common 1/2] Downloading VAE (321MB)..."
-        download_model_bg "VAE (FLUX.2 Dev)" "Comfy-Org/flux2-dev" "split_files/vae/flux2-vae.safetensors" "/workspace/ComfyUI/models/vae" "/workspace/ComfyUI/models/vae/flux2-vae.safetensors"
-        echo "✅ [Common 1/2] VAE ready!"
-        echo ""
-
-        # 2. Turbo LoRA (2.6GB)
-        echo "📥 [Common 2/2] Downloading Turbo LoRA (2.6GB)..."
-        download_model_bg "Turbo LoRA (FLUX.2)" "ByteZSzn/Flux.2-Turbo-ComfyUI" "Flux2TurboComfyv2.safetensors" "/workspace/ComfyUI/models/loras" "/workspace/ComfyUI/models/loras/Flux2TurboComfyv2.safetensors"
-        echo "✅ [Common 2/2] Turbo LoRA ready!"
+        echo "📥 [Common 1/1] Downloading VAE (321MB)..."
+        download_model_bg "VAE (FLUX.2)" "Comfy-Org/flux2-dev" "split_files/vae/flux2-vae.safetensors" "/workspace/ComfyUI/models/vae" "/workspace/ComfyUI/models/vae/flux2-vae.safetensors"
+        echo "✅ [Common 1/1] VAE ready!"
         echo ""
     fi
 
@@ -656,23 +648,29 @@ PYTHON_DOWNLOAD
         echo ""
     fi
 
-    # Dev models
+    # Dev models (includes Dev-specific Turbo LoRA)
     if [[ $LOAD_DEV -eq 1 ]]; then
-        # 6. Text Encoder Dev FP8 (17GB)
-        echo "📥 [Dev 1/2] Downloading Text Encoder Dev FP8 (17GB)..."
-        download_model_bg "Text Encoder (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors" "/workspace/ComfyUI/models/text_encoders" "/workspace/ComfyUI/models/text_encoders/mistral_3_small_flux2_fp8.safetensors"
-        echo "✅ [Dev 1/2] Text Encoder Dev FP8 ready!"
+        # 2. Turbo LoRA (2.6GB) - Dev-specific
+        echo "📥 [Dev 1/3] Downloading Turbo LoRA (2.6GB)..."
+        download_model_bg "Turbo LoRA (FLUX.2 Dev)" "ByteZSzn/Flux.2-Turbo-ComfyUI" "Flux2TurboComfyv2.safetensors" "/workspace/ComfyUI/models/loras" "/workspace/ComfyUI/models/loras/Flux2TurboComfyv2.safetensors"
+        echo "✅ [Dev 1/3] Turbo LoRA ready!"
         echo ""
 
-        # 7. Diffusion Dev FP8 (34GB)
-        echo "📥 [Dev 2/2] Downloading Diffusion Model Dev FP8 (34GB)..."
+        # 3. Text Encoder Dev FP8 (17GB)
+        echo "📥 [Dev 2/3] Downloading Text Encoder Dev FP8 (17GB)..."
+        download_model_bg "Text Encoder (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors" "/workspace/ComfyUI/models/text_encoders" "/workspace/ComfyUI/models/text_encoders/mistral_3_small_flux2_fp8.safetensors"
+        echo "✅ [Dev 2/3] Text Encoder Dev FP8 ready!"
+        echo ""
+
+        # 4. Diffusion Dev FP8 (34GB)
+        echo "📥 [Dev 3/3] Downloading Diffusion Model Dev FP8 (34GB)..."
         download_model_bg "Diffusion Model (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/diffusion_models/flux2_dev_fp8mixed.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux2_dev_fp8mixed.safetensors"
-        echo "✅ [Dev 2/2] Diffusion Dev FP8 ready!"
+        echo "✅ [Dev 3/3] Diffusion Dev FP8 ready!"
         echo ""
     fi
 
     # Show completion status
-    MODELS_LOADED=$((LOAD_COMMON * 2 + LOAD_KLEIN * 3 + LOAD_DEV * 2))
+    MODELS_LOADED=$((LOAD_COMMON * 1 + LOAD_KLEIN * 3 + LOAD_DEV * 3))
     echo ""
     echo "✅ FLUX.2 models provisioning complete!"
     echo "📊 Downloaded: $MODELS_LOADED models (FLUX_MODEL=$FLUX_MODEL)"
