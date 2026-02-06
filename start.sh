@@ -571,8 +571,6 @@ PYTHON_DOWNLOAD
         ) &
     }
 
-    echo "📥 Starting parallel model downloads from Hugging Face..."
-
     # Validate HF_TOKEN is available for private/gated models
     if [[ -z "$HF_TOKEN" ]]; then
         echo "⚠️ HF_TOKEN not set - downloads may fail for private/gated models"
@@ -582,18 +580,21 @@ PYTHON_DOWNLOAD
 
     echo "📥 Starting parallel model downloads from Hugging Face..."
 
-    # Start all 7 model downloads in parallel
+    # TEST MODE: Only download 2 small files to verify download logic works
+    # Small files for testing: VAE (321MB) and Turbo LoRA (35MB)
     download_model_bg "VAE (FLUX.2 Dev)" "Comfy-Org/flux2-dev" "split_files/vae/flux2-vae.safetensors" "/workspace/ComfyUI/models/vae" "/workspace/ComfyUI/models/vae/flux2-vae.safetensors"
-    download_model_bg "Text Encoder (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors" "/workspace/ComfyUI/models/text_encoders" "/workspace/ComfyUI/models/text_encoders/mistral_3_small_flux2_fp8.safetensors"
-    download_model_bg "Diffusion Model (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/diffusion_models/flux2_dev_fp8mixed.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux2_dev_fp8mixed.safetensors"
     download_model_bg "Turbo LoRA (FLUX.2)" "ByteZSzn/Flux.2-Turbo-ComfyUI" "Flux2TurboComfyv2.safetensors" "/workspace/ComfyUI/models/loras" "/workspace/ComfyUI/models/loras/Flux2TurboComfyv2.safetensors"
-    download_model_bg "Text Encoder (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/text_encoders/qwen_3_4b.safetensors" "/workspace/ComfyUI/models/text_encoders" "/workspace/ComfyUI/models/text_encoders/qwen_3_4b.safetensors"
-    download_model_bg "Diffusion Model Base (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/diffusion_models/flux-2-klein-base-4b.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-base-4b.safetensors"
-    download_model_bg "Diffusion Model Distilled (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/diffusion_models/flux-2-klein-4b.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-4b.safetensors"
+
+    # COMMENTED OUT: Large model downloads - uncomment after testing small files work
+    # download_model_bg "Text Encoder (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors" "/workspace/ComfyUI/models/text_encoders" "/workspace/ComfyUI/models/text_encoders/mistral_3_small_flux2_fp8.safetensors"
+    # download_model_bg "Diffusion Model (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/diffusion_models/flux2_dev_fp8mixed.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux2_dev_fp8mixed.safetensors"
+    # download_model_bg "Text Encoder (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/text_encoders/qwen_3_4b.safetensors" "/workspace/ComfyUI/models/text_encoders" "/workspace/ComfyUI/models/text_encoders/qwen_3_4b.safetensors"
+    # download_model_bg "Diffusion Model Base (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/diffusion_models/flux-2-klein-base-4b.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-base-4b.safetensors"
+    # download_model_bg "Diffusion Model Distilled (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/diffusion_models/flux-2-klein-4b.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-4b.safetensors"
 
     # Wait for all downloads and show progress every 60 seconds
     # Note: Files download to /workspace/temp first, then move to /workspace/ComfyUI/models
-    TOTAL_MODELS=7
+    TOTAL_MODELS=2  # TEST MODE: Only 2 models (was 7)
     COMPLETED=0
     LAST_REPORT=0
     while [[ $COMPLETED -lt $TOTAL_MODELS ]]; do
@@ -609,7 +610,8 @@ PYTHON_DOWNLOAD
             TEMP_BYTES=$(du -sb /workspace/temp 2>/dev/null | awk '{print $1}')
             MODELS_BYTES=$(du -sb /workspace/ComfyUI/models 2>/dev/null | awk '{print $1}')
             TOTAL_BYTES=$((TEMP_BYTES + MODELS_BYTES))
-            TARGET_BYTES=$((76 * 1024 * 1024 * 1024))
+            # TEST MODE: Target size is ~356MB (321MB VAE + 35MB LoRA)
+            TARGET_BYTES=$((356 * 1024 * 1024))  # Was: 76GB for all models
             PERCENT=$((TOTAL_BYTES * 100 / TARGET_BYTES))
 
             # Convert to human readable format
@@ -619,7 +621,7 @@ PYTHON_DOWNLOAD
                 TOTAL_SIZE="$((TOTAL_BYTES / (1024 * 1024)))M"
             fi
 
-            echo "📥 Downloaded: $TOTAL_SIZE / ~76GB ($PERCENT%)"
+            echo "📥 Downloaded: $TOTAL_SIZE / ~356MB ($PERCENT%) [TEST MODE: 2 small files]"
             LAST_REPORT=$NOW
         fi
 
@@ -630,8 +632,9 @@ PYTHON_DOWNLOAD
     wait
 
     # Show completion status
-    echo "✅ FLUX.2 models provisioning complete"
-    echo "📊 Storage used for FLUX.2 models: ~50GB (VAE: 0.2GB, Text Encoder FP8: 2.8GB, Diffusion Dev: 34GB, Klein Encoder: 3.2GB, Klein Base: 8.5GB, Klein Distilled: 8.5GB, LoRA: 0.035GB)"
+    echo "✅ FLUX.2 models provisioning complete (TEST MODE: 2 small files)"
+    echo "📊 Storage used for FLUX.2 models: ~356MB (VAE: 321MB, LoRA: 35MB)"
+    echo "⚠️ IMPORTANT: This is TEST MODE with only 2 small files. Uncomment large models in start.sh after verifying download logic works."
 
     # provisioning workflows
     echo "📥 Provisioning workflows"
