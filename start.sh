@@ -539,7 +539,6 @@ try:
         repo_id="$repo_id",
         filename="$filename",
         local_dir=temp_dir,
-        local_dir_use_symlinks=False,
         repo_type="model",
         token=token
     )
@@ -588,14 +587,14 @@ PYTHON_DOWNLOAD
     # 1. VAE (321MB) - Download first for quick testing
     echo "📥 [1/2] Downloading VAE (321MB)..."
     download_model_bg "VAE (FLUX.2 Dev)" "Comfy-Org/flux2-dev" "split_files/vae/flux2-vae.safetensors" "/workspace/ComfyUI/models/vae" "/workspace/ComfyUI/models/vae/flux2-vae.safetensors"
-    wait  # Wait for completion
     echo "✅ [1/2] VAE ready - can start using now!"
+    echo ""
 
     # 2. Turbo LoRA (2.6GB) - Download second
     echo "📥 [2/2] Downloading Turbo LoRA (2.6GB)..."
     download_model_bg "Turbo LoRA (FLUX.2)" "ByteZSzn/Flux.2-Turbo-ComfyUI" "Flux2TurboComfyv2.safetensors" "/workspace/ComfyUI/models/loras" "/workspace/ComfyUI/models/loras/Flux2TurboComfyv2.safetensors"
-    wait  # Wait for completion
     echo "✅ [2/2] Turbo LoRA ready!"
+    echo ""
 
     # COMMENTED OUT: Large model downloads - uncomment after testing works
     # When enabled, download order by size (smallest first):
