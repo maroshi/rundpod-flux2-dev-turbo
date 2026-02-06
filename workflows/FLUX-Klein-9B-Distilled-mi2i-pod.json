@@ -1,0 +1,1383 @@
+{
+  "id": "92112d97-bb64-4b44-86f2-ea5691ef8f6e",
+  "revision": 0,
+  "last_node_id": 133,
+  "last_link_id": 249,
+  "nodes": [
+    {
+      "id": 108,
+      "type": "CFGGuider",
+      "pos": [
+        110.68629602923774,
+        924.1231296786991
+      ],
+      "size": [
+        270,
+        98
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 177
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 217
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 246
+        }
+      ],
+      "outputs": [
+        {
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": [
+            179
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CFGGuider",
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "enableTabs": false,
+        "tabWidth": 65,
+        "tabXOffset": 10,
+        "hasSecondTab": false,
+        "secondTabText": "Send Back",
+        "secondTabOffset": 80,
+        "secondTabWidth": 65
+      },
+      "widgets_values": [
+        1
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 109,
+      "type": "Flux2Scheduler",
+      "pos": [
+        115.02304585467765,
+        1173.4872208253987
+      ],
+      "size": [
+        270,
+        106
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": 239
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": 240
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            181
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Flux2Scheduler",
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "enableTabs": false,
+        "tabWidth": 65,
+        "tabXOffset": 10,
+        "hasSecondTab": false,
+        "secondTabText": "Send Back",
+        "secondTabOffset": 80,
+        "secondTabWidth": 65
+      },
+      "widgets_values": [
+        8,
+        1024,
+        1024
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 99,
+      "type": "KSamplerSelect",
+      "pos": [
+        113.73465751422304,
+        1069.6220066551712
+      ],
+      "size": [
+        270,
+        58
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            180
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSamplerSelect",
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "enableTabs": false,
+        "tabWidth": 65,
+        "tabXOffset": 10,
+        "hasSecondTab": false,
+        "secondTabText": "Send Back",
+        "secondTabOffset": 80,
+        "secondTabWidth": 65
+      },
+      "widgets_values": [
+        "euler"
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 101,
+      "type": "VAEDecode",
+      "pos": [
+        889.0147831696643,
+        835.3787414632142
+      ],
+      "size": [
+        220,
+        46
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 225
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 184
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            186
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode",
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "enableTabs": false,
+        "tabWidth": 65,
+        "tabXOffset": 10,
+        "hasSecondTab": false,
+        "secondTabText": "Send Back",
+        "secondTabOffset": 80,
+        "secondTabWidth": 65
+      },
+      "widgets_values": [],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 103,
+      "type": "UNETLoader",
+      "pos": [
+        -1102.486827023218,
+        562.274097782203
+      ],
+      "size": [
+        364.42708333333337,
+        82
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            177
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "enableTabs": false,
+        "tabWidth": 65,
+        "tabXOffset": 10,
+        "hasSecondTab": false,
+        "secondTabText": "Send Back",
+        "secondTabOffset": 80,
+        "secondTabWidth": 65
+      },
+      "widgets_values": [
+        "flux-2-klein-9b.safetensors",
+        "default"
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 104,
+      "type": "CLIPLoader",
+      "pos": [
+        -1100.600425695106,
+        704.7284924697562
+      ],
+      "size": [
+        364.42708333333337,
+        106
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            221
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "models": [
+          {
+            "name": "qwen_3_8b_fp8mixed.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/flux2-klein-9B/resolve/main/text_encoders/qwen_3_8b_fp8mixed.safetensors",
+            "directory": "text_encoders"
+          }
+        ],
+        "enableTabs": false,
+        "tabWidth": 65,
+        "tabXOffset": 10,
+        "hasSecondTab": false,
+        "secondTabText": "Send Back",
+        "secondTabOffset": 80,
+        "secondTabWidth": 65
+      },
+      "widgets_values": [
+        "text_encoders/qwen_3_8b.safetensors",
+        "flux2",
+        "default"
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 127,
+      "type": "LatentFrequencyEnhancer_lrzjason",
+      "pos": [
+        519.571928603608,
+        826.5656176618724
+      ],
+      "size": [
+        347.319921875,
+        174
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "link": 224
+        }
+      ],
+      "outputs": [
+        {
+          "name": "enhanced_latent",
+          "type": "LATENT",
+          "links": [
+            225
+          ]
+        },
+        {
+          "name": "mask_preview",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LatentFrequencyEnhancer_lrzjason"
+      },
+      "widgets_values": [
+        1.05,
+        2,
+        0.05,
+        2,
+        0.5
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 100,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        116.49906363318001,
+        1322.8542382690407
+      ],
+      "size": [
+        290.4193648385009,
+        495.10690041275035
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise",
+          "type": "NOISE",
+          "link": 178
+        },
+        {
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 179
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 180
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 181
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 182
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            224
+          ]
+        },
+        {
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced",
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "enableTabs": false,
+        "tabWidth": 65,
+        "tabXOffset": 10,
+        "hasSecondTab": false,
+        "secondTabText": "Send Back",
+        "secondTabOffset": 80,
+        "secondTabWidth": 65
+      },
+      "widgets_values": [],
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 102,
+      "type": "RandomNoise",
+      "pos": [
+        112.44626917376911,
+        799.3147033360796
+      ],
+      "size": [
+        270,
+        82
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            178
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RandomNoise",
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "enableTabs": false,
+        "tabWidth": 65,
+        "tabXOffset": 10,
+        "hasSecondTab": false,
+        "secondTabText": "Send Back",
+        "secondTabOffset": 80,
+        "secondTabWidth": 65
+      },
+      "widgets_values": [
+        470418055240167,
+        "increment"
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 106,
+      "type": "EmptyFlux2LatentImage",
+      "pos": [
+        -1495.0650554738172,
+        1091.0456252884892
+      ],
+      "size": [
+        270,
+        106
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": 237
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": 238
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            182
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyFlux2LatentImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "enableTabs": false,
+        "tabWidth": 65,
+        "tabXOffset": 10,
+        "hasSecondTab": false,
+        "secondTabText": "Send Back",
+        "secondTabOffset": 80,
+        "secondTabWidth": 65
+      },
+      "widgets_values": [
+        1024,
+        1024,
+        1
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 111,
+      "type": "ConditioningZeroOut",
+      "pos": [
+        -371.1840501215194,
+        1107.3760154436573
+      ],
+      "size": [
+        204.134765625,
+        26
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 223
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            245
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ConditioningZeroOut",
+        "cnr_id": "comfy-core",
+        "ver": "0.9.1",
+        "enableTabs": false,
+        "tabWidth": 65,
+        "tabXOffset": 10,
+        "hasSecondTab": false,
+        "secondTabText": "Send Back",
+        "secondTabOffset": 80,
+        "secondTabWidth": 65
+      },
+      "widgets_values": [],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 125,
+      "type": "Flux2KleinSectionedEncoder",
+      "pos": [
+        -1085.5652999819963,
+        1101.4172046422736
+      ],
+      "size": [
+        578.0345242553708,
+        671.9687999999999
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 221
+        }
+      ],
+      "outputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "links": [
+            223,
+            247
+          ]
+        },
+        {
+          "name": "front_section",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "mid_section",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "end_section",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "full_prompt",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Flux2KleinSectionedEncoder"
+      },
+      "widgets_values": [
+        "manual",
+        "Keep the woman's pose.",
+        "Change her black shirt to white",
+        "Enhance the realism and resolution.\nAdd skin detail.\nEnhance the texture.",
+        "",
+        "comma",
+        true,
+        false
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 105,
+      "type": "VAELoader",
+      "pos": [
+        -1094.9412936696235,
+        870.9559056900935
+      ],
+      "size": [
+        364.42708333333337,
+        58
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            184,
+            248
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "models": [
+          {
+            "name": "flux2-vae.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/vae/flux2-vae.safetensors",
+            "directory": "vae"
+          }
+        ],
+        "enableTabs": false,
+        "tabWidth": 65,
+        "tabXOffset": 10,
+        "hasSecondTab": false,
+        "secondTabText": "Send Back",
+        "secondTabOffset": 80,
+        "secondTabWidth": 65
+      },
+      "widgets_values": [
+        "vae/flux2-vae.safetensors"
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 133,
+      "type": "ReferenceChainConditioning",
+      "pos": [
+        -375.568316775695,
+        1185.9266075358396
+      ],
+      "size": [
+        387.731371029377,
+        283.0716127863079
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 247
+        },
+        {
+          "name": "neg_conditioning",
+          "type": "CONDITIONING",
+          "link": 245
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 248
+        }
+      ],
+      "outputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "links": [
+            249
+          ]
+        },
+        {
+          "name": "neg_conditioning",
+          "type": "CONDITIONING",
+          "links": [
+            246
+          ]
+        },
+        {
+          "name": "first_image_scaled",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ReferenceChainConditioning"
+      },
+      "widgets_values": [
+        "lanczos",
+        1,
+        "[]"
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 122,
+      "type": "Flux2KleinTextRefBalance",
+      "pos": [
+        -378.4336970866446,
+        341.21505106145486
+      ],
+      "size": [
+        301.2388671875,
+        82
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 218
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            217
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Flux2KleinTextRefBalance"
+      },
+      "widgets_values": [
+        0.5,
+        false
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 124,
+      "type": "Flux2KleinRefLatentController",
+      "pos": [
+        -367.5421718030881,
+        698.3394440411465
+      ],
+      "size": [
+        325.4927734375,
+        202
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 249
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            219
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Flux2KleinRefLatentController"
+      },
+      "widgets_values": [
+        2,
+        0,
+        0,
+        128,
+        "none",
+        0.5,
+        false
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 123,
+      "type": "Flux2KleinTextEnhancer",
+      "pos": [
+        -367.43858406915194,
+        484.5548848118127
+      ],
+      "size": [
+        283.86875,
+        154
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 219
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            218
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Flux2KleinTextEnhancer"
+      },
+      "widgets_values": [
+        3,
+        -0.25,
+        0,
+        true,
+        true
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 9,
+      "type": "SaveImage",
+      "pos": [
+        514.4232450525574,
+        1096.1212964086753
+      ],
+      "size": [
+        720.8250317202328,
+        687.735325169308
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 186
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "SaveImage",
+        "enableTabs": false,
+        "tabWidth": 65,
+        "tabXOffset": 10,
+        "hasSecondTab": false,
+        "secondTabText": "Send Back",
+        "secondTabOffset": 80,
+        "secondTabWidth": 65
+      },
+      "widgets_values": [
+        "Flux2-9B-Klein-edit"
+      ],
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 128,
+      "type": "ResolutionMaster",
+      "pos": [
+        -1506.4625298620604,
+        1156.2106403914604
+      ],
+      "size": [
+        330,
+        445
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input_image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "INT",
+          "links": [
+            237,
+            239
+          ]
+        },
+        {
+          "name": "",
+          "type": "INT",
+          "links": [
+            238,
+            240
+          ]
+        },
+        {
+          "name": "",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "",
+          "type": "INT",
+          "links": null
+        },
+        {
+          "name": "",
+          "type": "LATENT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ResolutionMaster",
+        "mode": "Manual",
+        "valueX": 2304,
+        "valueY": 1728,
+        "batch_size": 1,
+        "canvas_min_x": 0,
+        "canvas_max_x": 2048,
+        "canvas_step_x": 64,
+        "canvas_min_y": 0,
+        "canvas_max_y": 2048,
+        "canvas_step_y": 64,
+        "canvas_decimals_x": 0,
+        "canvas_decimals_y": 0,
+        "canvas_snap": true,
+        "canvas_dots": true,
+        "canvas_frame": true,
+        "action_slider_snap_min": 16,
+        "action_slider_snap_max": 256,
+        "action_slider_snap_step": 16,
+        "scaling_slider_min": 0.1,
+        "scaling_slider_max": 4,
+        "scaling_slider_step": 0.1,
+        "megapixels_slider_min": 0.5,
+        "megapixels_slider_max": 6,
+        "megapixels_slider_step": 0.1,
+        "snapValue": 16,
+        "upscaleValue": 1,
+        "targetResolution": 1080,
+        "targetMegapixels": 2.5,
+        "rescaleMode": "megapixels",
+        "rescaleValue": 0.7924226815757612,
+        "autoDetect": false,
+        "autoFitOnChange": false,
+        "autoResizeOnChange": false,
+        "selectedCategory": "Flux.2",
+        "selectedPreset": "4:3 Landscape",
+        "useCustomCalc": false,
+        "manual_slider_min_w": 64,
+        "manual_slider_max_w": 2048,
+        "manual_slider_step_w": 64,
+        "manual_slider_min_h": 64,
+        "manual_slider_max_h": 2048,
+        "manual_slider_step_h": 64,
+        "section_actions_collapsed": true,
+        "section_scaling_collapsed": true,
+        "section_autoDetect_collapsed": true,
+        "section_presets_collapsed": false,
+        "dropdown_resolution_expanded": false,
+        "dropdown_category_expanded": false,
+        "dropdown_preset_expanded": false,
+        "preset_selector_mode": "visual",
+        "customPresetsJSON": ""
+      },
+      "widgets_values": [
+        "Manual",
+        "latent_4x8",
+        2304,
+        1728,
+        false,
+        "megapixels",
+        0.7924226815757612,
+        1
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 132,
+      "type": "MarkdownNote",
+      "pos": [
+        -1502.1772409048187,
+        509.38423984685784
+      ],
+      "size": [
+        317.1097218699085,
+        88
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "[READ THE TUTORIAL TO DOWNLOAD THE GATED 9B MODEL](https://comfyui.rozenlaan.site/ComfyUI_image_hf_gated/)\n\n"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    }
+  ],
+  "links": [
+    [
+      177,
+      103,
+      0,
+      108,
+      0,
+      "MODEL"
+    ],
+    [
+      178,
+      102,
+      0,
+      100,
+      0,
+      "NOISE"
+    ],
+    [
+      179,
+      108,
+      0,
+      100,
+      1,
+      "GUIDER"
+    ],
+    [
+      180,
+      99,
+      0,
+      100,
+      2,
+      "SAMPLER"
+    ],
+    [
+      181,
+      109,
+      0,
+      100,
+      3,
+      "SIGMAS"
+    ],
+    [
+      182,
+      106,
+      0,
+      100,
+      4,
+      "LATENT"
+    ],
+    [
+      184,
+      105,
+      0,
+      101,
+      1,
+      "VAE"
+    ],
+    [
+      186,
+      101,
+      0,
+      9,
+      0,
+      "IMAGE"
+    ],
+    [
+      217,
+      122,
+      0,
+      108,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      218,
+      123,
+      0,
+      122,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      219,
+      124,
+      0,
+      123,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      221,
+      104,
+      0,
+      125,
+      0,
+      "CLIP"
+    ],
+    [
+      223,
+      125,
+      0,
+      111,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      224,
+      100,
+      0,
+      127,
+      0,
+      "LATENT"
+    ],
+    [
+      225,
+      127,
+      0,
+      101,
+      0,
+      "LATENT"
+    ],
+    [
+      237,
+      128,
+      0,
+      106,
+      0,
+      "INT"
+    ],
+    [
+      238,
+      128,
+      1,
+      106,
+      1,
+      "INT"
+    ],
+    [
+      239,
+      128,
+      0,
+      109,
+      0,
+      "INT"
+    ],
+    [
+      240,
+      128,
+      1,
+      109,
+      1,
+      "INT"
+    ],
+    [
+      245,
+      111,
+      0,
+      133,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      246,
+      133,
+      1,
+      108,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      247,
+      125,
+      0,
+      133,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      248,
+      105,
+      0,
+      133,
+      2,
+      "VAE"
+    ],
+    [
+      249,
+      133,
+      0,
+      124,
+      0,
+      "CONDITIONING"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "Models",
+      "bounding": [
+        -1119.4640072231052,
+        474.7286363874622,
+        410.1815577435532,
+        489.63638080092375
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "Conditioning",
+      "bounding": [
+        -404.4193645599672,
+        251.41006898538444,
+        426.9353584192105,
+        724.5770627471546
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "Sampler",
+      "bounding": [
+        95.69692585467783,
+        722.5654091658524,
+        331.11447271099814,
+        1121.151228555374
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "Latent image",
+      "bounding": [
+        -1524.8599902292005,
+        1006.1443454028465,
+        376.7329714434536,
+        835.8942031696205
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "Output-Compare",
+      "bounding": [
+        469.2353983034602,
+        730.0239631753598,
+        853.9531674793545,
+        1126.726344953667
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 6,
+      "title": "Input images",
+      "bounding": [
+        -410.40639402708644,
+        1009.0310487554818,
+        448.80191144867104,
+        845.5007873117229
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 7,
+      "title": "Text Encoder",
+      "bounding": [
+        -1120.5412732638033,
+        1000.077378040276,
+        671.0578238233643,
+        819.2327811844584
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.8880189183299777,
+      "offset": [
+        1782.4651846416684,
+        -181.6986074228129
+      ]
+    },
+    "frontendVersion": "1.37.11",
+    "workflowRendererVersion": "LG",
+    "VHS_latentpreview": true,
+    "VHS_latentpreviewrate": 0,
+    "VHS_MetadataImage": true,
+    "VHS_KeepIntermediate": true
+  },
+  "version": 0.4
+}
