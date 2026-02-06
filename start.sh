@@ -515,7 +515,7 @@ if [[ "$HAS_COMFYUI" -eq 1 ]]; then
                 mkdir -p "$dest_dir"
 
                 # Download using huggingface_hub Python library with token support
-                # Download to temp directory, then move to final destination (flattening path)
+                # Use local_dir only (no cache_dir) so files go directly to /workspace/temp
                 python3 - <<PYTHON_DOWNLOAD 2>/tmp/${model_name// /_}.log
 import sys
 import os
@@ -535,8 +535,7 @@ try:
         filename="$filename",
         local_dir=temp_dir,
         repo_type="model",
-        token=token,
-        cache_dir=os.environ.get('HF_HUB_CACHE', '/workspace/.cache/huggingface')
+        token=token
     )
 
     # Move the file to the final destination (flattening any nested paths)
@@ -545,21 +544,18 @@ try:
 
     if os.path.exists(local_file) and local_file != final_dest:
         shutil.move(local_file, final_dest)
+        print(f"✅ Moved to final destination: {final_dest}", file=sys.stderr)
+    elif os.path.exists(final_dest):
+        print(f"✅ Already at final destination: {final_dest}", file=sys.stderr)
+    else:
+        print(f"⚠️ File not found at {local_file} or {final_dest}", file=sys.stderr)
+        sys.exit(1)
 
-    # Also check for the file in nested directories and move if found
-    # (in case hf_hub_download created subdirectories)
-    if not os.path.exists(final_dest):
-        target_filename = os.path.basename("$filename")
-        # Search for the file in all subdirectories of temp
-        found_files = glob.glob(os.path.join(temp_dir, '**', target_filename), recursive=True)
-        if found_files:
-            src = found_files[0]
-            shutil.move(src, final_dest)
-
-    print(f"✅ Downloaded to: {final_dest}", file=sys.stderr)
     sys.exit(0)
 except Exception as e:
     print(f"⚠️ Download failed: {e}", file=sys.stderr)
+    import traceback
+    traceback.print_exc(file=sys.stderr)
     sys.exit(1)
 PYTHON_DOWNLOAD
 
