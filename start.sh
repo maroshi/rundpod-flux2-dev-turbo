@@ -584,6 +584,8 @@ PYTHON_DOWNLOAD
         echo "✅ HF_TOKEN detected - authenticated downloads enabled"
     fi
 
+    echo "📥 Starting parallel model downloads from Hugging Face..."
+
     # Start all 7 model downloads in parallel
     download_model_bg "VAE (FLUX.2 Dev)" "Comfy-Org/flux2-dev" "split_files/vae/flux2-vae.safetensors" "/workspace/ComfyUI/models/vae" "/workspace/ComfyUI/models/vae/flux2-vae.safetensors"
     download_model_bg "Text Encoder (FLUX.2 Dev FP8)" "Comfy-Org/flux2-dev" "split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors" "/workspace/ComfyUI/models/text_encoders" "/workspace/ComfyUI/models/text_encoders/mistral_3_small_flux2_fp8.safetensors"
@@ -593,15 +595,39 @@ PYTHON_DOWNLOAD
     download_model_bg "Diffusion Model Base (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/diffusion_models/flux-2-klein-base-4b.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-base-4b.safetensors"
     download_model_bg "Diffusion Model Distilled (FLUX.2 Klein)" "Comfy-Org/flux2-klein" "split_files/diffusion_models/flux-2-klein-4b.safetensors" "/workspace/ComfyUI/models/diffusion_models" "/workspace/ComfyUI/models/diffusion_models/flux-2-klein-4b.safetensors"
 
-    # Wait for all downloads and show progress
+    # Wait for all downloads and show progress every 60 seconds
+    # Note: Files download to /workspace/temp first, then move to /workspace/ComfyUI/models
     TOTAL_MODELS=7
     COMPLETED=0
+    LAST_REPORT=0
     while [[ $COMPLETED -lt $TOTAL_MODELS ]]; do
         COMPLETED=$(wc -l < "$MODELS_LOG" 2>/dev/null || echo 0)
-        if [[ $COMPLETED -lt $TOTAL_MODELS ]]; then
-            echo -ne "  ⏳ Model downloads: $COMPLETED/$TOTAL_MODELS completed\r"
-            sleep 2
+
+        if [[ $COMPLETED -ge $TOTAL_MODELS ]]; then
+            break
         fi
+
+        NOW=$(date +%s)
+        if [[ $((NOW - LAST_REPORT)) -ge 60 ]]; then
+            # Check both /workspace/temp (downloading) and /workspace/ComfyUI/models (moved)
+            TEMP_BYTES=$(du -sb /workspace/temp 2>/dev/null | awk '{print $1}')
+            MODELS_BYTES=$(du -sb /workspace/ComfyUI/models 2>/dev/null | awk '{print $1}')
+            TOTAL_BYTES=$((TEMP_BYTES + MODELS_BYTES))
+            TARGET_BYTES=$((76 * 1024 * 1024 * 1024))
+            PERCENT=$((TOTAL_BYTES * 100 / TARGET_BYTES))
+
+            # Convert to human readable format
+            if [[ $TOTAL_BYTES -ge $((1024 * 1024 * 1024)) ]]; then
+                TOTAL_SIZE="$((TOTAL_BYTES / (1024 * 1024 * 1024)))G"
+            else
+                TOTAL_SIZE="$((TOTAL_BYTES / (1024 * 1024)))M"
+            fi
+
+            echo "📥 Downloaded: $TOTAL_SIZE / ~76GB ($PERCENT%)"
+            LAST_REPORT=$NOW
+        fi
+
+        sleep 5
     done
 
     # Wait for background jobs to finish

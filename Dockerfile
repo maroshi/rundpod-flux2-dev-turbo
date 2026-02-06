@@ -4,10 +4,13 @@
 # This Dockerfile extends ls250824/run-comfyui-image with:
 # - Flux.2 dev turbo workflows
 # - Storage optimization for RunPod (fixes /workspace allocation)
-# - HuggingFace model auto-download configuration
+# - Pre-downloaded FLUX.2 models (7 models, ~76GB) for zero-wait pod startup
 ################################################################################
 
-FROM ls250824/run-comfyui-image:11012026
+# Build argument for HuggingFace token (required for gated models)
+ARG HF_TOKEN=""
+
+FROM ls250824/run-comfyui-image:04022026
 
 WORKDIR /ComfyUI
 
@@ -57,7 +60,7 @@ RUN mkdir -p /ComfyUI/user/default/workflows && \
     ls -la /ComfyUI/user/default/workflows/ 2>/dev/null || true
 
 # ============================================================================
-# SECTION 5: Workspace Setup and Metadata
+# SECTION 6: Workspace Setup and Metadata
 # ============================================================================
 # Set Workspace
 WORKDIR /workspace
@@ -77,7 +80,7 @@ LABEL org.opencontainers.image.title="ComfyUI - Flux.2 Dev Turbo Edition" \
       maintainer="ComfyUI Community <noreply@comfyui.org>"
 
 # ============================================================================
-# SECTION 6: Entrypoint Configuration
+# SECTION 7: Entrypoint Configuration
 # ============================================================================
 # CMD: Default startup command
 # Executes /start.sh which handles:
