@@ -79,6 +79,9 @@ LABEL org.opencontainers.image.title="ComfyUI - Flux.2 Dev Turbo Edition" \
       org.opencontainers.image.version="2.0.0-flux2-turbo" \
       maintainer="ComfyUI Community <noreply@comfyui.org>"
 
+# Default model selection (can be overridden at runtime)
+ENV FLUX_MODEL=common
+
 # ============================================================================
 # SECTION 7: Entrypoint Configuration
 # ============================================================================
@@ -88,9 +91,10 @@ LABEL org.opencontainers.image.title="ComfyUI - Flux.2 Dev Turbo Edition" \
 #   2. GPU/CUDA detection and configuration
 #   3. Code-Server startup (port 9000)
 #   4. ComfyUI startup (port 8188)
-#   5. FLUX.2 model auto-download (~23GB to /workspace)
+#   5. FLUX.2 model auto-download (3-76GB to /workspace, based on FLUX_MODEL)
 #
 # Environment variables for customization:
+#   FLUX_MODEL: Model selection (klein, dev, all, common) - defaults to common
 #   HF_TOKEN: HuggingFace API token (REQUIRED for FLUX.2-dev gated models)
 #   PASSWORD: Code-Server authentication password
 #   CIVITAI_API_KEY: CivitAI API key for LoRA downloads
