@@ -23,6 +23,34 @@ A streamlined and automated environment for running **ComfyUI** with **image mod
 - Supports advanced workflows for **image generation** and **enhancement** using pre-installed custom nodes.
 - Compatible with high-performance NVIDIA GPUs.
 
+## 🎯 Model Selection
+
+Control which FLUX.2 models are downloaded at pod startup using the `FLUX_MODEL` environment variable:
+
+| Value | Models Loaded | Size | Startup Time | Use Case |
+|-------|--------------|------|--------------|----------|
+| `common` | VAE + Turbo LoRA | ~3GB | 30 sec | Testing, minimal setup |
+| `klein` | Common + Klein models | ~27GB | 3-4 min | FLUX.2 Klein workflows |
+| `dev` | Common + Dev models | ~54GB | 6-8 min | FLUX.2 Dev workflows |
+| `all` | All models | ~76GB | 8-10 min | Full functionality |
+
+### Quick Start
+
+**On RunPod:**
+```bash
+# Set FLUX_MODEL in pod environment variables
+FLUX_MODEL=klein
+```
+
+**Local Docker:**
+```bash
+docker run -e FLUX_MODEL=dev ghcr.io/maroshi/flux2-dev-turbo:latest
+```
+
+**Default:** If not set, defaults to `common` (VAE + Turbo LoRA only).
+
+See [Model Selection Guide](docs/MODEL-SELECTION.md) for detailed information.
+
 ## 🐳 Docker Images
 
 ### Base Images
