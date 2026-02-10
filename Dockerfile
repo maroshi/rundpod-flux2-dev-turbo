@@ -23,7 +23,13 @@ COPY configuration/config.ini user/__manager/config.ini
 RUN chmod 644 user/default/comfy.settings.json user/__manager/config.ini
 
 # ============================================================================
-# SECTION 2: Model Directory Structure
+# SECTION 2: System Dependencies
+# ============================================================================
+# Install rsync for file transfer (required for rsync-based image downloads)
+RUN apt-get update -qq && apt-get install -y -qq rsync && rm -rf /var/lib/apt/lists/*
+
+# ============================================================================
+# SECTION 3: Model Directory Structure
 # ============================================================================
 # Ensure model directories exist with proper permissions
 RUN mkdir -p /ComfyUI/models/loras && \
@@ -34,7 +40,7 @@ RUN mkdir -p /ComfyUI/models/loras && \
     chmod -R 777 /ComfyUI/models
 
 # ============================================================================
-# SECTION 3: Startup Scripts and Documentation
+# SECTION 4: Startup Scripts and Documentation
 # ============================================================================
 # Copy startup scripts with RunPod storage optimization
 COPY start.sh onworkspace/comfyui-on-workspace.sh onworkspace/files-on-workspace.sh onworkspace/test-on-workspace.sh onworkspace/docs-on-workspace.sh /
@@ -47,7 +53,7 @@ COPY documentation/ /docs
 RUN chmod 644 /README.md && chmod -R 644 /test /docs
 
 # ============================================================================
-# SECTION 4: Workflows Installation
+# SECTION 5: Workflows Installation
 # ============================================================================
 # Copy FLUX.2 workflows to a non-volume location and ComfyUI default directory
 # Store in /root/workflows-backup for pod startup to copy to persistent /workspace/workflows
@@ -60,7 +66,7 @@ RUN mkdir -p /ComfyUI/user/default/workflows && \
     ls -la /ComfyUI/user/default/workflows/ 2>/dev/null || true
 
 # ============================================================================
-# SECTION 6: Workspace Setup and Metadata
+# SECTION 7: Workspace Setup and Metadata
 # ============================================================================
 # Set Workspace
 WORKDIR /workspace
@@ -83,7 +89,7 @@ LABEL org.opencontainers.image.title="ComfyUI - Flux.2 Dev Turbo Edition" \
 ENV FLUX_MODEL=common
 
 # ============================================================================
-# SECTION 7: Entrypoint Configuration
+# SECTION 8: Entrypoint Configuration
 # ============================================================================
 # CMD: Default startup command
 # Executes /start.sh which handles:
