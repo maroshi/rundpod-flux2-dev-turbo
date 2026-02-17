@@ -53,9 +53,9 @@
     "9": {
       "class_type": "EmptyFlux2LatentImage",
       "inputs": {
-        "width": 512,
-        "height": 512,
-        "batch_size": 1
+        "width": "${WIDTH}",
+        "height": "${HEIGHT}",
+        "batch_size": "${BATCH_SIZE}"
       }
     },
     "6": {
@@ -78,7 +78,7 @@
           0
         ],
         "seed": "${SEED}",
-        "steps": 4,
+        "steps": "${STEPS}",
         "cfg": 1,
         "sampler_name": "euler",
         "scheduler": "simple",
