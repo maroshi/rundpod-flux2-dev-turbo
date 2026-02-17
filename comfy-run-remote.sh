@@ -89,7 +89,7 @@ OPTIONS:
     --download / --no-download Enable/disable image download (default: --download)
                               Example: --no-download (skip downloading images)
 
-    --steps NUM               Number of inference steps (default: 4)
+    --steps NUM               Number of inference steps (default: 15)
                               Example: --steps 20
 
     --width NUM               Image width in pixels (default: 512)
@@ -345,7 +345,7 @@ LOG_FILE=""
 RECOVERY_FILE=""
 
 # Workflow parameters (optional, with defaults)
-STEPS=4
+STEPS=15
 WIDTH=512
 HEIGHT=512
 BATCH_SIZE=1

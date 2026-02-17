@@ -55,7 +55,7 @@
     "6": {
       "class_type": "RandomNoise",
       "inputs": {
-        "noise_seed": ${SEED}
+        "noise_seed": "${SEED}"
       }
     },
     "7": {
@@ -67,17 +67,17 @@
     "8": {
       "class_type": "Flux2Scheduler",
       "inputs": {
-        "steps": ${STEPS},
-        "width": ${WIDTH},
-        "height": ${HEIGHT}
+        "steps": "${STEPS}",
+        "width": "${WIDTH}",
+        "height": "${HEIGHT}"
       }
     },
     "9": {
       "class_type": "EmptyFlux2LatentImage",
       "inputs": {
-        "width": ${WIDTH},
-        "height": ${HEIGHT},
-        "batch_size": ${BATCH_SIZE}
+        "width": "${WIDTH}",
+        "height": "${HEIGHT}",
+        "batch_size": "${BATCH_SIZE}"
       }
     },
     "10": {

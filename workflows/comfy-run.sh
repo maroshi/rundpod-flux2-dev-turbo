@@ -86,7 +86,7 @@ OPTIONS:
                            Example: --seed 12345
                            (Auto-generation: random int + epoch time for uniqueness)
 
-    --steps NUM            Number of inference steps (default: 4)
+    --steps NUM            Number of inference steps (default: 15)
                            Example: --steps 20
                            (Typical range: 4-30, higher = more detail but slower)
 
@@ -350,7 +350,7 @@ PROMPT=""
 IMAGE_ID="UNDEFINED_ID_"
 OUTPUT_FOLDER="/workspace/output/"
 SEED=""
-STEPS=4
+STEPS=15
 WIDTH=512
 HEIGHT=512
 BATCH_SIZE=1
