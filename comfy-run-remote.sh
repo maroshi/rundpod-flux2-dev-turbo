@@ -479,6 +479,8 @@ compute_derived_values() {
 
 # Export variables for use in envsubst and subprocesses
 export_variables() {
+    # JSON-escape PROMPT so newlines/quotes are safe inside JSON string values
+    PROMPT=$(printf '%s' "$PROMPT" | python3 -c "import json,sys; print(json.dumps(sys.stdin.read())[1:-1])")
     export PROMPT
     export IMAGE_ID
     export OUTPUT_FOLDER
